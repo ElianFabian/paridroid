@@ -1,0 +1,77 @@
+#summary Instructions for cross-compiling PARI/GP (2.5.0-STABLE) for Android.
+#labels Featured
+
+= Prerequisites =
+
+  * PARI/GP (2.5.0-STABLE) source code.
+  * Android NDK (`android-ndk-r6` or later).
+  * Latest version of Android SDK.
+  * `pari.cfg` file for Android.
+
+= Preparing the Build Environment =
+
+Cross-compiling PARI/GP for Android is somewhat tricky and involved. It is recommended to simply use the pre-compiled libraries and binary available on the downloads page.
+
+If you wish to build PARI/GP from source for Android, follow these instructions.
+
+If you wish to install the pre-compiled binaries, then you may skip down to the last section of this page now.
+
+These instructions make use of the NDK as a standalone toolchain, which is a new feature in the latest version (`android-ndk-r6`) of the Android NDK. For simplicity, the target API level we use here is 3 (Android 1.5).
+
+It is assumed at this point that the Android SDK/NDK have been installed according to the instructions found here: [http://developer.android.com/sdk/index.html]
+
+It is also assumed that you have downloaded and extracted the PARI/GP source code and have the `pari.cfg` file from this website.
+
+For brevity, the following short-hand will be used:
+
+  * `$NDK` = path to NDK root directory.
+   * e.g., `/opt/android/android-ndk-r6`
+  * `$SDK` = path to SDK root directory.
+   * e.g., `/opt/android/android-sdk-Linux_x86`
+  * `$TOOLCHAIN` = path to Android toolchain.
+   * e.g., `/tmp/android-toolchain`
+  * `$SYSROOT` = path to Android toolchain sysroot.
+   * e.g., `/tmp/android-toolchain/sysroot`
+  * `$PARI` = path to PARI/GP source root directory.
+   * e.g., `/build/pari/pari-2.5.0`
+
+  == Setting up the NDK Toolchain ==
+
+To setup the toolchain, simply run the following command:
+
+`$NDK/build/tools/make-standalone-toolchain.sh --platform=android-3 --install-dir=/tmp/android-toolchain`
+
+You can, of course, change the `install-dir` to whatever you like.
+
+For more information, refer to the NDK Dev Guide documentation on "Using the NDK as a Standalone Toolchain".
+
+When we build PARI/GP, the compiler will complain that the header file `$SYSROOT/usr/include/sys/termios.h`is missing. To resolve this, all you need to do is:
+
+`cp $SYSROOT/usr/include/termios.h $SYSROOT/usr/include/sys/termios.h`
+
+ == Cross-Compiling PARI/GP ==
+
+  # Copy the `pari.cfg` file from this site such that it is immediately under the `$PARI` directory.
+  # `cd $PARI`
+  # Open `pari.cfg` in a text editor and set `TOP = '$PARI'`.
+  # `./Configure -l pari.cfg`
+  # `cd obj-dyn`
+  # `make all`
+
+It should take a few minutes to compile, and then you should have the following files located under `$PARI/obj-dyn`:
+
+  * `libpari.so`
+  * `libpari.a`
+  * `libpari.so.3`
+  * `libpari.so.2.5.0`
+  * `gp-sta`
+  * `gp-dyn`
+
+ == Configuring the Emulator/Device ==
+
+ TO-DO
+
+
+ == Installing PARI/GP to Emulator/Device ==
+
+ TO-DO
