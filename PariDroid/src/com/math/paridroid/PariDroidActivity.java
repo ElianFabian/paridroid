@@ -112,18 +112,7 @@ public class PariDroidActivity extends Activity
 	mvGalData.add(SHARE_DIR+"galdata.tar");
 	runCommand(mvGalData);
 
-	ArrayList<String> tarGalData = new ArrayList<String>();
-	tarGalData.add("tar");
-	tarGalData.add("xf");
-	tarGalData.add(SHARE_DIR+"galdata.tar");
-	runCommand(tarGalData);
-
-	ArrayList<String> mvGalDataAgain = new ArrayList<String>();
-	mvGalDataAgain.add("mv");
-	mvGalDataAgain.add(SHARE_DIR+"data/galdata");
-	mvGalDataAgain.add(GALDATA_DIR);
-	runCommand(mvGalDataAgain);
-	
+	NativeTask.install();
 
     }
 
