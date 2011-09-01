@@ -1,0 +1,10 @@
+#summary Notes on Porting native library projects to Android.
+#labels Android,Porting
+
+= Android Asset Packaging Tool idiosyncrasies =
+
+You might notice that the Asset files being bundled with PariDroid in the [https://code.google.com/p/paridroid/source/browse/#svn%2FPariDroid%2Fassets paridroid/Paridroid/assets] have `.jpg` as the file extension, even though the files contained in this directory are actually binary executables or tarball archives.
+
+This is done because of how the Android Asset Package Tool (or `aapt`) compresses asset files when the APK is built.
+
+For further reference, see [http://ponystyle.com/blog/2010/03/26/dealing-with-asset-compression-in-android-apps/ Dealing with Asset Compression in Android apps] by [http://ponystyle.com/blog/ Brian Hardy].
