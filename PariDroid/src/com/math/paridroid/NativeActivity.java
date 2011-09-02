@@ -8,7 +8,7 @@ class NativeTask {
 
     static {
 	try {
-	    System.loadLibrary("paridroid");
+	    System.loadLibrary("paridroid-helper");
 	} catch (Exception ex) {
 	    Log.e(MSG_TAG, "Failed to load native library.");
 	}

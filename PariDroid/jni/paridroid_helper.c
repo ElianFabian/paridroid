@@ -1,13 +1,16 @@
 #include <stdlib.h>
-#include <jni.h>
+#include<sys/stat.h>
 #include <errno.h>
-
+#include <jni.h>
 #include <android/log.h>
 
 static int install(void) {
-
-  system("/data/data/com.math.paridroid/bin/paridroid-installer.sh");
   
-  return 0;
-
+  if (chmod("/data/data/com.math.paridroid/paridroid-installer.sh", S_IRWXU))
+    {
+      system("/data/data/com.math.paridroid/paridroid-installer.sh");
+      return 0;
+    }
+  
+  return -1;
 }
