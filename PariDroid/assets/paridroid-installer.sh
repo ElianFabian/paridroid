@@ -6,13 +6,27 @@ BIN_DIR=$DATA_DIR/bin
 LIB_DIR=$DATA_DIR/lib
 SHARE_DIR=$DATA_DIR/share
 
+if [[ -e /data/busybox ]]
+then
+    MV='/data/busybox/mv'
+    TAR='/data/busybox/tar'
+elif [[ -e /system/xbin/busybox ]]
+then
+    MV='busybox mv'
+    TAR='busybox tar'
+else
+    echo "Unable to locate tar binary, cannot install. Exiting."
+    exit -1
+fi
+
 if [[ -e $BIN_DIR ]]
-    mv $DATA_DIR/gp.jpg $BIN_DIR/gp
+then
+    $MV $DATA_DIR/gp.jpg $BIN_DIR/gp
     cd $BIN_DIR
     chmod 0775 gp
 else
     mkdir $BIN_DIR
-    mv $DATA_DIR/gp.jpg $BIN_DIR/gp
+    $MV $DATA_DIR/gp.jpg $BIN_DIR/gp
     cd $BIN_DIR
     chmod 0775 gp
 fi
@@ -26,28 +40,26 @@ fi
 #    export LD_LIBRARY_PATH=LD_LIBRARY_PATH:/$LIB_DIR
 #fi
 
-if [[ -e /data/busybox/tar ]]
-then
-    TAR=/data/busybox/tar
-elif [[ -e /system/xbin/tar ]]
-    TAR=/system/xbin/tar
-else
-    echo "Unable to locate tar binary, cannot install. Exiting."
-    exit -1
-fi
 
 if [[ -e $SHARE_DIR ]]
+then
+    cd $DATA_DIR
+    $MV galdata.tar.jpg $SHARE_DIR/galdata.tar
     cd $SHARE_DIR
-    mv galdata.tar.jpg galdata.tar
     $TAR xvf galdata.tar
-    mv data/galdata pari/galdata
+    mkdir $SHARE_DIR/pari
+    $MV data/galdata pari/galdata
     rm -R data
+    rm -f galdata.tar
 else
+    cd $DATA_DIR
     mkdir $SHARE_DIR
+    $MV galdata.tar.jpg $SHARE_DIR/galdata.tar
     cd $SHARE_DIR
-    mv galdata.tar.jpg galdata.tar
     $TAR xvf galdata.tar
-    mv data/galdata pari/galdata
+    mkdir $SHARE_DIR/pari
+    $MV data/galdata pari/galdata
     rm -R data
+    rm -f galdata.tar
 fi
 #EOF

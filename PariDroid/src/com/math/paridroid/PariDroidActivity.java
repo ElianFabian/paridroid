@@ -29,7 +29,11 @@ public class PariDroidActivity extends Activity
 	if(checkInstall == true) {
 	    Log.d(TAG, "Preparing to install PariDroid...");
 	    copyAssets();
-	    NativeTask.install();
+	    if (NativeTask.install() != 0) {
+		Log.e(TAG, "Install script failed to run. Try to install manually.");
+	    } else {
+		Log.d(TAG, "Install script ran successfully.");
+	    }
 	} else {
 	    Log.d(TAG, "Not checking for existing Paridroid install.");
 	}
