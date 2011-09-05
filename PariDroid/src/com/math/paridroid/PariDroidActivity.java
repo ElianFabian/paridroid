@@ -30,15 +30,16 @@ public class PariDroidActivity extends Activity
 	    Log.d(TAG, "Preparing to install PariDroid...");
 	    copyAssets();
 	    if (NativeTask.install() != 0) {
-		Log.e(TAG, "Install script failed to run. Try to install manually.");
+		Log.e(TAG, "Install script failed to run.");
 	    } else {
 		Log.d(TAG, "Install script ran successfully.");
+		checkInstall = false;
 	    }
 	} else {
 	    Log.d(TAG, "Not checking for existing Paridroid install.");
 	}
     }
-
+    
     private void copyAssets() {
 	AssetManager assetManager = getAssets();
 	String[] files = null;
@@ -93,4 +94,34 @@ public class PariDroidActivity extends Activity
 	    out.write(buffer, 0, read);
 	}
     }
+
+    public void runCommand(ArrayList<String> cmd)
+    {
+        Log.d(TAG, "Attempting to run command: " + cmd);
+        try {
+            Process process = new ProcessBuilder()
+                .command(cmd)
+                .redirectErrorStream(true)
+                .start();
+            try {
+                InputStream in = process.getInputStream();
+                OutputStream out = process.getOutputStream();
+                
+                BufferedReader bfrd = new BufferedReader(new InputStreamReader(in));
+                String prnt = bfrd.readLine();
+                while(prnt != null) {
+                    Log.d(TAG, "line of output: " + prnt);
+                    prnt = bfrd.readLine();
+                }
+                
+            } catch (Exception ex) {
+                Log.e(TAG, "Exception, failed to run command " + cmd);
+            } finally {
+                process.destroy();
+            }
+        } catch (IOException io) {
+            Log.e(TAG, "Caught IOException.");
+        }
+    }
+
 }

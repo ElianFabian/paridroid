@@ -13,5 +13,12 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := paridroid-helper
-LOCAL_SRC_FILES := paridroid_helper.c
+LOCAL_SRC_FILES := \
+	paridroid_helper.c \
+	paridroid_install.c \
+	log.c
+LOCAL_C_INCLUDES := \
+	paridroid_install.h \
+	log.h
+LOCAL_LDLIBS := -llog
 include $(BUILD_SHARED_LIBRARY)
