@@ -8,8 +8,6 @@ import android.util.Log;
 
 import java.io.*;
 import java.util.*;
-import java.lang.Process;
-import java.lang.Runtime;
 
 public class PariDroidActivity extends Activity
 {
@@ -94,34 +92,4 @@ public class PariDroidActivity extends Activity
 	    out.write(buffer, 0, read);
 	}
     }
-
-    public void runCommand(ArrayList<String> cmd)
-    {
-        Log.d(TAG, "Attempting to run command: " + cmd);
-        try {
-            Process process = new ProcessBuilder()
-                .command(cmd)
-                .redirectErrorStream(true)
-                .start();
-            try {
-                InputStream in = process.getInputStream();
-                OutputStream out = process.getOutputStream();
-                
-                BufferedReader bfrd = new BufferedReader(new InputStreamReader(in));
-                String prnt = bfrd.readLine();
-                while(prnt != null) {
-                    Log.d(TAG, "line of output: " + prnt);
-                    prnt = bfrd.readLine();
-                }
-                
-            } catch (Exception ex) {
-                Log.e(TAG, "Exception, failed to run command " + cmd);
-            } finally {
-                process.destroy();
-            }
-        } catch (IOException io) {
-            Log.e(TAG, "Caught IOException.");
-        }
-    }
-
 }
