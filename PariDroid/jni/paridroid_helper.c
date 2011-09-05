@@ -14,7 +14,7 @@ static int install(void)
 
   if (chmod("/data/data/com.math.paridroid/paridroid-installer.sh", exec_mode))
     {
-      system("/system/bin/sh /data/data/com.math.paridroid/paridroid-installer.sh");
+      system("/data/data/com.math.paridroid/paridroid-installer.sh");
       return 0;
     }
   

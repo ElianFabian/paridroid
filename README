@@ -1,0 +1,1 @@
+Before using the pari.cfg file to cross-compile PARI/GP for Android, make sure to change the value of TOP accordingly for your system.
