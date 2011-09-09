@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.*;
 import java.util.*;
@@ -27,7 +28,12 @@ public class PariDroidActivity extends Activity
 	if(checkInstall == true) {
 	    Log.d(TAG, "Preparing to install PariDroid...");
 	    copyAssets();
-	    if (NativeTask.install() != 0) {
+      Context context = getApplicationContext();
+      CharSequence text = "Preparing to install PariDroid.";
+      int duration = Toast.LENGTH_SHORT;
+      Toast toast = Toast.makeText(context, text, duration);
+      toast.show();	    
+    if (NativeTask.install() != 0) {
 		Log.e(TAG, "Install script failed to run.");
 	    } else {
 		Log.d(TAG, "Install script ran successfully.");
