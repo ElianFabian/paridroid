@@ -39,7 +39,7 @@ For the purposes of simply doing mathematical calculations, PariDroid should pro
 
 Not yet.
 
-== Does PariDroid have built-in ReadLine support? ==
+== Does PariDroid have built-in !ReadLine support? ==
 
 No.
 
@@ -47,7 +47,7 @@ Neither PariDroid nor the cross-compiled binaries/libraries are built with ReadL
 
 This means command history and (Emacs/Vi)-like line-editing modes are not available, though this is likely to change in the future.
 
-== Will PariDroid ever have built-in ReadLine support? ==
+== Will PariDroid ever have built-in !ReadLine support? ==
 
 Probably not.
 
@@ -59,7 +59,7 @@ Bundling more libraries with the application application and linking them agains
 
 Basically, it does not make sense to put in all of the effort required to compile PARI/GP for use on a phone/tablet with all of the bells and whistles that you would want on a desktop/laptop. 
 
-Since only a tiny subset of GNU ReadLine functions are actually needed to have reasonably good usability, it makes more sense to implement things like command history and line editing from scratch.
+Since only a tiny subset of GNU !ReadLine functions are actually needed to have reasonably good usability, it makes more sense to implement things like command history and line editing from scratch.
 
 ----
 
@@ -83,8 +83,8 @@ These are the only tool/system configurations that have been used to successfull
 
   * *Text Editor:* GNU Emacs.
   * *Operating System:* Ubuntu GNU/Linux (version 10.10/11.04, arch i686/AMD64)
-  * *SDK Version:* Android SDK-r12.
-  * *NDK Version:* Android NDK-r6b.
+  * *SDK Version:* Android SDK revision 12.
+  * *NDK Version:* Android NDK revision 6b.
   * *Android API Level:* 8 (Android 2.2)
   * *Java JDK Version:* `sun-java6-jdk`.
 
@@ -93,8 +93,8 @@ Note: There is currently no way for me to give support for building under Window
 == Which devices has PariDroid been tested on? ==
 
   * Android Emulator (Android 2.2).
-  * Motorola Droid (CyanogenMod 7.0.3).
-  * B&N Nook Color (CyanogenMod 7.0.3).
+  * Motorola Droid (!CyanogenMod 7.0.3).
+  * B&N Nook Color (!CyanogenMod 7.0.3).
   * ...
 
 == How can I access the SDK/NDK tools more effectively? ==
