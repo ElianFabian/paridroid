@@ -1,1 +1,38 @@
-Before using the pari.cfg file to cross-compile PARI/GP for Android, make sure to change the value of TOP accordingly for your system.
+##################################
+# Building the Android Toolchain #
+##################################
+
+If you want to use the make_android_toolchain script, make sure to export the NDK path and other variables to suit your system.
+
+(E.g., "export NDK=<path/to/ndk>")
+
+You can change the value of TARGET_PLATFORM in the script to suit your preferences, PariDroid should work on any version of Android.
+
+If you do change the TARGET_PLATFORM, then make sure to edit default.properties accordingly.
+
+###########################
+# Documentation & Support #
+###########################
+
+Documentation for building/using PariDroid can be found on the project wiki: https://code.google.com/p/paridroid/w/list
+
+Bug reports, feature requests and everything else should be emailed to: paridroid@gmail.com
+
+#############
+# Licensing #
+#############
+
+PariDroid and PARI/GP are open source software available under the terms of the GNU GPLv3.
+
+For more information, see COPYING.
+
+###########
+# Credit  #
+###########
+
+PARI was originally developed by Henri Cohen and his co-workers (Universite Bordeaux I, France). It is now maintained by Karim Belabas and many volunteers.
+
+PariDroid was written by Charles Boyd as a student project under Professor Siman Wong at the University of Massachusetts (Amherst).
+
+Thanks also to Bill Allombert for his helpful posts on the pari-dev mailing list. 
+
