@@ -142,7 +142,7 @@ $NDK/build/tools/make-standalone-toolchain.sh --platform=$TARGET_PLATFORM --inst
 
 == I have a question about !PariDroid, ==
 
-The best place to ask questions is on the [https://groups.google.com/forum/?hl=en#!forum/paridroid PariDroid mailing list].
+The best place to ask questions is on the [https://groups.google.com/forum/?hl=en#!forum/paridroid mailing list].
 
 You can also e-mail the project maintainers directly, but it is better to post to the mailing list for the sake of making !PariDroid development as open as possible. 
 
@@ -155,6 +155,6 @@ You can file a bug report or feature request here: [https://code.google.com/p/pa
 Great! Here is what you should do.
 
   # Download the Android SDK/NDK, the source code for PARI/GP and build !PariDroid on your own, install it to a device/emulator and try it out.
-  # Join the [https://groups.google.com/forum/?hl=en#!forum/paridroid !PariDroid mailing list] and introduce yourself.
+  # Join the [https://groups.google.com/forum/?hl=en#!forum/paridroid mailing list] and introduce yourself.
   # Submit a patch (bug fix, new feature) to the mailing list and then you will (most likely) be given commit access to the repository.
   # Write more code (and even more documentation)!
