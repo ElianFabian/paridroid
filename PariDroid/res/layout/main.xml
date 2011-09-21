@@ -7,7 +7,7 @@
 <TextView  
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
-    android:text="Installing GP static binary to /data/data/com.math.paridroid/bin"
+    android:text="Path to GP Binary: /data/data/com.math.paridroid/bin/gp. Once installed, execute this file in the terminal emulator (free download, open source)."
     />
 </LinearLayout>
 
