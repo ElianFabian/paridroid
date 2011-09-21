@@ -1,5 +1,5 @@
 #summary Instructions for cross-compiling PARI/GP (2.5.0-STABLE) for Android.
-#labels Featured,Phase-Deploy,Deprecated
+#labels Featured,Phase-Deploy
 
 = Prerequisites =
 
