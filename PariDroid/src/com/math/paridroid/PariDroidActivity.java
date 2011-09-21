@@ -47,6 +47,29 @@ public class PariDroidActivity extends Activity {
 
     /** Handler for processing IPC messages. */
     Handler handler = new Handler();
+
+
+    /**
+     * Try to load native libpari-gmp
+     */
+    static {
+	try {
+	    System.loadLibrary("pari-gmp");
+	} catch (Exception ex) {
+	    Log.e(MSG_TAG, "Error: " + ex.getMessage());
+	}
+    }
+
+    /**
+     * Try to load native libparidroid.
+     */
+    static {
+	try {
+	    System.loadLibrary("paridroid");
+	} catch (Exception ex) {
+	    Log.e(MSG_TAG, "Error: " + ex.getMessage());
+	}
+    }
         
     /**
      * Initializes the Activity.
@@ -57,6 +80,7 @@ public class PariDroidActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.main);
+	paridroidInit();
 	
 	// Set up the input/output mechanisms.
 	inputEdit = (EditText)findViewById(R.id.inputEdit);
@@ -68,8 +92,8 @@ public class PariDroidActivity extends Activity {
     /** Set the behavior of the enter button. */
     private OnClickListener onEnterButtonClick = new OnClickListener() {
 	    public void onClick(View v) {
-		//String output = paridroidEval(inputEdit.getText().toString());
-		setOutputView(inputEdit.getText().toString());
+		String output = paridroidEval(inputEdit.getText().toString());
+		setOutputView(output);
 	    }
 	};
     
@@ -94,11 +118,35 @@ public class PariDroidActivity extends Activity {
 	Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
+
     /**
-     * Declaration of JNI callback to libparidroid.
+     * Cleanup before exiting.
+     */
+    public void onDestroy() {
+	paridroidClose();
+    }
+
+    /* JNI CALLBACK DECLARATIONS */
+
+    /**
+     * Declaration of JNI callback to paridroid_init().
+     * @see libparidroid
+     */
+    public native void paridroidInit();
+
+
+    /**
+     * Declaration of JNI callback to paridroid_eval().
      * @param cmd: The GP command to run.
      * @return Output from GP interpreter.
+     * @see libparidroid
      */
     public native String paridroidEval(String cmd);
 
+
+    /**
+     * Declaration of JNI callback to paridroid_close().
+     * @see libparidroid.
+     */
+    public native void paridroidClose();
 }

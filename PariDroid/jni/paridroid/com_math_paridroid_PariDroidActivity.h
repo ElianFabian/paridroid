@@ -9,11 +9,27 @@ extern "C" {
 #endif
 /*
  * Class:     com_math_paridroid_PariDroidActivity
+ * Method:    paridroidInit
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_math_paridroid_PariDroidActivity_paridroidInit
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_math_paridroid_PariDroidActivity
  * Method:    paridroidEval
  * Signature: (Ljava/lang/String;)Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_math_paridroid_PariDroidActivity_paridroidEval
   (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     com_math_paridroid_PariDroidActivity
+ * Method:    paridroidClose
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_math_paridroid_PariDroidActivity_paridroidClose
+  (JNIEnv *, jobject);
 
 #ifdef __cplusplus
 }
