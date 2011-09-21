@@ -3,15 +3,15 @@
 
 = FAQ (General) =
 
-== Is PariDroid open source? ==
+== Is !PariDroid open source? ==
 
-Yes, both PariDroid and PARI/GP are available for free under the terms of the GNU Public License (version 3).
+Yes, both !PariDroid and PARI/GP are available for free under the terms of the GNU Public License (version 3).
 
-== Do I need root to use PariDroid? ==
+== Do I need root to use !PariDroid? ==
 
-No, you *do not* need to root your phone to use PariDroid.
+No, you *do not* need to root your phone to use !PariDroid.
 
-PariDroid is a GUI application which derives most of its functionality from `libpari` and is consistent with the intended uses of the Android NDK.
+!PariDroid is a GUI application which derives most of its functionality from `libpari` and is consistent with the intended uses of the Android NDK.
 
 == Do I need root to run the cross-compiled `gp` binary on Android? ==
 
@@ -23,31 +23,31 @@ In general, running cross-compiled native binaries is not (officially) supported
 
 That said, there are certain advantages to using the native `gp` binary (especially since the GUI is in such an early stage of development).
 
-== Does PariDroid provide all of the same functionality as GP? ==
+== Does !PariDroid provide all of the same functionality as GP? ==
 
 No.
 
 Most of the mathematical functions should work in an identical way, but some of the more advanced GP programming features are not available.
 
-It would be nice to have more PariDroid provide more `gp`-like functionality than it currently does, but `gp` can do some things are simply not possible to implement in PariDroid (at the moment).
+It would be nice to have more !PariDroid provide more `gp`-like functionality than it currently does, but `gp` can do some things are simply not possible to implement in PariDroid (at the moment).
 
-The `system("command")` function is an example of a feature which works in the native ARM-Android `gp` binary but does not work through PariDroid.  
+The `system("command")` function is an example of a feature which works in the native ARM-Android `gp` binary but does not work through !PariDroid.  
 
-For the purposes of simply doing mathematical calculations, PariDroid should provide sufficient functionality to be useful in most cases. 
+For the purposes of simply doing mathematical calculations, !PariDroid should provide sufficient functionality to be useful in most cases. 
 
-== Is it possible to run a GP script through PariDroid? ==
+== Is it possible to run a GP script through !PariDroid? ==
 
 Not yet.
 
-== Does PariDroid have built-in !ReadLine support? ==
+== Does !PariDroid have built-in !ReadLine support? ==
 
 No.
 
-Neither PariDroid nor the cross-compiled binaries/libraries are built with ReadLine, as porting `libreadline` and `libhistory` to Android (and then modifying/recompiling the `libpari` port and PariDroid to make use of this) proved to be more effort than it was worth. 
+Neither !PariDroid nor the cross-compiled binaries/libraries are built with !ReadLine, as porting `libreadline` and `libhistory` to Android (and then modifying/recompiling the `libpari` port and PariDroid to make use of this) proved to be more effort than it was worth. 
 
 This means command history and (Emacs/Vi)-like line-editing modes are not available, though this is likely to change in the future.
 
-== Will PariDroid ever have built-in !ReadLine support? ==
+== Will !PariDroid ever have built-in !ReadLine support? ==
 
 Probably not.
 
@@ -67,9 +67,9 @@ Since only a tiny subset of GNU !ReadLine functions are actually needed to have 
 
 == How do I cross-compile PARI/GP from scratch? ==
 
-See [https://code.google.com/p/paridroid/wiki/BuildingPariForAndroid BuildingPariForAndroid].
+See BuildingPariForAndroid (HOW-TO).
 
-== I just downloaded the source code for PariDroid. How do I build it? ==
+== I just downloaded the source code for !PariDroid. How do I build it? ==
 
 The build process for PariDroid is not as simple as it should be, but since there is currently only one developer working on the project, simplifying the build environment has not been a high priority.
 
@@ -77,18 +77,20 @@ The build process for PariDroid is not as simple as it should be, but since ther
   * Write a GNU Makefile to automate the build process.
   * Write documentation explaining how to build PariDroid from source.
 
-== What development environment do you use to write/build PariDroid? ==
+If you are trying to build !PariDroid from source, ask on the mailing list how to do it (until the Makefile actually works).
 
-These are the only tool/system configurations that have been used to successfully build PariDroid.
+== What development environment do you use to write/build !PariDroid? ==
+
+These are the only tool/system configurations that have been used to successfully build !PariDroid.
 
   * *Text Editor:* GNU Emacs.
   * *Operating System:* Ubuntu GNU/Linux (version 10.10/11.04, arch i686/AMD64)
-  * *SDK Version:* Android SDK revision 12.
   * *NDK Version:* Android NDK revision 6b.
+  * *Cross-Compiler:* `arm-linux-androideabi-gcc`
   * *Android API Level:* 8 (Android 2.2)
-  * *Java JDK Version:* `sun-java6-jdk`.
-
-Note: There is currently no way for me to give support for building under Windows or with the Eclipse IDE. 
+  * *Java JDK Version:* `sun-java6-jdk`
+  
+Note: There is currently no time for me to work on providing support for building under Windows or with the Eclipse IDE, since I am not familiar with programming in either environment.
 
 == Which devices has PariDroid been tested on? ==
 
@@ -138,21 +140,21 @@ $NDK/build/tools/make-standalone-toolchain.sh --platform=$TARGET_PLATFORM --inst
 
 = Support =
 
-== I have a question about PariDroid, ==
+== I have a question about !PariDroid, ==
 
 The best place to ask questions is on the [https://groups.google.com/forum/?hl=en#!forum/paridroid PariDroid mailing list].
 
-You can also e-mail the project maintainers directly, but it is better to post to the mailing list for the sake of making PariDroid development as open as possible. 
+You can also e-mail the project maintainers directly, but it is better to post to the mailing list for the sake of making !PariDroid development as open as possible. 
 
 == I would like to file a bug report or feature request. ==
 
 You can file a bug report or feature request here: [https://code.google.com/p/paridroid/issues/entry]
 
-== I would like to contribute source code for PariDroid ==
+== I would like to contribute source code for !PariDroid ==
 
 Great! Here is what you should do.
 
-  # Download the Android SDK/NDK, the source code for PARI/GP and build PariDroid on your own, install it to a device/emulator and try it out.
-  # Join the [https://groups.google.com/forum/?hl=en#!forum/paridroid PariDroid mailing list] and introduce yourself.
+  # Download the Android SDK/NDK, the source code for PARI/GP and build !PariDroid on your own, install it to a device/emulator and try it out.
+  # Join the [https://groups.google.com/forum/?hl=en#!forum/paridroid !PariDroid mailing list] and introduce yourself.
   # Submit a patch (bug fix, new feature) to the mailing list and then you will (most likely) be given commit access to the repository.
   # Write more code (and even more documentation)!
