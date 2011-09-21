@@ -1,120 +1,104 @@
+/**
+ * This file is part of PariDroid.
+ *
+ * PariDroid is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * PariDroid is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Written by Charles Boyd
+ * UMass Amherst - Dept. of Mathematics
+ * (Copyright 2011)
+ */
+
 package com.math.paridroid;
+
+import com.math.paridroid.R;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.content.Context;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.res.AssetManager;
+import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.*;
 
-import java.io.*;
-import java.util.*;
+public class PariDroidActivity extends Activity {
+    
+    /** Tag for our logcat messages. */
+    public static final String MSG_TAG = "PariDroid";
 
-public class PariDroidActivity extends Activity
-{
+    /** Box where we can input GP commands. */
+    private EditText inputEdit;
+    
+    /** Button we hit to send a string to GP. */
+    private Button enterButton;
+    
+    /** View showing the output of our command. */
+    private TextView outputView;
 
-    public String PREFIX = "/data/data/com.math.paridroid/";
-
-    public String BIN;
-
-    private final static String TAG = "PariDroidActivity";
-
-    private boolean checkInstall = true;
-
-    /** Called when the activity is first created. */
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-	if(checkInstall == true) {
-	    Log.d(TAG, "Preparing to install PariDroid...");
-	    if(mkBinDir() == false) {
-		Log.e(TAG,"Error: Failed to create /bin directory under " + PREFIX);
-		displayToastMessage("Error: See logcat for details.");
-	    } else {
-		copyAssets();
-		displayToastMessage("Installing gp binary to " + BIN);
-		File gp = new File(BIN,"gp");
-		if (gp.exists()) {
-		    try {
-			if (gp.setExecutable(true)) {
-			    Log.d(TAG,"Set gp binary to executable");
-			} else {
-			    Log.e(TAG, "Error: Unable to set gp binary to executable.");
-			    displayToastMessage("Error: See logcat for details.");
-			}
-		    } catch (Exception ex) {
-			Log.e(TAG,ex.getMessage());
-		    } 
-		} else {
-		    Log.e(TAG,"Unable to locate gp binary.");
-		    displayToastMessage("Error: See logcat for details.");
-		}
-	    }
-	} else {
-	    Log.d(TAG, "Not checking for existing PariDroid install.");
-	}
-    }
+    /** Handler for processing IPC messages. */
+    Handler handler = new Handler();
+        
+    /**
+     * Initializes the Activity.
+     * @param savedInstanceState: saved state we can load.
+     * @see android.app.Activity
+     * @overide
+     */
+    public void onCreate(Bundle savedInstanceState) {
+	super.onCreate(savedInstanceState);
+	setContentView(R.layout.main);
 	
-    private void copyAssets() {
-	AssetManager assetManager = getAssets();
-	String[] files = null;
-	try {
-	    files = assetManager.list("");
-	} catch (IOException e) {
-	    Log.e(TAG, e.getMessage());
-	}
-	for(int i=0; i<files.length; i++) {
-	    InputStream in = null;
-	    OutputStream out = null;
-	    String fileName = files[i];
-	    if (fileName.contains("gp")) {
-		try {
-		    String mFileName = "gp";
-		    in = assetManager.open(fileName);
-		    out = new FileOutputStream(BIN + mFileName);
-		    copyFile(in, out);
-		    in.close();
-		    in = null;
-		    out.flush();
-		    out.close();
-		    out = null;
-		} catch(Exception e) {
-		    Log.e(TAG, e.getMessage());
-		}       
-	    }
-	}
-    }
-
-    private boolean mkBinDir() {
-	boolean ret = false;
-	File binDir = new File(PREFIX, "bin");
-	try {
-	    if (binDir.exists()) {
-		ret = true;
-	    } else {
-		ret = binDir.mkdir();
-		BIN = binDir.getAbsolutePath();
-	    }
-	} catch (Exception ex) {
-	    Log.e(TAG,ex.getMessage());
-	}
-	return ret;
+	// Set up the input/output mechanisms.
+	inputEdit = (EditText)findViewById(R.id.inputEdit);
+	enterButton = (Button)findViewById(R.id.enterButton);
+	enterButton.setOnClickListener(onEnterButtonClick);
+	outputView = (TextView)findViewById(R.id.outputView);
     }
     
-    private void copyFile(InputStream in, OutputStream out) throws IOException {
-	byte[] buffer = new byte[1024];
-	int read;
-	while((read = in.read(buffer)) != -1){
-	    out.write(buffer, 0, read);
-	}
+    /** Set the behavior of the enter button. */
+    private OnClickListener onEnterButtonClick = new OnClickListener() {
+	    public void onClick(View v) {
+		//String output = paridroidEval(inputEdit.getText().toString());
+		setOutputView(inputEdit.getText().toString());
+	    }
+	};
+    
+    /**
+     * Writes data from a String to the output view.
+     * @param str: The string to write.
+     */
+    private void setOutputView(final String str) {
+	Runnable proc = new Runnable() {
+		public void run() {
+		    outputView.setText(str);
+		}
+	    };
+	handler.post(proc);
     }
-
-    public void displayToastMessage(String message) {
+    
+    /**
+     * Displays a Toast message to inform the user of something.
+     * @param message: the message for the user.
+     */
+	public void displayToastMessage(String message) {
 	Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
-    
+
+    /**
+     * Declaration of JNI callback to libparidroid.
+     * @param cmd: The GP command to run.
+     * @return Output from GP interpreter.
+     */
+    public native String paridroidEval(String cmd);
+
 }
