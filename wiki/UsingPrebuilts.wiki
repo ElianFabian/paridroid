@@ -1,0 +1,74 @@
+#summary HOW-TO: Install the pre-built PARI/GP files on Android.
+#labels Featured,Phase-Deploy
+
+= Requirements =
+
+  * Android SDK (to use the `adb` shell).
+  * Root permissions on the target Android device.
+  * [https://paridroid.googlecode.com/files/pari-2.5.0-android-prebuilt.tar.gz pari-2.5.0-android-prebuilt.tar.gz]
+----
+
+= Copying files to the device =
+
+You may use either (or both) the statically compiled `gp` binary, or the dynamically compiled `gp` binary which is linked against `libpari-gmp.so`.
+
+The statically compiled version is easier to install and performs slightly faster, but if you want to link your own C programs against `libpari` then using the dynamically compiled version might be better.
+
+For most users, it should only be necessary to follow the instructions for the statically compiled version. 
+----
+
+== To install the static `gp` binary ==
+
+  # Extract the files from `pari-2.5.0-android-prebuilt.tar.gz`, and `cd` into the `static/` directory.
+  # Connect the target device to your computer.
+  # Send the static `gp` binary to the phone: {{{adb push bin/gp-sta /data/local}}}
+  # Start the `adb shell` and execute the following commands:
+{{{
+su
+cd /data/local
+mkdir bin
+mv gp-sta bin/gp
+cd bin
+chmod 0775 gp
+}}}
+----
+
+== To install the dynamic `gp` binary and `libpari.so` ==
+
+  # Extract the files from `pari-2.5.0-android-prebuilt.tar.gz`, and `cd` into the `dynamic/` directory.
+  # Connect the target device to your computer.
+  # Send the files to the phone:
+{{{
+adb push lib/libpari-gmp.so /data/local
+adb push lib/libpari.so /data/local
+adb push bin/gp-dyn /data/local
+}}}
+  # Start the `adb shell` and execute the following commands:
+{{{
+su
+cd /data/local
+mkdir bin
+mv gp-dyn bin/gp
+mkdir lib
+mv libpari-gmp.so lib/
+mv libpari.so lib/
+cd bin/
+chmod 0775 gp
+export LD_LIBRARY_PATH=/data/local/lib:$LD_LIBRARY_PATH
+}}}
+----
+= Using the `gp` interpreter =
+
+You can now `cd` into `/data/local/bin` and run `./gp` from to start the interpreter.
+
+*Notes:*
+  * You can also `export PATH=$PATH:/data/local/bin` to invoke the `gp` interpreter without having to `cd` into that directory.
+  * If you are using the dynamically compiled binary, you will have to routinely {{{export LD_LIBRARY_PATH=/data/local/lib:$LD_LIBRARY_PATH}}} every time you start a new session in the terminal emulator.
+  * It is recommended to automate running these commands when the terminal emulator starts.
+----
+
+== Troubleshooting ==
+
+If you get a `failed to link` error when trying to run the dynamically linked `gp` binary, check that your `LD_LIBRARY_PATH` variable is pointing to the `/data/local/lib` directory.
+
+Any other errors/problems should be reported on the tracker or posted to the mailing list,
