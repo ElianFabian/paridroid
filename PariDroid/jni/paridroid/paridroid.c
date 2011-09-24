@@ -23,10 +23,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-#include <android/log.h>
 #include <pari.h>
+#include <setjmp.h>
+#include <android/log.h>
 
 #include "com_math_paridroid_PariDroidActivity.h"
+
+/** not sure what this does */
+jmp_buf env;
 
 /** number of bytes to initialize pari stack with */
 size_t paridroid_stack_size = 4000000;
@@ -40,6 +44,15 @@ ulong paridroid_maxprime = 500509;
 void paridroid_init()
 {
   pari_init(paridroid_stack_size, paridroid_maxprime);
+
+  entree functions_gp[]={
+    {"quit",0,(void*)gp_quit(),11,"vD0,L,","quit({status = 0}): quit, return to the system with exit status 'status'."},
+    {"help",0,(void*)help(),11,"vr","help(fun): display help for function fun"},
+    {NULL,0,NULL,0,NULL,NULL}};
+  
+  pari_add_module(functions_gp);
+  cb_pari_err_recover = gp_err_recover();
+  (void)setjmp(env);
 }
 
 /**
@@ -49,9 +62,40 @@ void paridroid_init()
  */
 char *paridroid_eval(const char *in) 
 {
-  GEN z = gp_read_str(in);
-  char *out = GENtostr(z);
-  return out;
+  GEN z;
+  z = gp_read_str(in);
+  if (z != gnil) 
+    {
+      if (in[strlen(in) -1]!=';') 
+	{
+	  char *out = GENtostr(z);
+	  return out;
+	}
+    } 
+  free(in); avma=top;
+  return "NULL";
+}
+
+/**
+ * Displays the help menu for a function.
+ * @param the name of the function.
+ */
+void help(const char *s)
+{
+  entree *ep = is_entry(s);
+  if (ep && ep->help)
+    pari_printf("%s\n",ep->help);
+  else
+    pari_printf("Function %s not found\n",s);
+}
+
+/**
+ * Allows paridroid to recover from error.
+ * @param identifier for error to recover from.
+ */
+void gp_err_recover(long numerr) 
+{ 
+  longjmp(env, numerr); 
 }
 
 /**
@@ -60,6 +104,15 @@ char *paridroid_eval(const char *in)
 void paridroid_close()
 {
   pari_close();
+}
+
+/**
+ * Allows paridroid to quit with a given exit code.
+ * @oaram the exit code.
+ */
+void gp_quit(long exitcode)
+{
+  exit(exitcode);
 }
 
 /* JNI WRAPPERS */
