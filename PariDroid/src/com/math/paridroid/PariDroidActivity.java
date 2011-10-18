@@ -27,9 +27,14 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.*;
+import android.view.View.OnKeyListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class PariDroidActivity extends Activity {
     
@@ -37,17 +42,16 @@ public class PariDroidActivity extends Activity {
     public static final String MSG_TAG = "PariDroid";
 
     /** Box where we can input GP commands. */
-    private EditText inputEdit;
+    public EditText inputEdit;
     
     /** Button we hit to send a string to GP. */
-    private Button enterButton;
+    public Button enterButton;
     
     /** View showing the output of our command. */
-    private TextView outputView;
+    public TextView outputView;
 
     /** Handler for processing IPC messages. */
-    Handler handler = new Handler();
-
+    public Handler handler = new Handler();
 
     /**
      * Try to load native libpari-gmp
@@ -82,20 +86,50 @@ public class PariDroidActivity extends Activity {
 	setContentView(R.layout.main);
 	paridroidInit();
 	
-	// Set up the input/output mechanisms.
+	/* Input box */
 	inputEdit = (EditText)findViewById(R.id.inputEdit);
+   	inputEdit.setOnKeyListener(onEnterKey);
+	
+	/* The enter button */
 	enterButton = (Button)findViewById(R.id.enterButton);
-	enterButton.setOnClickListener(onEnterButtonClick);
+	enterButton.setOnClickListener(onEnterButton);
+	    
+	/* Output box */
 	outputView = (TextView)findViewById(R.id.outputView);
-    }
-    
-    /** Set the behavior of the enter button. */
-    private OnClickListener onEnterButtonClick = new OnClickListener() {
-	    public void onClick(View v) {
-		String output = paridroidEval(inputEdit.getText().toString());
-		setOutputView(output);
+    }	    
+
+    public OnKeyListener onEnterKey = new OnKeyListener() {
+	    public boolean onKey(View v, int keyCode, KeyEvent event) {
+		if((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+		    String input = inputEdit.getText().toString();
+		    if (input != null) {
+			String eval = paridroidEval(input);
+			String output = input + "\n" + eval;
+			setOutputView(output);
+		    } else {
+			Log.d(MSG_TAG,"Empty input.");
+			setOutputView("0");
+		    }
+		    return true;
+		}
+		return false;
 	    }
 	};
+ 
+
+    public OnClickListener onEnterButton = new OnClickListener() {
+	    public void onClick(View v) {
+		String input = inputEdit.getText().toString();
+		if (input != null) {
+		    String eval = paridroidEval(input);
+		    String output = input + "\n" + eval;
+		    setOutputView(output);
+		} else {
+		    setOutputView("?");
+		}
+	    }
+	};
+
     
     /**
      * Writes data from a String to the output view.

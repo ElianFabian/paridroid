@@ -25,6 +25,14 @@ JNIEXPORT jstring JNICALL Java_com_math_paridroid_PariDroidActivity_paridroidEva
 
 /*
  * Class:     com_math_paridroid_PariDroidActivity
+ * Method:    paridroidHelp
+ * Signature: (Ljava/lang/String;)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_com_math_paridroid_PariDroidActivity_paridroidHelp
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     com_math_paridroid_PariDroidActivity
  * Method:    paridroidClose
  * Signature: ()V
  */
