@@ -24,38 +24,49 @@ package com.math.paridroid;
 import com.math.paridroid.R;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PariDroidActivity extends Activity {
+import java.util.ArrayList;
+
+public class PariDroidActivity extends Activity implements OnClickListener {
     
-    /** Tag for our logcat messages. */
     public static final String MSG_TAG = "PariDroid";
 
-    /** Box where we can input GP commands. */
-    public EditText inputEdit;
-    
-    /** Button we hit to send a string to GP. */
-    public Button enterButton;
-    
-    /** View showing the output of our command. */
-    public TextView outputView;
+    private EditText inputText;
 
-    /** Handler for processing IPC messages. */
-    public Handler handler = new Handler();
+    private EditText outputText;
+   
+    private Button enterButton;
 
-    /**
-     * Try to load native libpari-gmp
-     */
+    private Button clearButton;
+
+    private ListView historyList;
+
+    private OutputStringArrayAdapter outputArrayAdapter;
+
+    private ArrayList<String> outputArrayList = new ArrayList<String>();
+    
+    private ArrayList<String> inputArrayList = new ArrayList<String>();
+
+    private int historyIndex = -1;
+
+    private String toggleHistoryEntry;
+        
     static {
 	try {
 	    System.loadLibrary("pari-gmp");
@@ -64,9 +75,6 @@ public class PariDroidActivity extends Activity {
 	}
     }
 
-    /**
-     * Try to load native libparidroid.
-     */
     static {
 	try {
 	    System.loadLibrary("paridroid");
@@ -75,87 +83,91 @@ public class PariDroidActivity extends Activity {
 	}
     }
         
-    /**
-     * Initializes the Activity.
-     * @param savedInstanceState: saved state we can load.
-     * @see android.app.Activity
-     * @overide
-     */
     public void onCreate(Bundle savedInstanceState) {
+	Log.d(MSG_TAG, "Call to onCreate()");
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.main);
 	paridroidInit();
-	
-	/* Input box */
-	inputEdit = (EditText)findViewById(R.id.inputEdit);
-   	inputEdit.setOnKeyListener(onEnterKey);
-	
-	/* The enter button */
+	initialize();
+    }
+
+    private void initialize() {
+	setTitle(getString(R.string.app_name));
+
+	inputText = (EditText)findViewById(R.id.inputText);
+
+	outputText = (EditText)findViewById(R.id.outputText);
+
 	enterButton = (Button)findViewById(R.id.enterButton);
-	enterButton.setOnClickListener(onEnterButton);
-	    
-	/* Output box */
-	outputView = (TextView)findViewById(R.id.outputView);
-    }	    
+	enterButton.setOnClickListener(this);
 
-    public OnKeyListener onEnterKey = new OnKeyListener() {
-	    public boolean onKey(View v, int keyCode, KeyEvent event) {
-		if((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-		    String input = inputEdit.getText().toString();
-		    if (input != null) {
-			String eval = paridroidEval(input);
-			String output = input + "\n" + eval;
+	clearButton = (Button)findViewById(R.id.clearButton);
+	clearButton.setOnClickListener(this);
+
+	historyList = (ListView)findViewById(R.id.historyList);
+	outputArrayAdapter = new OutputStringArrayAdapter(this,outputArrayList);
+	historyList.setAdapter(outputArrayAdapter);
+
+	String example = "factor(38975)";
+	inputText.setText(example);
+
+	inputText.setOnKeyListener(new OnKeyListener() {
+		public boolean onKey(View v, int keyCode, KeyEvent event) {
+		    if((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+			String output = evaluate(inputText.getText().toString());
 			setOutputView(output);
-		    } else {
-			Log.d(MSG_TAG,"Empty input.");
-			setOutputView("0");
+			return true;
 		    }
-		    return true;
+		    return false;
 		}
-		return false;
-	    }
-	};
- 
-
-    public OnClickListener onEnterButton = new OnClickListener() {
-	    public void onClick(View v) {
-		String input = inputEdit.getText().toString();
-		if (input != null) {
-		    String eval = paridroidEval(input);
-		    String output = input + "\n" + eval;
-		    setOutputView(output);
-		} else {
-		    setOutputView("?");
-		}
-	    }
-	};
-
-    
-    /**
-     * Writes data from a String to the output view.
-     * @param str: The string to write.
-     */
-    private void setOutputView(final String str) {
-	Runnable proc = new Runnable() {
-		public void run() {
-		    outputView.setText(str);
-		}
-	    };
-	handler.post(proc);
-    }
-    
-    /**
-     * Displays a Toast message to inform the user of something.
-     * @param message: the message for the user.
-     */
-	public void displayToastMessage(String message) {
-	Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+	    });
     }
 
+    private String evaluate(String cmd) {
 
-    /**
-     * Cleanup before exiting.
-     */
+	inputArrayList.add(cmd);
+	if (cmd == null) {
+	    return "NULL";
+	} else {
+	    String result = paridroidEval(cmd);
+	    outputArrayList.add(result);
+	    return result;
+	}
+    }
+    
+    private void setOutputView(String result) {
+	String last = outputText.getText().toString();
+	outputArrayList.add(0,last);
+	outputArrayAdapter.notifyDataSetChanged();
+	inputText.setText("");
+	outputText.setText(result);
+    }
+
+    private void clearOutputView() {
+	String last = outputText.getText().toString();
+	outputArrayList.add(0,last);
+	outputArrayAdapter.notifyDataSetChanged();
+	inputText.setText("");
+	outputText.setText("");
+    }
+
+    public void onClick(View v) {
+	String in = inputText.getText().toString();
+	String out;
+
+	switch (v.getId()) {
+	case R.id.enterButton:
+	    out = evaluate(in);
+	    setOutputView(out);
+	    break;
+	case R.id.clearButton:
+	    clearOutputView();
+	    break;
+	default:
+	    break;
+	}
+    }
+    
     public void onDestroy() {
 	paridroidClose();
     }
@@ -183,4 +195,23 @@ public class PariDroidActivity extends Activity {
      * @see libparidroid.
      */
     public native void paridroidClose();
+
+    /* Nested Classes */
+
+    /**
+     * Custom String ArrayAdapter class that allows us to manipulate the row
+     * colors etc.
+     */
+    protected class OutputStringArrayAdapter extends ArrayAdapter<String> {
+	
+	OutputStringArrayAdapter(Context context, ArrayList<String> stringArrayList) {
+	    super(context, android.R.layout.simple_list_item_1, stringArrayList);
+	}
+	
+	public View getView(int position, View convertView, ViewGroup parent) {
+	    TextView txt = new TextView(this.getContext());
+	    txt.setText(this.getItem(position));
+	    return txt;
+	}
+    }
 }
