@@ -48,8 +48,6 @@ public class PariDroidActivity extends Activity implements OnClickListener {
     public static final String MSG_TAG = "PariDroid";
 
     private EditText inputText;
-
-    private EditText outputText;
    
     private Button enterButton;
 
@@ -62,10 +60,6 @@ public class PariDroidActivity extends Activity implements OnClickListener {
     private ArrayList<String> outputArrayList = new ArrayList<String>();
     
     private ArrayList<String> inputArrayList = new ArrayList<String>();
-
-    private int historyIndex = -1;
-
-    private String toggleHistoryEntry;
         
     static {
 	try {
@@ -96,8 +90,6 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 
 	inputText = (EditText)findViewById(R.id.inputText);
 
-	outputText = (EditText)findViewById(R.id.outputText);
-
 	enterButton = (Button)findViewById(R.id.enterButton);
 	enterButton.setOnClickListener(this);
 
@@ -114,8 +106,8 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 	inputText.setOnKeyListener(new OnKeyListener() {
 		public boolean onKey(View v, int keyCode, KeyEvent event) {
 		    if((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-			String output = evaluate(inputText.getText().toString());
-			setOutputView(output);
+			evaluate(inputText.getText().toString());
+			clear();
 			return true;
 		    }
 		    return false;
@@ -123,45 +115,27 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 	    });
     }
 
-    private String evaluate(String cmd) {
-
+    private void evaluate(String cmd) {
 	inputArrayList.add(cmd);
-	if (cmd == null) {
-	    return "NULL";
-	} else {
-	    String result = paridroidEval(cmd);
-	    outputArrayList.add(result);
-	    return result;
-	}
+	String result = paridroidEval(cmd);
+	outputArrayList.add(0,"[i " + outputArrayList.size() + "]: " + cmd + "\n\n" + result);
+	outputArrayAdapter.notifyDataSetChanged();
     }
     
-    private void setOutputView(String result) {
-	String last = outputText.getText().toString();
-	outputArrayList.add(0,last);
-	outputArrayAdapter.notifyDataSetChanged();
+    private void clear() {
 	inputText.setText("");
-	outputText.setText(result);
-    }
-
-    private void clearOutputView() {
-	String last = outputText.getText().toString();
-	outputArrayList.add(0,last);
-	outputArrayAdapter.notifyDataSetChanged();
-	inputText.setText("");
-	outputText.setText("");
     }
 
     public void onClick(View v) {
 	String in = inputText.getText().toString();
-	String out;
 
 	switch (v.getId()) {
 	case R.id.enterButton:
-	    out = evaluate(in);
-	    setOutputView(out);
+	    evaluate(in);
+	    clear();
 	    break;
 	case R.id.clearButton:
-	    clearOutputView();
+	    clear();
 	    break;
 	default:
 	    break;
