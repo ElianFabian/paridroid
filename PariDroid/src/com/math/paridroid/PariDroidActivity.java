@@ -42,6 +42,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.io.*;
 
 public class PariDroidActivity extends Activity implements OnClickListener {
     
@@ -53,6 +54,10 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 
     private Button clearButton;
 
+    private Button nextButton;
+
+    private Button prevButton;
+
     private ListView historyList;
 
     private OutputStringArrayAdapter outputArrayAdapter;
@@ -60,28 +65,15 @@ public class PariDroidActivity extends Activity implements OnClickListener {
     private ArrayList<String> outputArrayList = new ArrayList<String>();
     
     private ArrayList<String> inputArrayList = new ArrayList<String>();
-        
-    static {
-	try {
-	    System.loadLibrary("pari-gmp");
-	} catch (Exception ex) {
-	    Log.e(MSG_TAG, "Error: " + ex.getMessage());
-	}
-    }
-
-    static {
-	try {
-	    System.loadLibrary("paridroid");
-	} catch (Exception ex) {
-	    Log.e(MSG_TAG, "Error: " + ex.getMessage());
-	}
-    }
+    
+    private int count = 0;
+    
         
     public void onCreate(Bundle savedInstanceState) {
 	Log.d(MSG_TAG, "Call to onCreate()");
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.main);
-	paridroidInit();
+	PariNative.paridroidInit();
 	initialize();
     }
 
@@ -96,6 +88,12 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 	clearButton = (Button)findViewById(R.id.clearButton);
 	clearButton.setOnClickListener(this);
 
+	nextButton = (Button)findViewById(R.id.nextButton);
+	nextButton.setOnClickListener(this);
+
+	prevButton = (Button)findViewById(R.id.prevButton);
+	prevButton.setOnClickListener(this);
+
 	historyList = (ListView)findViewById(R.id.historyList);
 	outputArrayAdapter = new OutputStringArrayAdapter(this,outputArrayList);
 	historyList.setAdapter(outputArrayAdapter);
@@ -106,8 +104,9 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 	inputText.setOnKeyListener(new OnKeyListener() {
 		public boolean onKey(View v, int keyCode, KeyEvent event) {
 		    if((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-			evaluate(inputText.getText().toString());
-			clear();
+			StringBuilder sb = new StringBuilder(inputText.getText());
+			String input = sb.toString();
+			evaluate(input); clear();
 			return true;
 		    }
 		    return false;
@@ -117,7 +116,8 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 
     private void evaluate(String cmd) {
 	inputArrayList.add(cmd);
-	String result = paridroidEval(cmd);
+	String result = PariNative.paridroidEval(cmd);
+
 	outputArrayList.add(0,"[i " + outputArrayList.size() + "]: " + cmd + "\n\n" + result);
 	outputArrayAdapter.notifyDataSetChanged();
     }
@@ -128,6 +128,7 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 
     public void onClick(View v) {
 	String in = inputText.getText().toString();
+	int histSize = inputArrayList.size();
 
 	switch (v.getId()) {
 	case R.id.enterButton:
@@ -137,41 +138,25 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 	case R.id.clearButton:
 	    clear();
 	    break;
+	case R.id.prevButton:
+	    count++;
+	    Log.d(MSG_TAG,"PrevButton: Index = " + count);
+	    break;
+	case R.id.nextButton:
+	    Log.d(MSG_TAG,"nextButton: Index = " + count);
+	    count--;;
+	    break;
 	default:
 	    break;
 	}
     }
     
     public void onDestroy() {
-	paridroidClose();
+	super.onDestroy();
+	//	PariNative.paridroidClose();
     }
 
-    /* JNI CALLBACK DECLARATIONS */
-
-    /**
-     * Declaration of JNI callback to paridroid_init().
-     * @see libparidroid
-     */
-    public native void paridroidInit();
-
-
-    /**
-     * Declaration of JNI callback to paridroid_eval().
-     * @param cmd: The GP command to run.
-     * @return Output from GP interpreter.
-     * @see libparidroid
-     */
-    public native String paridroidEval(String cmd);
-
-
-    /**
-     * Declaration of JNI callback to paridroid_close().
-     * @see libparidroid.
-     */
-    public native void paridroidClose();
-
     /* Nested Classes */
-
     /**
      * Custom String ArrayAdapter class that allows us to manipulate the row
      * colors etc.

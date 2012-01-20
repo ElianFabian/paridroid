@@ -24,7 +24,7 @@ LOCAL_C_INCLUDES := pari/include
 
 LOCAL_SRC_FILES := \
 	paridroid/paridroid.c \
-	paridroid/com_math_paridroid_PariDroidActivity.c
+	paridroid/com_math_paridroid_PariNative.c
 
 LOCAL_SHARED_LIBRARIES := libpari-gmp
 

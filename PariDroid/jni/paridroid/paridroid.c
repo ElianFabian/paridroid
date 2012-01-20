@@ -20,10 +20,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <pari.h>
 
-#include "com_math_paridroid_PariDroidActivity.h"
+#include "com_math_paridroid_PariNative.h"
 #include "paridroid.h"
 
 /** number of bytes to initialize pari stack with */
@@ -32,25 +33,38 @@ size_t paridroid_stack_size = 4000000;
 /** maximum value for the prime table */
 ulong paridroid_maxprime = 500509;
 
+/** path to file for PariOUT */
+//const char *paridroid_out = "/data/data/com.math.paridroid/pariOUT.txt";
 
 void paridroid_init()
 {
   pari_init(paridroid_stack_size, paridroid_maxprime);
+  //  switchout(paridroid_out);
 }
-
 
 char *paridroid_eval(const char *in) 
 {
+
+  /* 
+   * NOTE: CHECK FOR SPECIAL FUNCTIONS HERE AND CREATE WRAPPERS FOR THEM:
+   * (1) for() -> forpari(GEN a, GEN b, GEN code)
+   * (2) while() -> whilepari(GEN a, GEN b)
+   * (3) until() -> untilpari(GEN a, GEN b)
+   * ... 
+   * [/src/language/sumiter.c]
+   */
+
   GEN z;
   z = gp_read_str(in);
   if (z != gnil) 
     {
-      if (in[strlen(in) -1]!=';') 
+      if (in[strlen(in)-1]!=';') 
 	{
 	  char *out = GENtostr(z);
 	  return out;
 	}
     }
+  free(in); avma=top;
 }
 
 void paridroid_close()

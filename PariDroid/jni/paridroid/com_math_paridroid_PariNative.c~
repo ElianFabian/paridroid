@@ -22,34 +22,31 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <jni.h>
 
-#include "com_math_paridroid_PariDroidActivity.h"
+#include "com_math_paridroid_PariNative.h"
 #include "paridroid.h"
 
 JNIEXPORT void JNICALL
-Java_com_math_paridroid_PariDroidActivity_paridroidInit(JNIEnv *jenv, jobject obj)
+Java_com_math_paridroid_PariNative_paridroidInit(JNIEnv *jenv, jobject obj)
 {
   paridroid_init();
 }
 
 JNIEXPORT jstring JNICALL
-Java_com_math_paridroid_PariDroidActivity_paridroidEval(JNIEnv *jenv, jobject obj, jstring prompt)
+Java_com_math_paridroid_PariNative_paridroidEval(JNIEnv *jenv, jobject obj, jstring prompt)
 {
   // Turn the jstring into a C string.
   const char *cmd = (*jenv)->GetStringUTFChars(jenv, prompt, 0);
-
   // Send the string to GP for evaluation and get the output.
   char *ret = paridroid_eval(cmd);
-  
-  // We only need the return value, so we tell the JVM to free everything else from memory.
   (*jenv)->ReleaseStringUTFChars(jenv, prompt, cmd);
-  
   // We encode the C string into a jstring and return it.
   return (*jenv)->NewStringUTF(jenv,ret);
 }
 
 JNIEXPORT void JNICALL
-Java_com_math_paridroid_PariDroidActivity_paridroidClose(JNIEnv *jenv, jobject obj)
+Java_com_math_paridroid_PariNative_paridroidClose(JNIEnv *jenv, jobject obj)
 {
   paridroid_close();
 }

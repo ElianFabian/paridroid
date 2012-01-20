@@ -34,6 +34,18 @@
 	  android:layout_height="wrap_content"
 	  android:layout_weight="1.0"
 	  android:text="Clear"/>
+      <Button 
+	  android:id="@+id/nextButton"
+	  android:layout_width="0dip"
+	  android:layout_height="wrap_content"
+	  android:layout_weight="1.0"
+	  android:text="Next"/>
+      <Button
+	  android:id="@+id/prevButton"
+	  android:layout_width="0dip"
+	  android:layout_height="wrap_content"
+	  android:layout_weight="1.0"
+	  android:text="Prev"/>
     </LinearLayout>
     <ListView
 	android:id="@+id/historyList"
