@@ -1,0 +1,49 @@
+#summary A to-do list for hacking sessions
+#labels Phase-Design,Phase-Support,Phase-Requirements,Featured
+
+= Fix I/O Bugs =
+
+We need to write functions and define an Android-specific `PariOUT` structure, given by the prototype:
+
+{{{
+typedef struct PariOUT {
+void(*putch)(char);
+void(*puts)(const char*);
+void(*flush)(void);
+} PariOUT;
+}}}
+
+The question is how to extend `putch()`,`puts()`, and `flush()` in a way that actually works for passing along output to PariDroid.
+
+= Implement error handling =
+
+PariDroid crashes when given input strings that are badly formed (e.g., contain a typo) and does not know how to access/display error messages from `libpari`.
+
+We want to recover from trivial errors (such as typos) and display useful error messages.
+
+= Access to command and output history =
+
+We want to be able to scroll through command input history and also need to implement a basic kind of `gp_add_history(GEN z)` function.
+
+This will compensate for lacking `libreadline` and `libhistory`.
+
+= Auto-complete PARI functions =
+
+Load a hash table of `(Index,FunctionPrototype)` pairs as a "dictionary" and suggest input when given some UI event (e.g., tap-and-hold on input text box).
+
+Basically we want to load a dictionary of `GP` functions and auto-complete/correct input for the user (like when sending an SMS message).
+
+= Ability to load and run GP scripts =
+
+Self-explanatory and should be straight forward.
+
+It would also be nice to run `gp2c` on scripts on Android, though this may be more difficult (depending on portability of `gp2c`).
+
+= Save/load session to file =
+
+This is easy as long as input does not contain function closures.
+
+= Improve UI usability =
+Intead of loading the default virtual keyboard, we should load a custom "calculator-like" keyboard (to make numbers,parenthesis,etc more accessible).
+
+It would also be nice to write GUI modules that facilitate GP input, for instance draw a window with `NxM` input boxes to input each element for an `NxM` matrix, instead of typing out declaration of a matrix in GP syntax.
