@@ -1,7 +1,7 @@
 #!/bin/bash
 
-NDK_VERSION=r6b
-NDK=/opt/android-ndk-$NDK_VERSION
+NDK_VERSION=r7
+NDK=~/opt/android/android-ndk-$NDK_VERSION
 
 TARGET_PLATFORM=android-8
 TOOLCHAIN_INSTALL_DIR=/tmp/android-toolchain

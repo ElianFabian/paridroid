@@ -23,54 +23,6 @@ JNIEXPORT void JNICALL Java_com_math_paridroid_PariNative_paridroidInit
 JNIEXPORT jstring JNICALL Java_com_math_paridroid_PariNative_paridroidEval
   (JNIEnv *, jclass, jstring);
 
-/*
- * Class:     com_math_paridroid_PariNative
- * Method:    getNextInput
- * Signature: ()Ljava/lang/String;
- */
-JNIEXPORT jstring JNICALL Java_com_math_paridroid_PariNative_getNextInput
-  (JNIEnv *, jclass);
-
-/*
- * Class:     com_math_paridroid_PariNative
- * Method:    getNextOutput
- * Signature: ()Ljava/lang/String;
- */
-JNIEXPORT jstring JNICALL Java_com_math_paridroid_PariNative_getNextOutput
-  (JNIEnv *, jclass);
-
-/*
- * Class:     com_math_paridroid_PariNative
- * Method:    getPreviousInput
- * Signature: ()Ljava/lang/String;
- */
-JNIEXPORT jstring JNICALL Java_com_math_paridroid_PariNative_getPreviousInput
-  (JNIEnv *, jclass);
-
-/*
- * Class:     com_math_paridroid_PariNative
- * Method:    getPreviousOutput
- * Signature: ()Ljava/lang/String;
- */
-JNIEXPORT jstring JNICALL Java_com_math_paridroid_PariNative_getPreviousOutput
-  (JNIEnv *, jclass);
-
-/*
- * Class:     com_math_paridroid_PariNative
- * Method:    saveHistory
- * Signature: (Ljava/lang/String;)V
- */
-JNIEXPORT void JNICALL Java_com_math_paridroid_PariNative_saveHistory
-  (JNIEnv *, jclass, jstring);
-
-/*
- * Class:     com_math_paridroid_PariNative
- * Method:    paridroidClose
- * Signature: ()V
- */
-JNIEXPORT void JNICALL Java_com_math_paridroid_PariNative_paridroidClose
-  (JNIEnv *, jclass);
-
 #ifdef __cplusplus
 }
 #endif

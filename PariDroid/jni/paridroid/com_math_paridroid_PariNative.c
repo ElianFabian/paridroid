@@ -30,12 +30,15 @@
 JNIEXPORT void JNICALL
 Java_com_math_paridroid_PariNative_paridroidInit(JNIEnv *jenv, jobject obj)
 {
+  LOGD("Call to PariNative_paridroidInit");
   paridroid_init();
 }
 
 JNIEXPORT jstring JNICALL
 Java_com_math_paridroid_PariNative_paridroidEval(JNIEnv *jenv, jobject obj, jstring input)
 {
+  LOGD("Call to PariNative_paridroidEval");
+
   const jbyte *cmd;
   char *output;
 
@@ -44,20 +47,19 @@ Java_com_math_paridroid_PariNative_paridroidEval(JNIEnv *jenv, jobject obj, jstr
 
   // Check if JVM has already thrown out of memory error.
   if (cmd == NULL) {
+    LOGW("Returning NULL from Native:paridroidEval");
     return NULL;
   }
   
-  // Allocate space for the resulting native string.
-  // NOTE: MAYBE 127 IS NOT ENOUGH SPACE
-  output= malloc(512);
-  // Send the input string to GP for evaluation and get the output.
-  sprintf(output,"%s",paridroid_eval(cmd));
+  // Evaluate the command.
+  output = paridroid_eval(cmd);
+
   // Free the Java objects we no longer need.
   (*jenv)->ReleaseStringUTFChars(jenv, input, cmd);
+
   // We encode the native string into a jstring and return it.
   jstring result = (*jenv)->NewStringUTF(jenv,output);
-  // Now we can free the native output string.
-  free(output);
+  LOGD("returning result from Native:paridroidEval");
 
   return result;
 }
@@ -65,5 +67,6 @@ Java_com_math_paridroid_PariNative_paridroidEval(JNIEnv *jenv, jobject obj, jstr
 JNIEXPORT void JNICALL
 Java_com_math_paridroid_PariNative_paridroidClose(JNIEnv *jenv, jobject obj)
 {
+  LOGD("call to PariNative_paridroidClose");
   paridroid_close();
 }

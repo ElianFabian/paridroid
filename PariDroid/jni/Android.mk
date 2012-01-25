@@ -22,6 +22,10 @@ LOCAL_MODULE := paridroid
 
 LOCAL_C_INCLUDES := pari/include
 
+LOCAL_LDLIBS := -llog
+
+LOCAL_CFLAGS := -g
+
 LOCAL_SRC_FILES := \
 	paridroid/paridroid.c \
 	paridroid/com_math_paridroid_PariNative.c

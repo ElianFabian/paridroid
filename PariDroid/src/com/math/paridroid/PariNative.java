@@ -39,38 +39,8 @@ class PariNative {
     public static native String paridroidEval(String cmd);
 
     /**
-     * Gets the next input from history.
-     * @return the next input String in history.
-     */
-    public static native String getNextInput();
-
-    /**
-     * Gets the next output from history.
-     * @return the next output String in history.
-     */
-    public static native String getNextOutput();
-
-    /**
-     * Gets the previous input from history.
-     * @return the previous input String in history.
-     */
-    public static native String getPreviousInput();
-
-    /**
-     * Gets the next output from history.
-     * @return the previous output String in history.
-     */
-    public static native String getPreviousOutput();
-
-    /**
-     * Writes the current input/output history to a file.
-     * @param name of the file.
-     */
-    public static native void saveHistory(String fileName);
-
-    /**
      * Declaration of JNI callback to paridroid_close().
      * @see libparidroid.
      */
-    public static native void paridroidClose();
+    //    public static native void paridroidClose();
 }

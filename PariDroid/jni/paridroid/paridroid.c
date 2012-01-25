@@ -23,6 +23,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pari.h>
+#include <setjmp.h>
+#include <strings.h>
 
 #include "com_math_paridroid_PariNative.h"
 #include "paridroid.h"
@@ -33,27 +35,31 @@ size_t paridroid_stack_size = 4000000;
 /** maximum value for the prime table */
 ulong paridroid_maxprime = 500509;
 
-/** path to file for PariOUT */
-//const char *paridroid_out = "/data/data/com.math.paridroid/pariOUT.txt";
+/** Error handling */
+jmp_buf env;
+
+void gp_err_recover(long numerr) 
+{
+  longjmp(env, numerr); 
+}
 
 void paridroid_init()
 {
   pari_init(paridroid_stack_size, paridroid_maxprime);
-  //  switchout(paridroid_out);
+  cb_pari_err_recover = gp_err_recover;
+  LOGD("Call to paridroid_init");
 }
 
 char *paridroid_eval(const char *in) 
 {
 
-  /* 
-   * NOTE: CHECK FOR SPECIAL FUNCTIONS HERE AND CREATE WRAPPERS FOR THEM:
-   * (1) for() -> forpari(GEN a, GEN b, GEN code)
-   * (2) while() -> whilepari(GEN a, GEN b)
-   * (3) until() -> untilpari(GEN a, GEN b)
-   * ... 
-   * [/src/language/sumiter.c]
-   */
+  LOGD("Call to paridroid_eval");
 
+  if(setjmp(env) != 0) {
+    LOGE("jetjmp different from zero");
+    return "";
+  }
+  
   GEN z;
   z = gp_read_str(in);
   if (z != gnil) 
@@ -61,13 +67,17 @@ char *paridroid_eval(const char *in)
       if (in[strlen(in)-1]!=';') 
 	{
 	  char *out = GENtostr(z);
+	  LOGD("returning output from libparidroid");
 	  return out;
 	}
     }
-  free(in); avma=top;
+  avma=top;
+  LOGW("Returning null from libparidroid");
+  return "";
 }
 
 void paridroid_close()
 {
+  LOGD("Call to paridroid_close");
   pari_close();
 }

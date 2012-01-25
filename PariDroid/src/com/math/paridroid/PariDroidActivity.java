@@ -70,8 +70,8 @@ public class PariDroidActivity extends Activity implements OnClickListener {
     
         
     public void onCreate(Bundle savedInstanceState) {
-	Log.d(MSG_TAG, "Call to onCreate()");
 	super.onCreate(savedInstanceState);
+	Log.d(MSG_TAG, "Call to onCreate()");
 	setContentView(R.layout.main);
 	PariNative.paridroidInit();
 	initialize();
