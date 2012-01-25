@@ -57,12 +57,18 @@ char *paridroid_eval(const char *in)
 
   if(setjmp(env) != 0) {
     LOGE("jetjmp different from zero");
-    return pari_err2str(global_err_data);
+    return "";
   }
   
-  GEN z;
-  z = gp_read_str(in);
-    if (z != gnil) 
+  volatile GEN z;
+  CATCH(CATCH_ALL)
+  {
+    return pari_err2str(global_err_data);
+  } TRY {
+    z = gp_read_str(in);
+  } ENDCATCH;
+
+  if (z != gnil) 
     {
       pari_add_hist(z);
       LOGD("added element to output history");
