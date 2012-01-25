@@ -1,4 +1,4 @@
-/* $Id: paripriv.h 13227 2011-06-19 22:27:42Z kb $
+/* $Id$
 
 Copyright (C) 2004  The PARI group.
 
@@ -49,6 +49,8 @@ GEN resetloop(GEN a, GEN b);
 GEN setloop(GEN a);
 
 /* parser */
+GEN  iferrpari(GEN a, GEN b);
+GEN  iferrnamepari(const char *s, GEN a, GEN b);
 void forpari(GEN a, GEN b, GEN node);
 void untilpari(GEN a, GEN b);
 void whilepari(GEN a, GEN b);
@@ -119,9 +121,7 @@ ulong xxgcduu(ulong d, ulong d1, int f, ulong* u, ulong* u1, ulong* v, ulong* v1
 GEN   divgunu(GEN x, ulong i);
 GEN   divrunu(GEN x, ulong i);
 GEN   logagmcx(GEN q, long prec);
-GEN   muliispec(GEN x, GEN y, long nx, long ny);
 GEN   red_montgomery(GEN T, GEN N, ulong inv);
-GEN   sqrispec(GEN x, long nx);
 GEN   subrex01(GEN x);
 GEN   modr_safe(GEN x, GEN y);
 ulong *convi(GEN x, long *l);
@@ -153,6 +153,7 @@ GEN extendedgcd(GEN A);
 
 /* miscellaneous linear algebra */
 GEN  imagecomplspec(GEN x, long *nlze);
+GEN  ZM_imagecomplspec(GEN x, long *nlze);
 INLINE void rowselect_p(GEN A, GEN B, GEN p, long init);
 
 GEN  dim1proj(GEN prh);
@@ -257,7 +258,8 @@ void* get_stack(double fraction, long min);
 void  init_graph(void);
 void  free_graph(void);
 void  initout(int initerr);
-void  init80col(void);
+void  resetout(int initerr);
+void  init_linewrap(long w);
 int   pari_kernel_init(void);
 void  print_functions_hash(const char *s);
 void  print_all_user_fun(int member);
@@ -324,7 +326,7 @@ typedef struct {
   gp_pp *pp;
   gp_path *path;
   pariout_t *fmt;
-  ulong lim_lines, flags;
+  ulong lim_lines, flags, linewrap;
   int echo, breakloop, recover, use_readline; /* GP-specific */
   int secure, simplify, strictmatch, chrono; /* libpari ? */
   pari_timer *T;
@@ -434,12 +436,12 @@ GEN     redtausl2(GEN t, GEN *U);
 
 /* alglin1.c */
 typedef long (*pivot_fun)(GEN,GEN,long,GEN);
+GEN ZM_pivots(GEN x0, long *rr);
 GEN RgM_pivots(GEN x0, GEN data, long *rr, pivot_fun pivot);
 INLINE void vecselect_p(GEN A, GEN B, GEN p, long init, long lB);
 
 /* arith1.c */
 
-GEN     bestappr_mod(GEN x, GEN A, GEN B);
 int     is_gener_Fp(GEN x, GEN p, GEN p_1, GEN L);
 int     is_gener_Fl(ulong x, ulong p, ulong p_1, GEN L);
 
@@ -482,8 +484,6 @@ GEN     checkrnfeq(GEN x);
 /* bibli1.c */
 
 GEN     plindep(GEN x);
-GEN     pslq(GEN x);
-GEN     pslqL2(GEN x);
 
 /* buch1.c */
 
@@ -492,7 +492,8 @@ GEN     qfbforms(GEN D);
 
 /* buch2.c */
 
-typedef struct GRHcheck_t { double cD, cN; long checkok; } GRHcheck_t;
+typedef struct GRHprime_t { double logp; GEN dec; } GRHprime_t;
+typedef struct GRHcheck_t { double cD, cN; GRHprime_t *primes; long nprimes, maxprimes; } GRHcheck_t;
 void    init_GRHcheck(GRHcheck_t *S, long N, long R1, double LOGD);
 int     GRHok(GRHcheck_t *S, double L, double SA, double SB);
 GEN     check_and_build_matal(GEN bnf);
@@ -506,10 +507,6 @@ GEN     red_mod_units(GEN col, GEN z);
 GEN     minkowski_bound(GEN D, long N, long r2, long prec);
 int     subgroup_conductor_ok(GEN H, GEN L);
 GEN     subgrouplist_cond_sub(GEN bnr, GEN C, GEN bound);
-
-/* elliptic.c */
-
-GEN     weipell0(GEN e, long prec, long PREC);
 
 /* ellsea.c */
 
@@ -573,6 +570,7 @@ GEN     squfof(GEN n);
 long    BPSW_psp_nosmalldiv(GEN N);
 int     Fl_MR_Jaeschke(ulong n, long k);
 int     MR_Jaeschke(GEN n, long k);
+long    isanypower_nosmalldiv(GEN N, GEN *px);
 int     uisprime_nosmalldiv(ulong n);
 
 /* init.c */
@@ -599,6 +597,7 @@ GEN     perm_to_GAP(GEN p);
 GEN     F2x_Berlekamp_ker(GEN u);
 GEN     Flx_Berlekamp_ker(GEN u, ulong p);
 GEN     FpX_Berlekamp_ker(GEN u, GEN p);
+GEN     Flx_factcantor(GEN f, ulong p, long flag);
 GEN     FpX_factcantor(GEN f, GEN pp, long flag);
 GEN     FqX_Berlekamp_ker(GEN u, GEN T, GEN q, GEN p);
 GEN     FqX_rand(long d1, long v, GEN T, GEN p);
@@ -606,7 +605,6 @@ long    FqX_split_Berlekamp(GEN *t, GEN q, GEN T, GEN p);
 GEN     Zp_appr(GEN f, GEN a);
 int     cmp_padic(GEN x, GEN y);
 GEN     factcantor0(GEN f, GEN pp, long flag);
-GEN     trivfact(void);
 
 /* polarit2.c */
 

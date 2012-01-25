@@ -1,4 +1,4 @@
-/* $Id: paricast.h 10607 2008-07-25 19:09:36Z kb $
+/* $Id$
 
 Copyright (C) 2000  The PARI group.
 

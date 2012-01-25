@@ -1,4 +1,4 @@
-/* $Id: parigen.h 11744 2009-06-03 12:39:15Z bill $
+/* $Id$
 
 Copyright (C) 2000  The PARI group.
 
@@ -38,6 +38,8 @@ typedef unsigned long pari_ulong;
 #define DEFAULTPREC    (2 + (long)(8/sizeof(long)))
 #define MEDDEFAULTPREC (2 + (long)(16/sizeof(long)))
 #define BIGDEFAULTPREC (2 + (long)(24/sizeof(long)))
+#define LOWDEFAULTPREC  3
+#define EXTRAPRECWORD   1
 #define HIGHBIT (1UL << (BITS_IN_LONG-1))
 #define BITS_IN_HALFULONG (BITS_IN_LONG>>1)
 
@@ -106,7 +108,7 @@ typedef unsigned long pari_ulong;
 
 #define lg(x)         ((long)(((ulong*)(x))[0] & LGBITS))
 #define setlg(x,s)    (((ulong*)(x))[0]=\
-                        (((ulong*)(x))[0]&(~LGBITS)) | evallg(s))
+                      (((ulong*)(x))[0]&(~LGBITS)) | evallg(s))
 
 #define signe(x)      ((((long*)(x))[1]) >> SIGNSHIFT)
 #define setsigne(x,s) (((ulong*)(x))[1]=\
@@ -115,6 +117,11 @@ typedef unsigned long pari_ulong;
 #define lgefint(x)      ((long)(((ulong*)(x))[1] & LGBITS))
 #define setlgefint(x,s) (((ulong*)(x))[1]=\
                           (((ulong*)(x))[1]&(~LGBITS)) | (ulong)evallgefint(s))
+
+#define realprec(x)   ((long)(((ulong*)(x))[0] & LGBITS))
+#define setprec(x,s)  (((ulong*)(x))[0]=\
+                      (((ulong*)(x))[0]&(~LGBITS)) | evallg(s))
+#define incrprec(x)   ((x)++)
 
 #define expo(x)       ((long) ((((ulong*)(x))[1] & EXPOBITS) - HIGHEXPOBIT))
 #define setexpo(x,s)  (((ulong*)(x))[1]=\
@@ -161,5 +168,6 @@ enum {
   t_LIST   =  20,
   t_STR    =  21,
   t_VECSMALL= 22,
-  t_CLOSURE = 23
+  t_CLOSURE = 23,
+  t_ERROR   = 24
 };

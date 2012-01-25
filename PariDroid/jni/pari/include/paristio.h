@@ -1,4 +1,4 @@
-/* $Id: paristio.h 12934 2011-02-17 23:34:41Z bill $
+/* $Id$
 
 Copyright (C) 2000  The PARI group.
 
@@ -95,11 +95,11 @@ struct pari_evalstate
 struct gp_context
 {
   long listloc;
-  long err_catch;
   struct pari_evalstate eval;
   struct pari_parsestate parse;
   pariFILE *file;
-  void *err_data;
+  jmp_buf *iferr_env;
+  GEN err_data;
 };
 
 typedef struct PariOUT {
@@ -153,7 +153,6 @@ extern THREAD pari_sp avma, bot, top;
 #define DISABLE_MEMUSED (size_t)-1
 extern THREAD size_t memused;
 extern byteptr diffptr;
-extern const char *errmessage[];
 extern char *current_psfile, *pari_datadir;
 
 #define gcopyifstack(x,y)  STMT_START {pari_sp _t=(pari_sp)(x); \

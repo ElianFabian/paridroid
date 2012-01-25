@@ -10,7 +10,7 @@ TOOLCHAIN_INSTALL_DIR=/tmp/android-toolchain
 
 $NDK/build/tools/make-standalone-toolchain.sh --platform=$TARGET_PLATFORM --install-dir=$TOOLCHAIN_INSTALL_DIR
 
-echo "Unpacked Android NDK toolchain (target=android-$TARGET_PLATFORM) under $TOOLCHAIN_INSTALL_DIR."
+echo "Unpacked Android NDK toolchain (NDK version=$NDK_VERSION, target=$TARGET_PLATFORM) under $TOOLCHAIN_INSTALL_DIR."
 
 cp $TOOLCHAIN_INSTALL_DIR/sysroot/usr/include/termios.h $TOOLCHAIN_INSTALL_DIR/sysroot/usr/include/sys/termios.h
 #EOF

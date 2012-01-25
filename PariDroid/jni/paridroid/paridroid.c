@@ -57,13 +57,16 @@ char *paridroid_eval(const char *in)
 
   if(setjmp(env) != 0) {
     LOGE("jetjmp different from zero");
-    return "";
+    return pari_err2str(global_err_data);
   }
   
   GEN z;
   z = gp_read_str(in);
-  if (z != gnil) 
+    if (z != gnil) 
     {
+      pari_add_hist(z);
+      LOGD("added element to output history");
+      LOGD("pari_nb_hist = %ld",pari_nb_hist());
       if (in[strlen(in)-1]!=';') 
 	{
 	  char *out = GENtostr(z);

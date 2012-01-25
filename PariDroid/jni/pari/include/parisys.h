@@ -1,4 +1,4 @@
-/* $Id: parisys.h 12331 2010-05-26 18:49:56Z bill $
+/* $Id$
 
 Copyright (C) 2000  The PARI group.
 

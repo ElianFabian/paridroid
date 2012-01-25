@@ -1,4 +1,4 @@
-/* $Id: parierr.h 12748 2010-11-20 18:58:33Z bill $
+/* $Id$
 
 Copyright (C) 2000  The PARI group.
 
@@ -13,38 +13,30 @@ Check the License for details. You should have received a copy of it, along
 with the package; see the file 'COPYING'. If not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. */
 
-enum {
+enum err_list {
 /* Force errors into non-0 */
-  syntaxer = 1, bugparier, /* untrappable errors */
+  e_SYNTAX = 1, e_BUG,
 
-  alarmer, openfiler,
+  e_ALARM, e_FILE,
 
-  talker, flagerr, impl, archer, notfuncer,
+  e_MISC, e_FLAG, e_IMPL, e_ARCH, e_NOTFUNC,
 
-  precer, typeer, consister, user,
+  e_PREC, e_TYPE, e_DIM, e_VAR, e_USER,
 
-  errpile, overflower,
+  e_STACK, e_OVERFLOW,
 
-/* alglin.c */
-  matinv1, mattype1,
+  e_MAXPRIME, e_INTMOD,
 
-/* arith.c  */
-  arither1, primer1, invmoder,
+  e_CONSTPOL, e_IRREDPOL, e_COPRIME, e_PRIME, e_MODULUS, e_ROOTS0,
 
-/* base.c   */
-  constpoler, notpoler, redpoler, zeropoler,
+  e_OP, e_TYPE2, e_INV,
 
-/* gen.c */
-  operi, operf, gdiver,
+  e_MEM,
 
-/* init.c */
-  memer,
-
-/* trans.c */
-  negexper, sqrter5,
+  e_NEGVAL, e_SQRTN,
 
 /* NO ERROR */
-  noer
+  e_NONE
 };
 
 enum { warner, warnprec, warnfile, warnmem };

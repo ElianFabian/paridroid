@@ -1,4 +1,4 @@
-/* $Id: pariinl.h 13108 2011-04-15 16:45:17Z kb $
+/* $Id$
 
 Copyright (C) 2000-2010  The PARI group.
 
@@ -18,9 +18,49 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. */
 /*                          CONSTRUCTORS                           */
 /*                                                                 */
 /*******************************************************************/
+#define retmkintmod(x,y)\
+  do { GEN _v = cgetg(3, t_INTMOD);\
+       gel(_v,1) = (y);\
+       gel(_v,2) = (x); return _v; } while(0)
+#define retmkpolmod(x,y)\
+  do { GEN _v = cgetg(3, t_POLMOD);\
+       gel(_v,1) = (y);\
+       gel(_v,2) = (x); return _v; } while(0)
+#define retmkvec(x)\
+  do { GEN _v = cgetg(2, t_VEC);\
+       gel(_v,1) = (x); return _v; } while(0)
+#define retmkvec2(x,y)\
+  do { GEN _v = cgetg(3, t_VEC);\
+       gel(_v,1) = (x);\
+       gel(_v,2) = (y); return _v; } while(0)
+#define retmkvec3(x,y,z)\
+  do { GEN _v = cgetg(4, t_VEC);\
+       gel(_v,1) = (x);\
+       gel(_v,2) = (y);\
+       gel(_v,3) = (z); return _v; } while(0)
+#define retmkvec4(x,y,z,t)\
+  do { GEN _v = cgetg(5, t_VEC);\
+       gel(_v,1) = (x);\
+       gel(_v,2) = (y);\
+       gel(_v,3) = (z);\
+       gel(_v,4) = (t); return _v; } while(0)
+#define retmkcol(x)\
+  do { GEN _v = cgetg(2, t_COL);\
+       gel(_v,1) = (x); return _v; } while(0)
+#define retmkcol2(x,y)\
+  do { GEN _v = cgetg(3, t_COL);\
+       gel(_v,1) = (x);\
+       gel(_v,2) = (y); return _v; } while(0)
+#define retmkmat(x)\
+  do { GEN _v = cgetg(2, t_MAT);\
+       gel(_v,1) = (x); return _v; } while(0)
+#define retmkmat2(x,y)\
+  do { GEN _v = cgetg(3, t_MAT);\
+       gel(_v,1) = (x);\
+       gel(_v,2) = (y); return _v; } while(0)
+
 INLINE GEN
-mkintmod(GEN x, GEN y) { GEN v = cgetg(3, t_INTMOD);
-  gel(v,1) = y; gel(v,2) = x; return v; }
+mkintmod(GEN x, GEN y) { retmkintmod(x,y); }
 INLINE GEN
 mkintmodu(ulong x, ulong y) {
   GEN v = cgetg(3,t_INTMOD);
@@ -28,8 +68,7 @@ mkintmodu(ulong x, ulong y) {
   gel(v,2) = utoi(x); return v;
 }
 INLINE GEN
-mkpolmod(GEN x, GEN y) { GEN v = cgetg(3, t_POLMOD);
-  gel(v,1) = y; gel(v,2) = x; return v; }
+mkpolmod(GEN x, GEN y) { retmkpolmod(x,y); }
 INLINE GEN
 mkfrac(GEN x, GEN y) { GEN v = cgetg(3, t_FRAC);
   gel(v,1) = x; gel(v,2) = y; return v; }
@@ -67,17 +106,13 @@ mkvecsmall4(long x,long y,long z,long t) { GEN v = cgetg(5, t_VECSMALL);
   v[1]=x; v[2]=y; v[3]=z; v[4]=t; return v; }
 /* vec */
 INLINE GEN
-mkvec(GEN x) { GEN v = cgetg(2, t_VEC); gel(v,1) = x; return v; }
+mkvec(GEN x) { retmkvec(x); }
 INLINE GEN
-mkvec2(GEN x, GEN y) {
-  GEN v = cgetg(3,t_VEC); gel(v,1) = x; gel(v,2) = y; return v; }
+mkvec2(GEN x, GEN y) { retmkvec2(x,y); }
 INLINE GEN
-mkvec3(GEN x, GEN y, GEN z) {
-  GEN v=cgetg(4,t_VEC); gel(v,1) = x; gel(v,2) = y; gel(v,3) = z; return v; }
+mkvec3(GEN x, GEN y, GEN z) { retmkvec3(x,y,z); }
 INLINE GEN
-mkvec4(GEN x, GEN y, GEN z, GEN t) {
-  GEN v=cgetg(5,t_VEC); gel(v,1) = x; gel(v,2) = y; gel(v,3) = z; gel(v,4) = t;
-  return v; }
+mkvec4(GEN x, GEN y, GEN z, GEN t) { retmkvec4(x,y,z,t); }
 INLINE GEN
 mkvec5(GEN x, GEN y, GEN z, GEN t, GEN u) {
   GEN v=cgetg(6,t_VEC); gel(v,1) = x; gel(v,2) = y; gel(v,3) = z;
@@ -99,19 +134,20 @@ mkvec2copy(GEN x, GEN y) {
   GEN v = cgetg(3,t_VEC); gel(v,1) = gcopy(x); gel(v,2) = gcopy(y); return v; }
 /* col */
 INLINE GEN
-mkcol(GEN x) { GEN v = cgetg(2, t_COL); gel(v,1) = x; return v; }
+mkcol(GEN x) { retmkcol(x); }
 INLINE GEN
-mkcol2(GEN x, GEN y) {
-  GEN v = cgetg(3,t_COL); gel(v,1) = x; gel(v,2) = y; return v; }
+mkcol2(GEN x, GEN y) { retmkcol2(x,y); }
 INLINE GEN
 mkcolcopy(GEN x) { GEN v = cgetg(2, t_COL); gel(v,1) = gcopy(x); return v; }
 /* mat */
 INLINE GEN
-mkmat(GEN x) { GEN v = cgetg(2, t_MAT); gel(v,1) = x; return v; }
+mkmat(GEN x) { retmkmat(x); }
 INLINE GEN
-mkmat2(GEN x, GEN y) { GEN v=cgetg(3,t_MAT); gel(v,1)=x; gel(v,2)=y; return v; }
+mkmat2(GEN x, GEN y) { retmkmat2(x,y); }
 INLINE GEN
 mkmatcopy(GEN x) { GEN v = cgetg(2, t_MAT); gel(v,1) = gcopy(x); return v; }
+INLINE GEN
+mkerr(long x) { GEN v = cgetg(2, t_ERROR); v[1] = x; return v; }
 /* pol */
 INLINE GEN
 pol_x(long v) {
@@ -132,22 +168,20 @@ pol_0(long v)
   GEN x = cgetg(2,t_POL);
   x[1] = evalvarn(v); return x;
 }
+#define retconst_vec(n,x)\
+  do { long _i, _n = (n);\
+       GEN _v = cgetg(n+1, t_VEC), _x = (x);\
+       for (_i = 1; _i <= _n; _i++) gel(_v,_i) = _x;\
+       return _v; } while(0)
 INLINE GEN
-const_vec(long n, GEN x)
-{
-  GEN v = cgetg(n+1, t_VEC);
-  long i;
-  for (i = 1; i <= n; i++) gel(v,i) = x;
-  return v;
-}
+const_vec(long n, GEN x) { retconst_vec(n, x); }
+#define retconst_col(n,x)\
+  do { long _i, _n = (n);\
+       GEN _v = cgetg(n+1, t_COL), _x = (x);\
+       for (_i = 1; _i <= _n; _i++) gel(_v,_i) = _x;\
+       return _v; } while(0)
 INLINE GEN
-const_col(long n, GEN x)
-{
-  GEN v = cgetg(n+1, t_COL);
-  long i;
-  for (i = 1; i <= n; i++) gel(v,i) = x;
-  return v;
-}
+const_col(long n, GEN x) { retconst_col(n, x); }
 INLINE GEN
 const_vecsmall(long n, long c)
 {
@@ -537,11 +571,21 @@ RgX_is_monomial(GEN x)
   return 1;
 }
 INLINE int
+RgV_is_ZV(GEN x)
+{
+  long i, h = lg(x);
+  if (h == 1) return 1;
+  for (i = h-1; i > 0; i--)
+    if (typ(gel(x,i)) != t_INT) return 0;
+  return 1;
+}
+INLINE int
 RgM_is_ZM(GEN x)
 {
   long i, j, h, l = lg(x);
   if (l == 1) return 1;
   h = lg(gel(x,1));
+  if (h == 1) return 1;
   for (j = l-1; j > 0; j--)
     for (i = h-1; i > 0; i--)
       if (typ(gcoeff(x,i,j)) != t_INT) return 0;
@@ -554,10 +598,10 @@ RgM_is_ZM(GEN x)
 /**                                                                **/
 /********************************************************************/
 INLINE void **
-stack_base(pari_stack *s) { return (void **) ((char *)s+s->offset); }
+pari_stack_base(pari_stack *s) { return (void **) ((char *)s+s->offset); }
 
 INLINE void
-stack_init(pari_stack *s, size_t size, void **data)
+pari_stack_init(pari_stack *s, size_t size, void **data)
 {
   s->offset = (char *)data-(char *)s;
   *data = NULL;
@@ -567,9 +611,9 @@ stack_init(pari_stack *s, size_t size, void **data)
 }
 
 INLINE void
-stack_alloc(pari_stack *s, long nb)
+pari_stack_alloc(pari_stack *s, long nb)
 {
-  void **sdat = stack_base(s);
+  void **sdat = pari_stack_base(s);
   if (s->n+nb <= s->alloc) return;
   if (!s->alloc)
     s->alloc = nb;
@@ -581,20 +625,20 @@ stack_alloc(pari_stack *s, long nb)
 }
 
 INLINE long
-stack_new(pari_stack *s) { stack_alloc(s, 1); return s->n++; }
+pari_stack_new(pari_stack *s) { pari_stack_alloc(s, 1); return s->n++; }
 
 INLINE void
-stack_delete(pari_stack *s)
+pari_stack_delete(pari_stack *s)
 {
-  void **sdat = stack_base(s);
+  void **sdat = pari_stack_base(s);
   if (*sdat) free(*sdat);
 }
 
 INLINE void
-stack_pushp(pari_stack *s, void *u)
+pari_stack_pushp(pari_stack *s, void *u)
 {
-  long n = stack_new(s);
-  void **sdat =(void**) *stack_base(s);
+  long n = pari_stack_new(s);
+  void **sdat =(void**) *pari_stack_base(s);
   sdat[n] = u;
 }
 
@@ -643,7 +687,7 @@ vecsplice(GEN a, long j)
 {
   long i, k, l = lg(a);
   GEN b;
-  if (l == 1) pari_err(talker, "incorrect component in vecsplice");
+  if (l == 1) pari_err(e_MISC, "incorrect component in vecsplice");
   b = cgetg(l-1, typ(a));
   for (i = k = 1; i < l; i++)
     if (i != j) gel(b, k++) = gel(a,i);
@@ -824,7 +868,7 @@ pari_malloc(size_t size)
     BLOCK_SIGINT_START;
     tmp = (char*)malloc(size);
     BLOCK_SIGINT_END;
-    if (!tmp) pari_err(memer);
+    if (!tmp) pari_err(e_MEM);
     return tmp;
   }
   if (DEBUGMEM) pari_warn(warner,"mallocing NULL object");
@@ -839,7 +883,7 @@ pari_realloc(void *pointer, size_t size)
   if (!pointer) tmp = (char *) malloc(size);
   else tmp = (char *) realloc(pointer,size);
   BLOCK_SIGINT_END;
-  if (!tmp) pari_err(memer);
+  if (!tmp) pari_err(e_MEM);
   return tmp;
 }
 INLINE void*
@@ -1020,7 +1064,7 @@ cxcompotor(GEN z, long prec)
     case t_INT:  return itor(z, prec);
     case t_FRAC: return fractor(z, prec);
     case t_REAL: return rtor(z, prec);
-    default: pari_err(typeer,"cxcompotor"); return NULL; /* not reached */
+    default: pari_err_TYPE("cxcompotor",z); return NULL; /* not reached */
   }
 }
 INLINE GEN
@@ -1035,13 +1079,14 @@ gtodouble(GEN x)
   if (typ(x)!=t_REAL) {
     pari_sp av = avma;
     x = gtofp(x, DEFAULTPREC);
+    if (typ(x)!=t_REAL) pari_err_TYPE("gtodouble [t_REAL expected]", x);
     avma = av;
   }
   return rtodbl(x);
 }
 INLINE long
 gtos(GEN x) {
-  if (typ(x) != t_INT) pari_err(talker,"gtos expected an integer, got '%Ps'",x);
+  if (typ(x) != t_INT) pari_err_TYPE("gtos [integer expected]",x);
   return itos(x);
 }
 
@@ -1070,13 +1115,13 @@ gtofp(GEN z, long prec)
       if (isintzero(a)) {
         GEN y = cgetg(3, t_COMPLEX);
         b = cxcompotor(b, prec);
-        gel(y,1) = real_0_bit(expo(b) - bit_accuracy(prec));
+        gel(y,1) = real_0_bit(expo(b) - prec2nbits(prec));
         gel(y,2) = b; return y;
       }
       return cxtofp(z, prec);
     }
     case t_QUAD: return quadtofp(z, prec);
-    default: pari_err(typeer,"gtofp"); return NULL; /* not reached */
+    default: pari_err_TYPE("gtofp",z); return NULL; /* not reached */
   }
 }
 
@@ -1133,8 +1178,8 @@ affgr(GEN x, GEN y)
     case t_INT:  affir(x,y); break;
     case t_REAL: affrr(x,y); break;
     case t_FRAC: rdiviiz(gel(x,1),gel(x,2), y); break;
-    case t_QUAD: av = avma; affgr(quadtofp(x,lg(y)), y); avma = av; break;
-    default: pari_err(operf,"",x,y);
+    case t_QUAD: av = avma; affgr(quadtofp(x,realprec(y)), y); avma = av; break;
+    default: pari_err_TYPE2("",x,y);
   }
 }
 
@@ -1149,7 +1194,7 @@ affc_fixlg(GEN x, GEN res)
   else
   {
     avma = (pari_sp)(res+3);
-    res = cgetr(lg(gel(res,1)));
+    res = cgetr(realprec(gel(res,1)));
     affrr_fixlg(x, res);
   }
   return res;
@@ -1174,9 +1219,19 @@ INLINE long
 nbits2nlong(long x) {
   return (long)(((ulong)x+BITS_IN_LONG-1) >> TWOPOTBITS_IN_LONG);
 }
+
+INLINE long
+nbits2extraprec(long x) {
+  return (long)(((ulong)x+BITS_IN_LONG-1) >> TWOPOTBITS_IN_LONG);
+}
+
 /* Fast implementation of 2 + nbits2nlong(x) */
 INLINE long
 nbits2prec(long x) {
+  return (long)(((ulong)x+3*BITS_IN_LONG-1) >> TWOPOTBITS_IN_LONG);
+}
+INLINE long
+nbits2lg(long x) {
   return (long)(((ulong)x+3*BITS_IN_LONG-1) >> TWOPOTBITS_IN_LONG);
 }
 /* ceil(x / sizeof(long)) */
@@ -1188,8 +1243,16 @@ INLINE long
 bit_accuracy(long x) { return (x-2) * BITS_IN_LONG; }
 INLINE double
 bit_accuracy_mul(long x, double y) { return (x-2) * (BITS_IN_LONG*y); }
+INLINE double
+prec2nbits_mul(long x, double y) { return (x-2) * (BITS_IN_LONG*y); }
 INLINE long
-prec2ndec(long x) { return (long)bit_accuracy_mul(x, LOG10_2); }
+bit_prec(GEN x) { return bit_accuracy(realprec(x)); }
+INLINE long
+prec2nbits(long x) { return bit_accuracy(x); }
+INLINE long
+prec2ndec(long x) { return (long)prec2nbits_mul(x, LOG10_2); }
+INLINE long
+precdbl(long x) {return (x - 1) << 1;}
 INLINE long
 divsBIL(long n) { return n >> TWOPOTBITS_IN_LONG; }
 INLINE long
@@ -1267,6 +1330,17 @@ INLINE GEN
 Fp_center(GEN u, GEN p, GEN ps2)
 { return absi_cmp(u,ps2)<=0? icopy(u): subii(u,p); }
 
+/* x + y*z mod p */
+INLINE GEN
+Fp_addmul(GEN x, GEN y, GEN z, GEN p)
+{
+  pari_sp av;
+  if (!signe(y) || !signe(z)) return Fp_red(x, p);
+  if (!signe(x)) return Fp_mul(z,y, p);
+  av = avma;
+  return gerepileuptoint(av, modii(addii(x, mulii(y,z)), p));
+}
+
 INLINE GEN
 Fp_mul(GEN a, GEN b, GEN m)
 {
@@ -1306,7 +1380,7 @@ INLINE GEN
 Fp_inv(GEN a, GEN m)
 {
   GEN res;
-  if (! invmod(a,m,&res)) pari_err(invmoder, gmodulo(res,m));
+  if (! invmod(a,m,&res)) pari_err(e_INTMOD, gmodulo(res,m));
   return res;
 }
 INLINE GEN
@@ -1324,6 +1398,106 @@ Fp_div(GEN a, GEN b, GEN m)
   (void)new_chunk(lg(a)+(lg(m)<<1));
   p = mulii(a, Fp_inv(b,m));
   avma = av; return modii(p,m);
+}
+
+/*******************************************************************/
+/*                                                                 */
+/*                        ADDMULII / SUBMULII                      */
+/*                                                                 */
+/*******************************************************************/
+/* x - y*z */
+INLINE GEN
+submulii(GEN x, GEN y, GEN z)
+{
+  long lx = lgefint(x), ly, lz;
+  pari_sp av;
+  GEN t;
+  if (lx == 2) { t = mulii(z,y); togglesign(t); return t; }
+  ly = lgefint(y);
+  if (ly == 2) return icopy(x);
+  lz = lgefint(z);
+  av = avma; (void)new_chunk(lx+ly+lz); /* HACK */
+  t = mulii(z, y);
+  avma = av; return subii(x,t);
+}
+/* y*z - x */
+INLINE GEN
+mulsubii(GEN y, GEN z, GEN x)
+{
+  long lx = lgefint(x), ly, lz;
+  pari_sp av;
+  GEN t;
+  if (lx == 2) return mulii(z,y);
+  ly = lgefint(y);
+  if (ly == 2) return negi(x);
+  lz = lgefint(z);
+  av = avma; (void)new_chunk(lx+ly+lz); /* HACK */
+  t = mulii(z, y);
+  avma = av; return subii(t,x);
+}
+
+/* x - u*y */
+INLINE GEN
+submuliu(GEN x, GEN y, ulong u)
+{
+  pari_sp av;
+  long ly = lgefint(y);
+  if (ly == 2) return icopy(x);
+  av = avma;
+  (void)new_chunk(3+ly+lgefint(x)); /* HACK */
+  y = mului(u,y);
+  avma = av; return subii(x, y);
+}
+/* x + u*y */
+INLINE GEN
+addmuliu(GEN x, GEN y, ulong u)
+{
+  pari_sp av;
+  long ly = lgefint(y);
+  if (ly == 2) return icopy(x);
+  av = avma;
+  (void)new_chunk(3+ly+lgefint(x)); /* HACK */
+  y = mului(u,y);
+  avma = av; return addii(x, y);
+}
+/* x - u*y */
+INLINE GEN
+submuliu_inplace(GEN x, GEN y, ulong u)
+{
+  pari_sp av;
+  long ly = lgefint(y);
+  if (ly == 2) return x;
+  av = avma;
+  (void)new_chunk(3+ly+lgefint(x)); /* HACK */
+  y = mului(u,y);
+  avma = av; return subii(x, y);
+}
+/* x + u*y */
+INLINE GEN
+addmuliu_inplace(GEN x, GEN y, ulong u)
+{
+  pari_sp av;
+  long ly = lgefint(y);
+  if (ly == 2) return x;
+  av = avma;
+  (void)new_chunk(3+ly+lgefint(x)); /* HACK */
+  y = mului(u,y);
+  avma = av; return addii(x, y);
+}
+/* ux + vy */
+INLINE GEN
+lincombii(GEN u, GEN v, GEN x, GEN y)
+{
+  long lx = lgefint(x), ly;
+  GEN p1, p2;
+  pari_sp av;
+  if (lx == 2) return mulii(v,y);
+  ly = lgefint(y);
+  if (ly == 2) return mulii(u,x);
+  av = avma; (void)new_chunk(lx+ly+lgefint(u)+lgefint(v)); /* HACK */
+  p1 = mulii(u,x);
+  p2 = mulii(v,y);
+  avma = av; return addii(p1,p2);
 }
 
 /*******************************************************************/
@@ -1419,6 +1593,17 @@ mul_denom(GEN dx, GEN dy)
   return mulii(dx,dy);
 }
 
+/* normalizepol / normalize / identity : in place */
+INLINE GEN
+gnormalize(GEN x)
+{
+  switch(typ(x))
+  {
+    case t_POL: return normalizepol(x);
+    case t_SER: return normalize(x);
+    default: return x;
+  }
+}
 
 /* POLYNOMIALS */
 INLINE GEN
@@ -1482,6 +1667,8 @@ INLINE GEN
 polx_F2x(long sv) { return mkvecsmall2(sv, 2); }
 INLINE int
 F2x_equal1(GEN x) { return Flx_equal1(x); }
+INLINE GEN
+F2v_copy(GEN x) { return leafcopy(x); }
 INLINE GEN
 Flv_copy(GEN x) { return leafcopy(x); }
 INLINE GEN
@@ -1724,13 +1911,13 @@ INLINE ulong
 F2v_coeff(GEN x,long v) { return F2x_coeff(x,v-1); }
 
 INLINE void
-F2v_clear(GEN x,long v) { return F2x_clear(x,v-1); }
+F2v_clear(GEN x,long v) { F2x_clear(x,v-1); }
 
 INLINE void
-F2v_set(GEN x,long v)   { return F2x_set(x,v-1); }
+F2v_set(GEN x,long v)   { F2x_set(x,v-1); }
 
 INLINE void
-F2v_flip(GEN x,long v) {return F2x_flip(x,v-1); }
+F2v_flip(GEN x,long v) { F2x_flip(x,v-1); }
 
 /* F2m */
 
@@ -1988,7 +2175,7 @@ bnf_get_tuN(GEN bnf) { return gmael3(bnf,8,4,1)[2]; }
 INLINE GEN
 bnf_get_fu(GEN bnf) {
   GEN fu = bnf_get_fu_nocheck(bnf);
-  if (typ(fu) == t_MAT) pari_err(talker,"missing units in bnf");
+  if (typ(fu) == t_MAT) pari_err(e_MISC,"missing units in bnf");
   return fu;
 }
 INLINE GEN
@@ -2014,7 +2201,7 @@ INLINE GEN
 bnr_get_gen(GEN bnr) {
   GEN G = bnr_get_clgp(bnr);
   if (lg(G) !=  4)
-    pari_err(talker,"missing bnr generators: please use bnrinit(,,1)");
+    pari_err(e_MISC,"missing bnr generators: please use bnrinit(,,1)");
   return gel(G,3);
 }
 
@@ -2031,7 +2218,7 @@ bid_get_gen_nocheck(GEN bid) { return gmael(bid,2,3); }
 INLINE GEN
 bid_get_gen(GEN bid) {
   GEN G = gel(bid, 2);
-  if (lg(G) != 4) pari_err(talker,"missing bid generators. Use idealstar(,,2)");
+  if (lg(G) != 4) pari_err(e_MISC,"missing bid generators. Use idealstar(,,2)");
   return gel(G,3);
 }
 INLINE GEN

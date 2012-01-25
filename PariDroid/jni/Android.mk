@@ -1,14 +1,14 @@
 LOCAL_PATH := $(call my-dir)
 
 ############################
-# libpari-gmp.so
+# libpari.so
 ############################
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := pari-gmp
+LOCAL_MODULE := pari
 
-LOCAL_SRC_FILES := pari/lib/libpari-gmp.so
+LOCAL_SRC_FILES := pari/lib/libpari.so
 
 include $(PREBUILT_SHARED_LIBRARY)
 
@@ -30,7 +30,7 @@ LOCAL_SRC_FILES := \
 	paridroid/paridroid.c \
 	paridroid/com_math_paridroid_PariNative.c
 
-LOCAL_SHARED_LIBRARIES := libpari-gmp
+LOCAL_SHARED_LIBRARIES := libpari
 
 include $(BUILD_SHARED_LIBRARY)
 

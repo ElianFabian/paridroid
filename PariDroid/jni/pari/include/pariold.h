@@ -1,4 +1,4 @@
-/* $Id: pariold.h 13187 2011-05-10 09:33:01Z kb $
+/* $Id$
 
 Copyright (C) 2000  The PARI group.
 
@@ -15,6 +15,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. */
 
 /* For compatibility with 1.x.x */
 /*functions renamed*/
+#define stackmalloc stack_malloc
 #define fprintferr err_printf
 #define msgTIMER timer_printf
 #define TIMER timer_delay

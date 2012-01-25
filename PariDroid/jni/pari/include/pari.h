@@ -1,4 +1,4 @@
-/* $Id: pari.h 12142 2010-02-13 13:49:19Z bill $
+/* $Id$
 
 Copyright (C) 2000  The PARI group.
 
@@ -43,7 +43,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. */
 #include <ctype.h>
 
 #ifdef WINCE
-#  include "parice.h"
+#  include "pariCE.h"
 #endif
 #include "parisys.h"
 #include "parigen.h"

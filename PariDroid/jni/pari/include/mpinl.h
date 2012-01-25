@@ -1,6 +1,6 @@
 #ifndef ASMINLINE
 #endif
-/* $Id: asm0.h 7881 2006-04-18 17:23:00Z kb $
+/* $Id$
 
 Copyright (C) 2000  The PARI group.
 
@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. */
 NOASM addll mulll bfffo divll
 */
 #line 2 "../src/kernel/none/addll.h"
-/* $Id: addll.h 12466 2010-06-24 14:53:41Z kb $
+/* $Id$
 
 Copyright (C) 2003  The PARI group.
 
@@ -35,7 +35,7 @@ with the package; see the file 'COPYING'. If not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. */
 
 /* This file originally adapted from gmp-3.1.1 (from T. Granlund), files
- * longlong.h and gmp-impl.h
+ * longlong.h and gmp-e_IMPL.h
 
   Copyright (C) 2000 Free Software Foundation, Inc. */
 
@@ -124,7 +124,7 @@ subllx(ulong x, ulong y)
 
 #endif
 #line 2 "../src/kernel/none/mulll.h"
-/* $Id: mulll.h 12466 2010-06-24 14:53:41Z kb $
+/* $Id$
 
 Copyright (C) 2000  The PARI group.
 
@@ -266,7 +266,7 @@ addmul(ulong x, ulong y)
 
 #endif
 #line 2 "../src/kernel/none/bfffo.h"
-/* $Id: bfffo.h 12466 2010-06-24 14:53:41Z kb $
+/* $Id$
 
 Copyright (C) 2000  The PARI group.
 
@@ -332,7 +332,7 @@ bfffo(ulong x)
 
 #endif
 #line 2 "../src/kernel/none/divll.h"
-/* $Id: divll.h 12466 2010-06-24 14:53:41Z kb $
+/* $Id$
 
 Copyright (C) 2003  The PARI group.
 
@@ -348,7 +348,7 @@ with the package; see the file 'COPYING'. If not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. */
 
 /* This file originally adapted from gmp-3.1.1 (from T. Granlund), files
- * longlong.h and gmp-impl.h
+ * longlong.h and gmp-e_IMPL.h
 
   Copyright (C) 2000 Free Software Foundation, Inc. */
 
@@ -567,7 +567,7 @@ divll(ulong n0, ulong d)
 #define __RgX_SQR_LIMIT                 22
 #endif
 #line 2 "../src/kernel/none/int.h"
-/* $Id: int.h 10527 2008-07-21 21:10:43Z kb $
+/* $Id$
 
 Copyright (C) 2000  The PARI group.
 
@@ -606,7 +606,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. */
 #define PARI_KERNEL_NONE
 /*This macro should not be used in libpari itself.*/
 #line 2 "../src/kernel/none/level1.h"
-/* $Id: level1.h 13218 2011-06-09 12:48:50Z kb $
+/* $Id$
 
 Copyright (C) 2000  The PARI group.
 
@@ -628,21 +628,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. */
 INLINE long
 evallg(long x)
 {
-  if (x & ~LGBITS) pari_err(overflower,"lg()");
+  if (x & ~LGBITS) pari_err_OVERFLOW("lg()");
   return _evallg(x);
 }
 INLINE long
 evalvalp(long x)
 {
   long v = _evalvalp(x);
-  if (v & ~VALPBITS) pari_err(overflower,"valp()");
+  if (v & ~VALPBITS) pari_err_OVERFLOW("valp()");
   return v;
 }
 INLINE long
 evalexpo(long x)
 {
   long v = _evalexpo(x);
-  if (v & ~EXPOBITS) pari_err(overflower,"expo()");
+  if (v & ~EXPOBITS) pari_err_OVERFLOW("expo()");
   return v;
 }
 
@@ -690,7 +690,7 @@ INLINE GEN
 new_chunk(size_t x) /* x is a number of longs */
 {
   GEN z = ((GEN) avma) - x;
-  if (x > (avma-bot) / sizeof(long)) pari_err(errpile);
+  if (x > (avma-bot) / sizeof(long)) pari_err(e_STACK);
   CHECK_CTRLC
   avma = (pari_sp)z;
 
@@ -705,6 +705,20 @@ new_chunk(size_t x) /* x is a number of longs */
   }
 #endif
   return z;
+}
+
+INLINE char *
+stack_malloc(size_t N)
+{
+  long n = nchar2nlong(N);
+  return (char*)new_chunk(n);
+}
+
+INLINE char *
+stack_calloc(size_t N)
+{
+  char *p = stack_malloc(N);
+  memset(p, 0, N); return p;
 }
 
 /* cgetg(lg(x), typ(x)), set *lx. Implicit unsetisclone() */
@@ -770,6 +784,14 @@ icopy(GEN x)
   register long lx = lgefint(x);
   GEN y = cgeti(lx);
   while (--lx > 0) y[lx] = x[lx];
+  return y;
+}
+INLINE GEN
+icopyspec(GEN x, long nx)
+{
+  GEN y = cgeti(nx + 2);
+  y[1] = evalsigne(1) | evallgefint(nx + 2);
+  while (--nx >= 0) y[nx + 2]=x[nx];
   return y;
 }
 INLINE GEN rcopy(GEN x) { return leafcopy(x); }
@@ -865,7 +887,7 @@ itos(GEN x)
   if (!s) return 0;
   u = x[2];
   if (lgefint(x) > 3 || u < 0)
-    pari_err(overflower,"t_INT-->long assignment");
+    pari_err_OVERFLOW("t_INT-->long assignment");
   return (s>0) ? u : -u;
 }
 /* as itos, but return 0 if too large. Cf is_bigint */
@@ -882,7 +904,7 @@ itou(GEN x)
     case 2: return 0;
     case 3: return x[2];
     default:
-      pari_err(overflower,"t_INT-->ulong assignment");
+      pari_err_OVERFLOW("t_INT-->ulong assignment");
       return 0; /* not reached */
   }
 }
@@ -897,7 +919,7 @@ itou_or_0(GEN x) {
 INLINE GEN
 real_0_bit(long bitprec) { GEN x=cgetr(2); x[1]=evalexpo(bitprec); return x; }
 INLINE GEN
-real_0(long prec) { return real_0_bit(-bit_accuracy(prec)); }
+real_0(long prec) { return real_0_bit(-prec2nbits(prec)); }
 INLINE GEN
 real_1(long prec) {
   GEN x = cgetr(prec);
@@ -927,6 +949,12 @@ itor(GEN x, long prec) { GEN z = cgetr(prec); affir(x,z); return z; }
 INLINE GEN
 rtor(GEN x, long prec) { GEN z = cgetr(prec); affrr(x,z); return z; }
 
+INLINE ulong int_bit(GEN x, long n)
+{
+  long r, q = dvmdsBIL(n, &r);
+  return q < lgefint(x)-2?((ulong)*int_W(x,q) >> r) & 1UL:0;
+}
+
 /*******************************************************************/
 /*                                                                 */
 /*                           COMPARISON                            */
@@ -940,7 +968,7 @@ cmpir(GEN x, GEN y)
 
   if (!signe(x)) return -signe(y);
   if (!signe(y)) return  signe(x);
-  av=avma; z = itor(x, lg(y)); avma=av;
+  av=avma; z = itor(x, realprec(y)); avma=av;
   return cmprr(z,y); /* cmprr does no memory adjustment */
 }
 INLINE int
@@ -952,7 +980,7 @@ cmpsr(long x, GEN y)
   GEN z;
 
   if (!x) return -signe(y);
-  av=avma; z = stor(x, 3); avma=av;
+  av=avma; z = stor(x, LOWDEFAULTPREC); avma=av;
   return cmprr(z,y);
 }
 INLINE int
@@ -1154,7 +1182,7 @@ sdivss_rem(long x, long y, long *r)
 {
   long q;
   LOCAL_HIREMAINDER;
-  if (!y) pari_err(gdiver);
+  if (!y) pari_err(e_INV);
   hiremainder = 0; q = divll((ulong)labs(x),(ulong)labs(y));
   if (x < 0) { hiremainder = -((long)hiremainder); q = -q; }
   if (y < 0) q = -q;
@@ -1169,7 +1197,7 @@ udivui_rem(ulong x, GEN y, ulong *r)
   long q, s = signe(y);
   LOCAL_HIREMAINDER;
 
-  if (!s) pari_err(gdiver);
+  if (!s) pari_err(e_INV);
   if (!x || lgefint(y)>3) { *r = x; return 0; }
   hiremainder=0; q = (long)divll(x, (ulong)y[2]);
   if (s < 0) q = -q;
@@ -1182,7 +1210,7 @@ sdivsi_rem(long x, GEN y, long *r)
   long q, s = signe(y);
   LOCAL_HIREMAINDER;
 
-  if (!s) pari_err(gdiver);
+  if (!s) pari_err(e_INV);
   if (!x || lgefint(y)>3 || ((long)y[2]) < 0) { *r = x; return 0; }
   hiremainder=0; q = (long)divll(labs(x), (ulong)y[2]);
   if (x < 0) { hiremainder = -((long)hiremainder); q = -q; }
@@ -1197,7 +1225,7 @@ sdivsi(long x, GEN y)
 {
   long q, s = signe(y);
 
-  if (!s) pari_err(gdiver);
+  if (!s) pari_err(e_INV);
   if (!x || lgefint(y)>3 || ((long)y[2]) < 0) return 0;
   q = labs(x) / y[2];
   if (x < 0) q = -q;
@@ -1250,7 +1278,7 @@ modsi(long x, GEN y) {
 INLINE ulong
 umodui(ulong x, GEN y)
 {
-  if (!signe(y)) pari_err(gdiver);
+  if (!signe(y)) pari_err(e_INV);
   if (!x || lgefint(y) > 3) return x;
   return x % (ulong)y[2];
 }
@@ -1295,7 +1323,7 @@ INLINE void
 rdiviiz(GEN x, GEN y, GEN z)
 {
   pari_sp av = avma;
-  long prec = lg(z);
+  long prec = realprec(z);
   affir(x, z);
   if (!is_bigint(y)) {
     affrr(divrs(z, y[2]), z);
@@ -1311,8 +1339,8 @@ rdivii(GEN x, GEN y, long prec)
   GEN z = cgetr(prec);
   pari_sp av = avma;
   affir(x, z);
-  if (!is_bigint(y)) {
-    affrr(divrs(z, y[2]), z);
+  if (lg(y) == 3) {
+    affrr(divru(z, y[2]), z);
     if (signe(y) < 0) togglesign(z);
   }
   else
@@ -1538,7 +1566,7 @@ shiftr(GEN x, long n)
   const long e = evalexpo(expo(x)+n);
   const GEN y = rcopy(x);
 
-  if (e & ~EXPOBITS) pari_err(overflower,"expo()");
+  if (e & ~EXPOBITS) pari_err_OVERFLOW("expo()");
   y[1] = (y[1]&~EXPOBITS) | e; return y;
 }
 INLINE GEN
@@ -1584,6 +1612,12 @@ INLINE ulong
 shiftlr(ulong x, ulong y)
 { hiremainder = x<<(BITS_IN_LONG-y); return (x>>y); }
 
+INLINE void
+shiftr_inplace(GEN z, long d)
+{
+  setexpo(z, expo(z)+d);
+}
+
 /*******************************************************************/
 /*                                                                 */
 /*                           ASSIGNMENT                            */
@@ -1593,7 +1627,7 @@ INLINE void
 affii(GEN x, GEN y)
 {
   long lx = lgefint(x);
-  if (lg(y)<lx) pari_err(overflower,"t_INT-->t_INT assignment");
+  if (lg(y)<lx) pari_err_OVERFLOW("t_INT-->t_INT assignment");
   while (--lx) y[lx] = x[lx];
 }
 INLINE void
@@ -1620,7 +1654,7 @@ affsr(long x, GEN y)
 
   if (!x)
   {
-    y[1] = evalexpo(-bit_accuracy(ly));
+    y[1] = evalexpo(-prec2nbits(ly));
     return;
   }
   if (x < 0) {
@@ -1642,7 +1676,7 @@ affur(ulong x, GEN y)
 
   if (!x)
   {
-    y[1] = evalexpo(-bit_accuracy(ly));
+    y[1] = evalexpo(-prec2nbits(ly));
     return;
   }
   sh = bfffo(x);

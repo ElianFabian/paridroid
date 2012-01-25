@@ -1,6 +1,6 @@
 #ifndef ASMINLINE
 #endif
-/* $Id: asm0.h 7881 2006-04-18 17:23:00Z kb $
+/* $Id$
 
 Copyright (C) 2000  The PARI group.
 
@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. */
 NOASM addll mulll bfffo divll
 */
 #line 2 "../src/kernel/none/addll.h"
-/* $Id: addll.h 12466 2010-06-24 14:53:41Z kb $
+/* $Id$
 
 Copyright (C) 2003  The PARI group.
 
@@ -35,7 +35,7 @@ with the package; see the file 'COPYING'. If not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. */
 
 /* This file originally adapted from gmp-3.1.1 (from T. Granlund), files
- * longlong.h and gmp-impl.h
+ * longlong.h and gmp-e_IMPL.h
 
   Copyright (C) 2000 Free Software Foundation, Inc. */
 
@@ -124,7 +124,7 @@ subllx(ulong x, ulong y)
 
 #endif
 #line 2 "../src/kernel/none/mulll.h"
-/* $Id: mulll.h 12466 2010-06-24 14:53:41Z kb $
+/* $Id$
 
 Copyright (C) 2000  The PARI group.
 
@@ -266,7 +266,7 @@ addmul(ulong x, ulong y)
 
 #endif
 #line 2 "../src/kernel/none/bfffo.h"
-/* $Id: bfffo.h 12466 2010-06-24 14:53:41Z kb $
+/* $Id$
 
 Copyright (C) 2000  The PARI group.
 
@@ -332,7 +332,7 @@ bfffo(ulong x)
 
 #endif
 #line 2 "../src/kernel/none/divll.h"
-/* $Id: divll.h 12466 2010-06-24 14:53:41Z kb $
+/* $Id$
 
 Copyright (C) 2003  The PARI group.
 
@@ -348,7 +348,7 @@ with the package; see the file 'COPYING'. If not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. */
 
 /* This file originally adapted from gmp-3.1.1 (from T. Granlund), files
- * longlong.h and gmp-impl.h
+ * longlong.h and gmp-e_IMPL.h
 
   Copyright (C) 2000 Free Software Foundation, Inc. */
 

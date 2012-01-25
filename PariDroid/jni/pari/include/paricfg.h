@@ -3,16 +3,16 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 #define UNIX
-#define GPHELP "/data/data/com.math.paridroid/bin/gphelp"
-#define GPDATADIR "/data/data/com.math.paridroid/share/pari"
+#define GPHELP "/data/local/bin/gphelp"
+#define GPDATADIR "/data/local/bin/share/pari"
 #define SHELL_Q '\''
 
-#define PARIVERSION "GP/PARI CALCULATOR Version 2.5.0 (released)"
+#define PARIVERSION "GP/PARI CALCULATOR Version 2.6.0 (development git-9e6995b)"
 #define PARIINFO "arm-linux-androideabi (portable C/GMP-5.0.1 kernel) 32-bit version"
-#define PARI_VERSION_CODE 132352
+#define PARI_VERSION_CODE 132608
 #define PARI_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))
 #define PARI_VERSION_SHIFT 8
-#define PARI_VCSVERSION ""
+#define PARI_VCSVERSION "git-9e6995b"
 
 #define PARI_DOUBLE_FORMAT 1
 #define GCC_VERSION "4.4.3 (arm-linux-androideabi, Ubuntu 11.04) "
