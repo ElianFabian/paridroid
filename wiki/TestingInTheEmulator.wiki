@@ -2,11 +2,17 @@
 = How To Test PariDroid in Emulator =
 
   * Create the android virtual device:
-`android create avd --name android8 --target android-8
+{{{
+android create avd --name android8 --target android-8
+}}}
   * now start the emulator
-`emulator @android8`
+{{{
+emulator @android8
+}}}
   * push the apk to the emulator (Assuming you are in `PariDroid/bin`)
-`adb install PariDroid-debug.apk`
+{{{
+adb install PariDroid-debug.apk
+}}}
    * *NOTE:* If PariDroid is already instaled, use the `-r` flag, i.e.
 {{{
 adb install -r PariDroid-debug.apk
