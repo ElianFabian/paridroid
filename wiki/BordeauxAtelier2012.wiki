@@ -34,13 +34,6 @@ void(*flush)(void);
 
 The question is how to extend `putch()`,`puts()`, and `flush()` in a way that actually works for passing along output to PariDroid.
 
-== Access to command and output history ==
-
-We want to be able to scroll through command input history and also need to implement a basic kind of `gp_add_history(GEN z)` function.
-
-This will compensate for lacking `libreadline` and `libhistory`.
-
-Note: We want to use `%` operator to access GP output history, which is defined in `libpari` and does not depend on `gp`.
 
 == Auto-complete PARI functions ==
 
@@ -96,3 +89,11 @@ We use this to track function calls and report error messages while the program 
 PariDroid crashes when given input strings that are badly formed (e.g., contain a typo) and does not know how to access/display error messages from `libpari`.
 
 We want to recover from trivial errors (such as typos) and display useful error messages.
+
+== Access to command and output history ==
+
+We want to be able to scroll through command input history and also need to implement a basic kind of `gp_add_history(GEN z)` function.
+
+This will compensate for lacking `libreadline` and `libhistory`.
+
+Note: We want to use `%` operator to access GP output history, which is defined in `libpari` and does not depend on `gp`.
