@@ -20,6 +20,7 @@ PariDroid.apk: $(PARIDROID_ROOT)/bin/PariDroid-debug.apk
 	cp $< $@
 
 clean: paridroid_clean ndk_clean
+	rm PariDroid.apk
 
 ndk_clean:
 	$(NDK_BUILD) -C $(PARIDROID_JNI) clean
@@ -28,4 +29,5 @@ paridroid_clean:
 	cd $(PARIDROID_ROOT)
 	ant -buildfile $(PARIDROID_ROOT)/build.xml clean
 
-
+install:
+	$(ANDROID)/sdk/platform-tools/adb install -r PariDroid.apk
