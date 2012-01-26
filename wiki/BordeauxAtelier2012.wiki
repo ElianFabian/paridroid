@@ -3,38 +3,6 @@
 
 = Open problems =
 
-== Improve documentation ==
-
-  * Explain how to install/configure SDK and NDK
-  * Document `make_android_toolchain.sh` script
-  ** Also, improve this script!
-  * Write/update documentation for cross-compiling PARI
-  * Write documentation for compiling PariDroid from scratch.
-
-== Improve build environment ==
-
-  * Add extra level of `pari` to `jni/pari/include` directory, such that it mirrors structure of PARI source code.
-  * Write a Makefile to automate building PariDroid.
-  * Include `alias` commands in `make_android_toolchain.sh` script.
-  * Find and Remove hard-coded stuff from config files and scripts.
-  * Don't bundle `libpari` with source code in repository, find a way to automate fetching source code (`git checkout`or `wget`?) and compiling PARI as part of building PariDroid.
-  * Write a script to generate `pari.cfg` (c.f., "remove hard-coded stuff") before compiling `libpari`.
-
-== Fix I/O Bugs ==
-
-We need to write functions and define an Android-specific `PariOUT` structure, given by the prototype:
-
-{{{
-typedef struct PariOUT {
-void(*putch)(char);
-void(*puts)(const char*);
-void(*flush)(void);
-} PariOUT;
-}}}
-
-The question is how to extend `putch()`,`puts()`, and `flush()` in a way that actually works for passing along output to PariDroid.
-
-
 == Auto-complete PARI functions ==
 
 Load a hash table of `(Index,FunctionPrototype)` pairs as a "dictionary" and suggest input when given some UI event (e.g., tap-and-hold on input text box).
@@ -69,6 +37,39 @@ This can be fixed by:
   * Patching `libpari` such that meta-commands are not dependent on `gp`.
 
 = Fixed =
+
+== Improve documentation ==
+
+  * Explain how to install/configure SDK and NDK
+  * Document `make_android_toolchain.sh` script
+  ** Also, improve this script!
+  * Write/update documentation for cross-compiling PARI
+  * Write documentation for compiling PariDroid from scratch.
+
+== Improve build environment ==
+
+  * Add extra level of `pari` to `jni/pari/include` directory, such that it mirrors structure of PARI source code.
+  * Write a Makefile to automate building PariDroid.
+  * Include `alias` commands in `make_android_toolchain.sh` script.
+  * Find and Remove hard-coded stuff from config files and scripts.
+  * Don't bundle `libpari` with source code in repository, find a way to automate fetching source code (`git checkout`or `wget`?) and compiling PARI as part of building PariDroid.
+  * Write a script to generate `pari.cfg` (c.f., "remove hard-coded stuff") before compiling `libpari`.
+
+
+
+== Fix I/O Bugs ==
+
+We need to write functions and define an Android-specific `PariOUT` structure, given by the prototype:
+
+{{{
+typedef struct PariOUT {
+void(*putch)(char);
+void(*puts)(const char*);
+void(*flush)(void);
+} PariOUT;
+}}}
+
+The question is how to extend `putch()`,`puts()`, and `flush()` in a way that actually works for passing along output to PariDroid.
 
 == Long output overflows `jbyte *` array ==
 
