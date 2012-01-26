@@ -118,7 +118,7 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 	inputArrayList.add(cmd);
 	String result = PariNative.paridroidEval(cmd);
 
-	outputArrayList.add(0,"[%" + outputArrayList.size() + "]: " + cmd + "\n\n" + result);
+	outputArrayList.add(0,cmd + "\n\n[%" + outputArrayList.size() + "]: " + result);
 	outputArrayAdapter.notifyDataSetChanged();
     }
     

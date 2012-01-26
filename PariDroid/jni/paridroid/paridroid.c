@@ -1,4 +1,4 @@
-/**
+/*
  *-----------------------------------------------
  * paridroid.c - Android wrapper around libpari.
  *-----------------------------------------------
@@ -43,46 +43,81 @@ void gp_err_recover(long numerr)
   longjmp(env, numerr); 
 }
 
-void paridroid_init()
+
+static char *droidStr;
+
+static pari_stack s_droidStr;
+
+static void
+droidOutC(char c) 
+{ 
+  long n = pari_stack_new(&s_droidStr); 
+ droidStr[n] = c;
+}
+
+static void
+droidOutS(const char *s) { while(*s) droidOutC(*s++); }
+
+static void
+droidOutF(void) { }
+
+static PariOUT droidOut = {droidOutC, droidOutS, droidOutF};
+ 
+void 
+paridroid_init()
 {
   pari_init(paridroid_stack_size, paridroid_maxprime);
   cb_pari_err_recover = gp_err_recover;
+  pari_stack_init(&s_droidStr,sizeof(*droidStr),(void**)&droidStr);
+  pariOut=&droidOut;
+  pariErr=&droidOut;
+  print_version("v1.5");
   LOGD("Call to paridroid_init");
 }
 
-char *paridroid_eval(const char *in) 
+void
+print_version(char *vers)
 {
+  LOGI("PARIDROID_LIBRARY_VERSION = %s", vers);
+}
 
+
+char 
+*paridroid_eval(const char *in) 
+{
   LOGD("Call to paridroid_eval");
 
   if(setjmp(env) != 0) {
-    LOGE("jetjmp different from zero");
+    LOGE("setjmp different from zero");
     return "";
   }
-  
-  volatile GEN z;
+
+  s_droidStr.n=0;
+  avma=top;
+
+  volatile GEN z = gnil;
   CATCH(CATCH_ALL)
   {
-    return pari_err2str(global_err_data);
+    droidOutS(pari_err2str(global_err_data));
   } TRY {
     z = gp_read_str(in);
   } ENDCATCH;
-
+ 
   if (z != gnil) 
-    {
+  {
+      char *out;
       pari_add_hist(z);
-      LOGD("added element to output history");
       LOGD("pari_nb_hist = %ld",pari_nb_hist());
       if (in[strlen(in)-1]!=';') 
 	{
-	  char *out = GENtostr(z);
+	  out = GENtostr(z);
+	  droidOutS(out);
 	  LOGD("returning output from libparidroid");
-	  return out;
 	}
-    }
-  avma=top;
+  }
+  droidOutC(0);
   LOGW("Returning null from libparidroid");
-  return "";
+  return droidStr;
 }
 
 void paridroid_close()
