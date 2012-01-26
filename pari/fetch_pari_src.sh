@@ -21,7 +21,7 @@ then
 	echo "Pari-$DEV already exists."
 	exit 0
     else
-	wget http://pari.math.u-bordeaux.fr/pub/pari/snapshots/pari-2.6-654-gc5ca0e6.tar.gz
+	wget -r -l1 --no-parent -A.tar.gz http://pari.math.u-bordeaux.fr/pub/pari/snapshots/
 	exit 0
     fi
 fi
