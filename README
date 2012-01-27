@@ -2,13 +2,9 @@
 # Building the Android Toolchain #
 ##################################
 
-If you want to use the make_android_toolchain script, make sure to export the NDK path and other variables to suit your system.
+Run the configure script, then make_android_toolchain script.
 
-(E.g., "export NDK=<path/to/ndk>")
-
-You can change the value of TARGET_PLATFORM in the script to suit your preferences, PariDroid should work on any version of Android.
-
-If you do change the TARGET_PLATFORM, then make sure to edit default.properties accordingly.
+You need Android SDK and NDK to compile PariDroid from source.
 
 ###########################
 # Documentation & Support #

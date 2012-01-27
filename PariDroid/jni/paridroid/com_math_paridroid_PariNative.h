@@ -23,6 +23,14 @@ JNIEXPORT void JNICALL Java_com_math_paridroid_PariNative_paridroidInit
 JNIEXPORT jstring JNICALL Java_com_math_paridroid_PariNative_paridroidEval
   (JNIEnv *, jclass, jstring);
 
+/*
+ * Class:     com_math_paridroid_PariNative
+ * Method:    getHistSize
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_math_paridroid_PariNative_getHistSize
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif

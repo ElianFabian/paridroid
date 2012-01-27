@@ -66,9 +66,8 @@ public class PariDroidActivity extends Activity implements OnClickListener {
     
     private ArrayList<String> inputArrayList = new ArrayList<String>();
     
-    private int count = 0;
-    
-        
+    private int cursor = 0;
+
     public void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	Log.d(MSG_TAG, "Call to onCreate()");
@@ -118,7 +117,7 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 	inputArrayList.add(cmd);
 	String result = PariNative.paridroidEval(cmd);
 
-	outputArrayList.add(0,cmd + "\n\n[%" + outputArrayList.size() + "]: " + result);
+	outputArrayList.add(0,cmd + "\n\n" + "[%" + PariNative.getHistSize() + "]:" + "\n" + result);
 	outputArrayAdapter.notifyDataSetChanged();
     }
     
@@ -128,23 +127,32 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 
     public void onClick(View v) {
 	String in = inputText.getText().toString();
-	int histSize = inputArrayList.size();
+	int histSize = PariNative.getHistSize();
 
 	switch (v.getId()) {
 	case R.id.enterButton:
 	    evaluate(in);
+	    cursor=0;
 	    clear();
 	    break;
 	case R.id.clearButton:
 	    clear();
 	    break;
 	case R.id.prevButton:
-	    count++;
-	    Log.d(MSG_TAG,"PrevButton: Index = " + count);
+	    clear();
+	    cursor++;
+	    if (histSize - cursor > 0 && histSize - cursor < inputArrayList.size()) 
+		inputText.setText(inputArrayList.get(histSize-cursor));
+	    else
+		cursor=0;
 	    break;
 	case R.id.nextButton:
-	    Log.d(MSG_TAG,"nextButton: Index = " + count);
-	    count--;;
+	    clear();
+	    cursor--;
+	    if (histSize - cursor > 0 && histSize - cursor < inputArrayList.size()) 
+		inputText.setText(inputArrayList.get(histSize-cursor));
+	    else
+		cursor=0;
 	    break;
 	default:
 	    break;
@@ -153,7 +161,6 @@ public class PariDroidActivity extends Activity implements OnClickListener {
     
     public void onDestroy() {
 	super.onDestroy();
-	//	PariNative.paridroidClose();
     }
 
     /* Nested Classes */

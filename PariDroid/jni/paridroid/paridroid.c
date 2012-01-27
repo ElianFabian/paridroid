@@ -112,15 +112,22 @@ char
 	{
 	  out = GENtostr(z);
 	  droidOutS(out);
-	  LOGD("returning output from libparidroid");
 	}
   }
   droidOutC(0);
-  LOGW("Returning null from libparidroid");
+  LOGD("returning output from libparidroid");
   return droidStr;
 }
 
-void paridroid_close()
+int
+paridroid_nb_hist()
+{
+  return pari_nb_hist();
+}
+
+
+void
+paridroid_close()
 {
   LOGD("Call to paridroid_close");
   pari_close();
