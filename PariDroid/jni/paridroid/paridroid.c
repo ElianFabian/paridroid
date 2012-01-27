@@ -52,26 +52,57 @@ static void
 droidOutC(char c) 
 { 
   long n = pari_stack_new(&s_droidStr); 
- droidStr[n] = c;
+  droidStr[n] = c;
 }
 
 static void
-droidOutS(const char *s) { while(*s) droidOutC(*s++); }
+droidOutS(const char *s) 
+{
+  while(*s) 
+    droidOutC(*s++); 
+}
 
 static void
 droidOutF(void) { }
 
 static PariOUT droidOut = {droidOutC, droidOutS, droidOutF};
- 
+
+void 
+paridroid_quit(long exitcode) 
+{
+  LOGD("Call to paridroid_quit: exit code = %l", exitcode);
+  paridroid_close();
+}
+
+void
+help(const char *s)
+{
+  entree *ep = is_entry(s);
+  if (ep && ep->help)
+    pari_printf("%s\n",ep->help);
+  else
+    pari_printf("Function %s not found\n",s);
+}
+
 void 
 paridroid_init()
 {
+
+  entree functions_gp[]={
+    {"quit",0,(void*)paridroid_quit,11,"vD0,L,","quit({status = 0}): quit, return to the system with exit status 'status'."},
+    {"help",0,(void*)help,11,"vr","help(fun): display help for function fun"},
+    {NULL,0,NULL,0,NULL,NULL}};
+  
   pari_init(paridroid_stack_size, paridroid_maxprime);
+  pari_add_module(functions_gp);
+  LOGD("Added help() and quit() functions to pari");
   cb_pari_err_recover = gp_err_recover;
   pari_stack_init(&s_droidStr,sizeof(*droidStr),(void**)&droidStr);
+  
   pariOut=&droidOut;
   pariErr=&droidOut;
-  print_version("v1.5");
+  
+  print_version("v1.6r3");
   LOGD("Call to paridroid_init");
 }
 
@@ -80,7 +111,6 @@ print_version(char *vers)
 {
   LOGI("PARIDROID_LIBRARY_VERSION = %s", vers);
 }
-
 
 char 
 *paridroid_eval(const char *in) 
@@ -124,7 +154,6 @@ paridroid_nb_hist()
 {
   return pari_nb_hist();
 }
-
 
 void
 paridroid_close()

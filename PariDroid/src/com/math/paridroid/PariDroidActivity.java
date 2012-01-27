@@ -66,8 +66,10 @@ public class PariDroidActivity extends Activity implements OnClickListener {
     
     private ArrayList<String> inputArrayList = new ArrayList<String>();
     
-    private int cursor = 0;
+    private int histSize;
 
+    private int cursor = 0;
+    
     public void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	Log.d(MSG_TAG, "Call to onCreate()");
@@ -114,10 +116,18 @@ public class PariDroidActivity extends Activity implements OnClickListener {
     }
 
     private void evaluate(String cmd) {
-	inputArrayList.add(cmd);
+
 	String result = PariNative.paridroidEval(cmd);
 
-	outputArrayList.add(0,cmd + "\n\n" + "[%" + PariNative.getHistSize() + "]:" + "\n" + result);
+	histSize = PariNative.getHistSize();
+
+	if (inputArrayList.size() < histSize) {
+	    inputArrayList.add(cmd);
+	    Log.d(MSG_TAG,"Added command to input history");
+	    cursor=0;
+	}
+
+	outputArrayList.add(0,cmd + "\n\n" + "[%" + histSize + "]:" + "\n" + result);
 	outputArrayAdapter.notifyDataSetChanged();
     }
     
@@ -127,12 +137,10 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 
     public void onClick(View v) {
 	String in = inputText.getText().toString();
-	int histSize = PariNative.getHistSize();
-
+	
 	switch (v.getId()) {
 	case R.id.enterButton:
 	    evaluate(in);
-	    cursor=0;
 	    clear();
 	    break;
 	case R.id.clearButton:
@@ -141,24 +149,34 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 	case R.id.prevButton:
 	    clear();
 	    cursor++;
-	    if (histSize - cursor > 0 && histSize - cursor < inputArrayList.size()) 
-		inputText.setText(inputArrayList.get(histSize-cursor));
-	    else
-		cursor=0;
+	    Log.d(MSG_TAG,"Cursor = " + cursor);
+	    inputText.setText(getFromHistory(histSize - cursor));
 	    break;
 	case R.id.nextButton:
 	    clear();
 	    cursor--;
-	    if (histSize - cursor > 0 && histSize - cursor < inputArrayList.size()) 
-		inputText.setText(inputArrayList.get(histSize-cursor));
-	    else
-		cursor=0;
+	    Log.d(MSG_TAG,"Cursor = " + cursor);
+	    inputText.setText(getFromHistory(histSize - cursor));
 	    break;
 	default:
 	    break;
 	}
     }
     
+    public String getFromHistory(int i) {
+	int n = inputArrayList.size();
+	String histCommand = "";
+		
+	try {
+	    histCommand = inputArrayList.get(i);
+	    Log.d(MSG_TAG,"Retreived " + i + "th element from input history.");
+	} catch (Exception ex) {
+	    Log.e(MSG_TAG,"Exception trying to retreive " + i + "th element from input history");
+	    cursor = 0;
+	}
+	return histCommand;
+    }
+		
     public void onDestroy() {
 	super.onDestroy();
     }

@@ -1,9 +1,11 @@
 
 TOP:=$(shell pwd)
 ANDROID:=$(TOP)/android
+
 PARIDROID_ROOT:=$(TOP)/PariDroid
 PARIDROID_JNI:=$(PARIDROID_ROOT)/jni
 
+FETCH_PARI:=$(PARI_ROOT)/fetch_pari_src.sh
 NDK_BUILD:=$(ANDROID)/ndk/ndk-build
 
 all: PariDroid.apk
