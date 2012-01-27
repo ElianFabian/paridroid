@@ -2,9 +2,18 @@
 # Building the Android Toolchain #
 ##################################
 
-Run the configure script, then make_android_toolchain script.
+You need to have installed Android SDK and NDK before compiling PariDroid
+from source.
 
-You need Android SDK and NDK to compile PariDroid from source.
+Run the configure and make_android_toolchain scripts:
+   cd scripts
+   ./configure PATH_TO_ANDROID_NDK PATH_TO_ANDROID_SDK
+   ./make_android_toolchain
+   cd ..
+
+Now build everything:
+   make
+
 
 ###########################
 # Documentation & Support #
