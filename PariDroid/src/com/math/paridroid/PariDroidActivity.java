@@ -125,9 +125,11 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 	    inputArrayList.add(cmd);
 	    Log.d(MSG_TAG,"Added command to input history");
 	    cursor=0;
+            outputArrayList.add(0, "? " + cmd + "\n" + "%" + histSize + " = " + result);
 	}
+	else
+            outputArrayList.add(0, "? " + cmd + "\n" + result);
 
-	outputArrayList.add(0, "? " + cmd + "\n" + "%" + histSize + " = " + result);
 	outputArrayAdapter.notifyDataSetChanged();
     }
     
