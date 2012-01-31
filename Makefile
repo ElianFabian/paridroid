@@ -8,9 +8,7 @@ PARIDROID_JNI:=$(PARIDROID_ROOT)/jni
 FETCH_PARI:=$(PARI_ROOT)/fetch_pari_src.sh
 NDK_BUILD:=$(ANDROID)/ndk/ndk-build
 
-all: PariDroid.apk
-
-PariDroid.apk:
+all:
 	$(NDK_BUILD) -C $(PARIDROID_JNI) -B V=1
 	ant -buildfile $(PARIDROID_ROOT)/build.xml debug
 	cp $(PARIDROID_ROOT)/bin/PariDroid-debug.apk PariDroid.apk
