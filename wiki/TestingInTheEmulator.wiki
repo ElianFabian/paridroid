@@ -11,7 +11,7 @@ emulator @android8
 }}}
   * push the apk to the emulator (Assuming you are in `PariDroid/bin`)
 {{{
-adb install PariDroid-debug.apk
+adb -e install PariDroid-debug.apk
 }}}
    * *NOTE:* If PariDroid is already instaled, use the `-r` flag, i.e.
 {{{
