@@ -127,7 +127,7 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 	    cursor=0;
 	}
 
-	outputArrayList.add(0,cmd + "\n\n" + "[%" + histSize + "]:" + "\n" + result);
+	outputArrayList.add(0, "? " + cmd + "\n" + "%" + histSize + " = " + result);
 	outputArrayAdapter.notifyDataSetChanged();
     }
     
