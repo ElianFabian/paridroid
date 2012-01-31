@@ -15,7 +15,7 @@ adb -e install PariDroid-debug.apk
 }}}
    * *NOTE:* If PariDroid is already instaled, use the `-r` flag, i.e.
 {{{
-adb install -r PariDroid-debug.apk
+adb -e install -r PariDroid-debug.apk
 }}}
   * Then launch the application in the emulator.
   * To read debug messages, use `adb logcat` in the shell.
