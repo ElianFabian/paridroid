@@ -117,7 +117,16 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 
     private void evaluate(String cmd) {
 
-	String result = PariNative.paridroidEval(cmd);
+        String result;
+        
+        if (cmd.length () >= 1 && cmd.charAt (0) == '?')
+           /* treat metacommand "?" or "??" */
+           if (cmd.length () >= 2 && cmd.charAt (1) == '?')
+              result = PariNative.paridroidEval ("help(" + cmd.substring (2) + ")");
+           else
+              result = PariNative.paridroidEval ("help(" + cmd.substring (1) + ")");
+        else
+           result = PariNative.paridroidEval(cmd);
 
 	histSize = PariNative.getHistSize();
 
