@@ -26,6 +26,7 @@ import com.math.paridroid.R;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -209,6 +210,7 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 	
 	public View getView(int position, View convertView, ViewGroup parent) {
 	    TextView txt = new TextView(this.getContext());
+	    txt.setTypeface (Typeface.MONOSPACE);
 	    txt.setText(this.getItem(position));
 	    return txt;
 	}
