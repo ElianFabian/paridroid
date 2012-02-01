@@ -128,6 +128,10 @@ public class PariDroidActivity extends Activity implements OnClickListener {
         else
            result = PariNative.paridroidEval(cmd);
 
+        /* remove extraneous line breaks to save screen space */
+        result = result.replaceAll ("\n\n", "\n");
+        result = result.replaceAll ("\n$", "");
+
 	histSize = PariNative.getHistSize();
 
 	if (inputArrayList.size() < histSize) {
