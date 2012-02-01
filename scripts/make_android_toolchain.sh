@@ -19,6 +19,7 @@ fi
 if [ -e $MAKE_TOOLCHAIN_SH  ]
 then
     $MAKE_TOOLCHAIN_SH --platform=$API_LEVEL --install-dir=$TOOLCHAIN_DIR
+    cp $TOOLCHAIN_DIR/sysroot/usr/include/termios.h $TOOLCHAIN_DIR/sysroot/usr/include/sys/termios.h
 else
     echo "Cannot find NDK script to make standalone toolchain. Exiting."
     exit -1
