@@ -19,9 +19,9 @@
  * (Copyright 2011)
  */
 
-package com.math.paridroid;
+package org.libremath.paridroid;
 
-import com.math.paridroid.R;
+import org.libremath.paridroid.R;
 
 import android.app.Activity;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package com.math.paridroid;
+package org.libremath.paridroid;
 
 import android.util.Log;
 
