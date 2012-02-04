@@ -24,18 +24,18 @@
 #include <string.h>
 #include <jni.h>
 
-#include "com_math_paridroid_PariNative.h"
+#include "org_libremath_paridroid_PariNative.h"
 #include "paridroid.h"
 
 void
-Java_com_math_paridroid_PariNative_paridroidInit(JNIEnv *jenv, jobject obj)
+Java_org_libremath_paridroid_PariNative_paridroidInit(JNIEnv *jenv, jobject obj)
 {
   LOGD("Call to PariNative_paridroidInit");
   paridroid_init();
 }
 
 jstring
-Java_com_math_paridroid_PariNative_paridroidEval(JNIEnv *jenv, jobject obj, jstring input)
+Java_org_libremath_paridroid_PariNative_paridroidEval(JNIEnv *jenv, jobject obj, jstring input)
 {
   LOGD("Call to PariNative_paridroidEval");
 
@@ -65,13 +65,13 @@ Java_com_math_paridroid_PariNative_paridroidEval(JNIEnv *jenv, jobject obj, jstr
 }
 
 jint 
-Java_com_math_paridroid_PariNative_getHistSize (JNIEnv *env, jclass obj)
+Java_org_libremath_paridroid_PariNative_getHistSize (JNIEnv *env, jclass obj)
 {
   return paridroid_nb_hist();
 }
 
 void
-Java_com_math_paridroid_PariNative_paridroidClose(JNIEnv *jenv, jobject obj)
+Java_org_libremath_paridroid_PariNative_paridroidClose(JNIEnv *jenv, jobject obj)
 {
   LOGD("call to PariNative_paridroidClose");
   paridroid_close();

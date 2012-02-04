@@ -26,7 +26,7 @@
 #include <setjmp.h>
 #include <strings.h>
 
-#include "com_math_paridroid_PariNative.h"
+#include "org_libremath_paridroid_PariNative.h"
 #include "paridroid.h"
 
 /** number of bytes to initialize pari stack with */

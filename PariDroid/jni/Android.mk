@@ -28,7 +28,7 @@ LOCAL_CFLAGS := -g
 
 LOCAL_SRC_FILES := \
 	paridroid/paridroid.c \
-	paridroid/com_math_paridroid_PariNative.c
+	paridroid/org_libremath_paridroid_PariNative.c
 
 LOCAL_SHARED_LIBRARIES := libpari
 
