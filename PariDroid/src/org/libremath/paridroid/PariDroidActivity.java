@@ -31,6 +31,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MenuItem.*;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -73,7 +77,6 @@ public class PariDroidActivity extends Activity implements OnClickListener {
     
     public void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
-	Log.d(MSG_TAG, "Call to onCreate()");
 	setContentView(R.layout.main);
 	PariNative.paridroidInit();
 	initialize();
@@ -137,7 +140,6 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 
 	if (inputArrayList.size() < histSize) {
 	    inputArrayList.add(cmd);
-	    Log.d(MSG_TAG,"Added command to input history");
 	    cursor=0;
             outputArrayList.add(0, "? " + cmd + "\n" + "%" + histSize + " = " + result);
 	}
@@ -165,13 +167,11 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 	case R.id.prevButton:
 	    clear();
 	    cursor++;
-	    Log.d(MSG_TAG,"Cursor = " + cursor);
 	    inputText.setText(getFromHistory(histSize - cursor));
 	    break;
 	case R.id.nextButton:
 	    clear();
 	    cursor--;
-	    Log.d(MSG_TAG,"Cursor = " + cursor);
 	    inputText.setText(getFromHistory(histSize - cursor));
 	    break;
 	default:
@@ -185,14 +185,59 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 		
 	try {
 	    histCommand = inputArrayList.get(i);
-	    Log.d(MSG_TAG,"Retreived " + i + "th element from input history.");
 	} catch (Exception ex) {
 	    Log.e(MSG_TAG,"Exception trying to retreive " + i + "th element from input history");
 	    cursor = 0;
 	}
 	return histCommand;
     }
-		
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+	MenuInflater inflater = getMenuInflater();
+	inflater.inflate(R.menu.paridroid_menu, menu);
+	return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+	switch (item.getItemId()) {
+	case R.id.app_settings:
+	    return true;
+	case R.id.setMaxprime:
+	    clear();
+	    inputText.setText("default(primelimit, ? )");
+	    return true;
+	case R.id.setStacksize:
+	    clear();
+	    inputText.setText("default(parisize, ? )");
+	    return true;
+	case R.id.setPrecision:
+	    clear();
+	    inputText.setText("default(realprecision, ? )");
+	    return true;
+	case R.id.docs:
+	    displayToastMessage("For documentation, please visit:\n"+
+				"http://www.paridroid.libremath.org");
+	    return true;
+	case R.id.app_license:
+	    displayToastMessage("This program is free software: you can redistribute it and/or modify\n"+
+				"it under the terms of the GNU General Public License as published by\n"+
+				"the Free Software Foundation, either version 3 of the License, or\n"+
+				"(at your option) any later version.\n\n"+
+				"This program is distributed in the hope that it will be useful,\n"+
+				"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"+
+				"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n"+
+				"See the GNU General Public License for more details.\n"+
+				"http://www.gnu.org/licenses/gpl.txt");
+	    return true;
+	default:
+	    return super.onOptionsItemSelected(item);
+	}
+    }
+
+    public void displayToastMessage(String message) {
+	Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+    
     public void onDestroy() {
 	super.onDestroy();
     }

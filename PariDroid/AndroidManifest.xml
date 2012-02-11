@@ -2,10 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	  package="org.libremath.paridroid"
 	  android:versionCode="1"
-	  android:versionName="1.5">
+	  android:versionName="1.5.0">
   <application android:icon="@drawable/icon" 
 	       android:label="@string/app_name"
-	       android:debuggable="true">
+	       android:debuggable="false">
     <activity android:name=".PariDroidActivity"
 	      android:label="@string/app_name"
 	      android:screenOrientation="unspecified">
@@ -16,4 +16,6 @@
     </activity>
   </application>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> 
+  <uses-sdk android:minSdkVersion="1" 
+	    android:targetSdkVersion="8"/>
 </manifest> 

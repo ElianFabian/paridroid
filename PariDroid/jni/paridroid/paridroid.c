@@ -1,4 +1,4 @@
-/*
+/**
  *-----------------------------------------------
  * paridroid.c - Android wrapper around libpari.
  *-----------------------------------------------
@@ -70,7 +70,7 @@ static PariOUT droidOut = {droidOutC, droidOutS, droidOutF};
 void 
 paridroid_quit(long exitcode) 
 {
-  LOGD("Call to paridroid_quit: exit code = %l", exitcode);
+  LOGW("Call to paridroid_quit: exit code = %l", exitcode);
   paridroid_close();
 }
 
@@ -95,15 +95,13 @@ paridroid_init()
   
   pari_init(paridroid_stack_size, paridroid_maxprime);
   pari_add_module(functions_gp);
-  LOGD("Added help() and quit() functions to pari");
   cb_pari_err_recover = gp_err_recover;
   pari_stack_init(&s_droidStr,sizeof(*droidStr),(void**)&droidStr);
   
   pariOut=&droidOut;
   pariErr=&droidOut;
   
-  print_version("v1.6r3");
-  LOGD("Call to paridroid_init");
+  print_version("v1.5");
 }
 
 void
@@ -115,7 +113,6 @@ print_version(char *vers)
 char 
 *paridroid_eval(const char *in) 
 {
-  LOGD("Call to paridroid_eval");
 
   if(setjmp(env) != 0) {
     LOGE("setjmp different from zero");
@@ -137,7 +134,6 @@ char
   {
       char *out;
       pari_add_hist(z);
-      LOGD("pari_nb_hist = %ld",pari_nb_hist());
       if (in[strlen(in)-1]!=';') 
 	{
 	  out = GENtostr(z);
@@ -145,7 +141,6 @@ char
 	}
   }
   droidOutC(0);
-  LOGD("returning output from libparidroid");
   return droidStr;
 }
 
@@ -158,6 +153,5 @@ paridroid_nb_hist()
 void
 paridroid_close()
 {
-  LOGD("Call to paridroid_close");
   pari_close();
 }

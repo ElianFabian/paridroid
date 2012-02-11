@@ -39,10 +39,4 @@ class PariNative {
     public static native String paridroidEval(String cmd);
 
     public static native int getHistSize();
-
-    /**
-     * Declaration of JNI callback to paridroid_close().
-     * @see libparidroid.
-     */
-    //    public static native void paridroidClose();
 }

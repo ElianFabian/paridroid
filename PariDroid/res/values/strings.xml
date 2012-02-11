@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">PariDroid</string>
+    <string name="settings">Settings</string>
+    <string name="maxprime">MaxPrime</string>
+    <string name="stacksize">StackSize</string>
+    <string name="precision">Precision</string>
+    <string name="documentation">Documentation</string>
+    <string name="license">License</string>
 </resources>

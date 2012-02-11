@@ -30,15 +30,12 @@
 void
 Java_org_libremath_paridroid_PariNative_paridroidInit(JNIEnv *jenv, jobject obj)
 {
-  LOGD("Call to PariNative_paridroidInit");
   paridroid_init();
 }
 
 jstring
 Java_org_libremath_paridroid_PariNative_paridroidEval(JNIEnv *jenv, jobject obj, jstring input)
 {
-  LOGD("Call to PariNative_paridroidEval");
-
   const jbyte *cmd;
   char *output;
 
@@ -59,7 +56,6 @@ Java_org_libremath_paridroid_PariNative_paridroidEval(JNIEnv *jenv, jobject obj,
 
   // We encode the native string into a jstring and return it.
   jstring result = (*jenv)->NewStringUTF(jenv,output);
-  LOGD("returning result from Native:paridroidEval");
 
   return result;
 }
@@ -68,11 +64,4 @@ jint
 Java_org_libremath_paridroid_PariNative_getHistSize (JNIEnv *env, jclass obj)
 {
   return paridroid_nb_hist();
-}
-
-void
-Java_org_libremath_paridroid_PariNative_paridroidClose(JNIEnv *jenv, jobject obj)
-{
-  LOGD("call to PariNative_paridroidClose");
-  paridroid_close();
 }
