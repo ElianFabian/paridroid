@@ -8,7 +8,7 @@ element_count=${#subdirs[@]}
 index=0
 
 while [ "$index" -lt "$element_count" ]
-do    # List all the elements in the array.
+do
     egrep "Help*" $PARI/src/functions/${subdirs[$index]}/* > ${subdirs[$index]}_tmp.txt
     egrep -o ' \<[a-z].*\>\W*\W[::]' ${subdirs[$index]}_tmp.txt > ${subdirs[$index]}_proto_tmp.txt
     sed -e 's/[::]//' ${subdirs[$index]}_proto_tmp.txt > ${subdirs[$index]}_proto.txt
