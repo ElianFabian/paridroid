@@ -4,11 +4,13 @@
 	android:title="@string/settings">
     <menu>
       <item android:id="@+id/setMaxprime"
-	    android:title="@string/maxprime"/>
+	    android:title="@string/max_prime"/>
       <item android:id="@+id/setStacksize"
-	    android:title="@string/stacksize"/>
-      <item android:id="@+id/setPrecision"
-	    android:title="@string/precision"/>
+	    android:title="@string/stack_size"/>
+      <item android:id="@+id/setRealPrecision"
+	    android:title="@string/real_precision"/>
+      <item android:id="@+id/setSeriesPrecision"
+	    android:title="@string/series_precision"/>
     </menu>
   </item>
   <item android:id="@+id/docs"

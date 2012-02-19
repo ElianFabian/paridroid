@@ -15,11 +15,6 @@ all-debug:
 	ant -buildfile $(PARIDROID_ROOT)/build.xml debug
 	cp $(PARIDROID_ROOT)/bin/PariDroid-debug.apk PariDroid.apk
 
-all-release:
-	$(NDK_BUILD) -C $(PARIDROID_JNI) -B V=1
-	ant -buildfile $(PARIDROID_ROOT)/build.xml release
-	cp $(PARIDROID_ROOT)/bin/PariDroid-unsigned.apk .
-
 clean: paridroid_clean ndk_clean
 	rm -f PariDroid.apk
 

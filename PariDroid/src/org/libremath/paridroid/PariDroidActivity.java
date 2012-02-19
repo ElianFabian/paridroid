@@ -23,8 +23,12 @@ package org.libremath.paridroid;
 
 import org.libremath.paridroid.R;
 
+import static org.libremath.paridroid.util.CommonAndroidCodeLibrary.makeToast;
+import static org.libremath.paridroid.util.CommonAndroidCodeLibrary.showOkAlertDialog;
+
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -40,20 +44,21 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.io.*;
 
-public class PariDroidActivity extends Activity implements OnClickListener {
+public class PariDroidActivity extends Activity implements View.OnClickListener {
     
     public static final String MSG_TAG = "PariDroid";
 
-    private EditText inputText;
+    private AutoCompleteTextView inputText;
    
     private Button enterButton;
 
@@ -67,9 +72,9 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 
     private OutputStringArrayAdapter outputArrayAdapter;
 
-    private ArrayList<String> outputArrayList = new ArrayList<String>();
+    private ArrayList<String> outputArrayList = new ArrayList<String>(255);
     
-    private ArrayList<String> inputArrayList = new ArrayList<String>();
+    private ArrayList<String> inputArrayList = new ArrayList<String>(255);
     
     private int histSize;
 
@@ -85,7 +90,7 @@ public class PariDroidActivity extends Activity implements OnClickListener {
     private void initialize() {
 	setTitle(getString(R.string.app_name));
 
-	inputText = (EditText)findViewById(R.id.inputText);
+	inputText = (AutoCompleteTextView)findViewById(R.id.inputText);
 
 	enterButton = (Button)findViewById(R.id.enterButton);
 	enterButton.setOnClickListener(this);
@@ -103,8 +108,10 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 	outputArrayAdapter = new OutputStringArrayAdapter(this,outputArrayList);
 	historyList.setAdapter(outputArrayAdapter);
 
-	String example = "factor(38975)";
+	String example = "for(i=0,20,print(fibonacci(i)))";
 	inputText.setText(example);
+
+	setupAutoCompleteView();
 
 	inputText.setOnKeyListener(new OnKeyListener() {
 		public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -123,29 +130,28 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 
         String result;
         
-        if (cmd.length () >= 1 && cmd.charAt (0) == '?')
+        if (cmd.length() >= 1 && cmd.charAt(0) == '?')
            /* treat metacommand "?" or "??" */
-           if (cmd.length () >= 2 && cmd.charAt (1) == '?')
-              result = PariNative.paridroidEval ("help(" + cmd.substring (2) + ")");
+           if (cmd.length() >= 2 && cmd.charAt(1) == '?')
+              result = PariNative.paridroidEval("help(" + cmd.substring(2) + ")");
            else
-              result = PariNative.paridroidEval ("help(" + cmd.substring (1) + ")");
+              result = PariNative.paridroidEval("help(" + cmd.substring(1) + ")");
         else
            result = PariNative.paridroidEval(cmd);
 
         /* remove extraneous line breaks to save screen space */
-        result = result.replaceAll ("\n\n", "\n");
-        result = result.replaceAll ("\n$", "");
+        result = result.replaceAll("\n\n", "\n");
+        result = result.replaceAll("\n$", "");
 
 	histSize = PariNative.getHistSize();
 
 	if (inputArrayList.size() < histSize) {
 	    inputArrayList.add(cmd);
-	    cursor=0;
+	    cursor = 0;
             outputArrayList.add(0, "? " + cmd + "\n" + "%" + histSize + " = " + result);
-	}
-	else
+	} else {
             outputArrayList.add(0, "? " + cmd + "\n" + result);
-
+	}
 	outputArrayAdapter.notifyDataSetChanged();
     }
     
@@ -210,16 +216,20 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 	    clear();
 	    inputText.setText("default(parisize, ? )");
 	    return true;
-	case R.id.setPrecision:
+	case R.id.setRealPrecision:
 	    clear();
 	    inputText.setText("default(realprecision, ? )");
 	    return true;
+	case R.id.setSeriesPrecision:
+	    clear();
+	    inputText.setText("default(seriesprecision, ? )");
+	    return true;
 	case R.id.docs:
-	    displayToastMessage("For documentation, please visit:\n"+
+	    makeToast(this,"For documentation, please visit:\n"+
 				"http://www.paridroid.libremath.org");
 	    return true;
 	case R.id.app_license:
-	    displayToastMessage("This program is free software: you can redistribute it and/or modify\n"+
+	    showOkAlertDialog(this,"This program is free software: you can redistribute it and/or modify\n"+
 				"it under the terms of the GNU General Public License as published by\n"+
 				"the Free Software Foundation, either version 3 of the License, or\n"+
 				"(at your option) any later version.\n\n"+
@@ -234,19 +244,74 @@ public class PariDroidActivity extends Activity implements OnClickListener {
 	}
     }
 
-    public void displayToastMessage(String message) {
-	Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    public void setupAutoCompleteView() {
+
+	Resources res = getResources();
+	ArrayList<String> functions = new ArrayList<String>();
+
+	String[] conversions = res.getStringArray(R.array.conversions);
+	for(String line : conversions) {
+	    functions.add(line);
+	}
+
+	String[] elliptic = res.getStringArray(R.array.elliptic_curves);
+	for(String line : elliptic) {
+	    functions.add(line);
+	}
+
+	String[] linear = res.getStringArray(R.array.linear_algebra);
+	for(String line : linear) {
+	    functions.add(line);
+	}
+
+	String[] fields = res.getStringArray(R.array.number_fields);
+	for(String line : fields) {
+	    functions.add(line);
+	}
+
+	String[] operators = res.getStringArray(R.array.operators);
+	for(String line : operators) {
+	    functions.add(line);
+	}
+
+	String[] programming = res.getStringArray(R.array.programming);
+	for(String line : programming) {
+	    functions.add(line);
+	}
+
+	String[] symbolic = res.getStringArray(R.array.symbolic_operators);
+	for(String line : symbolic) {
+	    functions.add(line);
+	}
+
+	String[] theoretical = res.getStringArray(R.array.number_theoretical);
+	for(String line : theoretical) {
+	    functions.add(line);
+	}
+
+	String[] polynomials = res.getStringArray(R.array.polynomials);
+	for(String line : polynomials) {
+	    functions.add(line);
+	}
+
+	String[] sums = res.getStringArray(R.array.sums);
+	for(String line : sums) {
+	    functions.add(line);
+	}
+
+	String[] transcendental = res.getStringArray(R.array.transcendental);
+	for(String line : transcendental) {
+	    functions.add(line);
+	}
+	ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.list_item,functions);
+	inputText.setAdapter(adapter);
     }
-    
+
     public void onDestroy() {
 	super.onDestroy();
     }
 
     /* Nested Classes */
-    /**
-     * Custom String ArrayAdapter class that allows us to manipulate the row
-     * colors etc.
-     */
     protected class OutputStringArrayAdapter extends ArrayAdapter<String> {
 	
 	OutputStringArrayAdapter(Context context, ArrayList<String> stringArrayList) {
