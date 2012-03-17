@@ -1,5 +1,4 @@
-
-package org.libremath.paridroid.vaos;
+package org.libremath.paridroid.vos;
 
 import java.lang.StringBuilder;
 
@@ -9,7 +8,7 @@ public class VectorVo {
 
     public String[] entries = new String[dimension];
 
-    public MyVector(int dimension, String[] entries) {
+    public VectorVo(int dimension, String[] entries) {
 	this.dimension = dimension;
 	this.entries = entries;
     }

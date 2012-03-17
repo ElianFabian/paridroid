@@ -26,6 +26,9 @@ import org.libremath.paridroid.R;
 import static org.libremath.paridroid.util.ParidroidUtils.makeToast;
 import static org.libremath.paridroid.util.ParidroidUtils.showOkAlertDialog;
 
+import org.libremath.paridroid.vos.PolynomialVo;
+import org.libremath.paridroid.vos.VectorVo;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
@@ -68,6 +71,12 @@ public class PariDroidActivity extends Activity implements View.OnClickListener 
 
     private Button prevButton;
 
+    private Button favButton;
+
+    private Button objButton;
+
+    private Button helpButton;
+
     private ListView historyList;
 
     private OutputStringArrayAdapter outputArrayAdapter;
@@ -103,6 +112,15 @@ public class PariDroidActivity extends Activity implements View.OnClickListener 
 
 	prevButton = (Button)findViewById(R.id.prevButton);
 	prevButton.setOnClickListener(this);
+
+	favButton = (Button)findViewById(R.id.favButton);
+	favButton.setOnClickListener(this);
+
+	objButton = (Button)findViewById(R.id.objButton);
+	objButton.setOnClickListener(this);
+
+	helpButton = (Button)findViewById(R.id.helpButton);
+	helpButton.setOnClickListener(this);
 
 	historyList = (ListView)findViewById(R.id.historyList);
 	outputArrayAdapter = new OutputStringArrayAdapter(this,outputArrayList);
@@ -179,6 +197,19 @@ public class PariDroidActivity extends Activity implements View.OnClickListener 
 	    clear();
 	    cursor--;
 	    inputText.setText(getFromHistory(histSize - cursor));
+	    break;
+	case R.id.favButton:
+	    clear();
+	    inputText.setText(":3");
+	    break;
+	case R.id.objButton:
+	    String [] test = {"3","6","-8","3-2*I"};
+	    PolynomialVo pol = new PolynomialVo(test);
+	    inputText.setText(pol.toString());
+	    break;
+	case R.id.helpButton:
+	    clear();
+	    inputText.setText("?");
 	    break;
 	default:
 	    break;

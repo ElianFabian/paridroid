@@ -36,17 +36,35 @@
 	  android:layout_weight="1.0"
 	  android:text="Clear"/>
       <Button 
-	  android:id="@+id/nextButton"
+	  android:id="@+id/favButton"
 	  android:layout_width="0dip"
 	  android:layout_height="wrap_content"
 	  android:layout_weight="1.0"
-	  android:text="Next"/>
+	  android:text="Fav"/>
+      <Button 
+	  android:id="@+id/objButton"
+	  android:layout_width="0dip"
+	  android:layout_height="wrap_content"
+	  android:layout_weight="1.0"
+	  android:text="New"/>
       <Button
 	  android:id="@+id/prevButton"
 	  android:layout_width="0dip"
 	  android:layout_height="wrap_content"
 	  android:layout_weight="1.0"
 	  android:text="Prev"/>
+      <Button 
+	  android:id="@+id/nextButton"
+	  android:layout_width="0dip"
+	  android:layout_height="wrap_content"
+	  android:layout_weight="1.0"
+	  android:text="Next"/>
+      <Button 
+	  android:id="@+id/helpButton"
+	  android:layout_width="0dip"
+	  android:layout_height="wrap_content"
+	  android:layout_weight="1.0"
+	  android:text="Help"/>
     </LinearLayout>
     <ListView
 	android:id="@+id/historyList"
