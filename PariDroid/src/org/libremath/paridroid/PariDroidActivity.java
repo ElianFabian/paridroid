@@ -16,15 +16,15 @@
  *
  * Written by Charles Boyd
  * UMass Amherst - Dept. of Mathematics
- * (Copyright 2011)
+ * (Copyright 2012)
  */
 
 package org.libremath.paridroid;
 
 import org.libremath.paridroid.R;
 
-import static org.libremath.paridroid.util.CommonAndroidCodeLibrary.makeToast;
-import static org.libremath.paridroid.util.CommonAndroidCodeLibrary.showOkAlertDialog;
+import static org.libremath.paridroid.util.ParidroidUtils.makeToast;
+import static org.libremath.paridroid.util.ParidroidUtils.showOkAlertDialog;
 
 import android.app.Activity;
 import android.content.Context;

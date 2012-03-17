@@ -18,7 +18,7 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.widget.Toast;
 
-public class CommonAndroidCodeLibrary
+public class ParidroidUtils
 {
     protected static final String _encoding;
     protected static final String _newline;
