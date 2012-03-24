@@ -50,6 +50,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,11 +72,7 @@ public class PariDroidActivity extends Activity implements View.OnClickListener 
 
     private Button prevButton;
 
-    private Button favButton;
-
     private Button objButton;
-
-    private Button helpButton;
 
     private ListView historyList;
 
@@ -112,15 +109,9 @@ public class PariDroidActivity extends Activity implements View.OnClickListener 
 
 	prevButton = (Button)findViewById(R.id.prevButton);
 	prevButton.setOnClickListener(this);
-
-	favButton = (Button)findViewById(R.id.favButton);
-	favButton.setOnClickListener(this);
-
+	
 	objButton = (Button)findViewById(R.id.objButton);
 	objButton.setOnClickListener(this);
-
-	helpButton = (Button)findViewById(R.id.helpButton);
-	helpButton.setOnClickListener(this);
 
 	historyList = (ListView)findViewById(R.id.historyList);
 	outputArrayAdapter = new OutputStringArrayAdapter(this,outputArrayList);
@@ -198,19 +189,8 @@ public class PariDroidActivity extends Activity implements View.OnClickListener 
 	    cursor--;
 	    inputText.setText(getFromHistory(histSize - cursor));
 	    break;
-	case R.id.favButton:
-	    clear();
-	    inputText.setText(":3");
-	    break;
 	case R.id.objButton:
-	    String [] test = {"3","6","-8","3-2*I"};
-	    PolynomialVo pol = new PolynomialVo(test);
-	    inputText.setText(pol.toString());
-	    break;
-	case R.id.helpButton:
-	    clear();
-	    inputText.setText("?");
-	    break;
+	    
 	default:
 	    break;
 	}
@@ -254,6 +234,12 @@ public class PariDroidActivity extends Activity implements View.OnClickListener 
 	case R.id.setSeriesPrecision:
 	    clear();
 	    inputText.setText("default(seriesprecision, ? )");
+	    return true;
+	case R.id.save:
+	    makeToast(this,"Not yet implemented!");
+	    return true;
+	case R.id.load:
+	    makeToast(this,"Not yet implemented!");
 	    return true;
 	case R.id.docs:
 	    makeToast(this,"For documentation, please visit:\n"+
