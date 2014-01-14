@@ -21,7 +21,7 @@ $(NDK_MODULES)/paridroid/org_freemonad_paridroid_PariNative.h: libpari
 	mv $(PARIDROID_SRC)/bin/classes/org_freemonad_paridroid_PariNative.h $(NDK_MODULES)/paridroid/org_freemonad_paridroid_PariNative.h
 
 libpari:
-	cd $(PARI_SRC)/Oandroid-arm && make
+	cd $(PARI_SRC)/Oandroid-arm && $(MAKE)
 	mkdir -p $(NDK_MODULES)/pari/lib
 	cp $(PARI_SRC)/Oandroid-arm/libpari.so $(NDK_MODULES)/pari/lib
 	mkdir -p $(NDK_MODULES)/pari/include
@@ -38,7 +38,7 @@ ndk-clean:
 pari-clean: 
 	rm -f $(PARI_SRC)/pari.cfg
 	rm -rf $(PARI_SRC)/android
-	cd $(PARI_SRC)/Oandroid-arm && make clean
+	cd $(PARI_SRC)/Oandroid-arm && $(MAKE) clean
 
 uberclean: clean ndk-clean pari-clean
 	rm -rf $(NDK_MODULES)/pari/lib/*.so
