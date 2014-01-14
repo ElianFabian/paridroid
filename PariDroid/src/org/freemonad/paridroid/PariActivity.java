@@ -68,8 +68,6 @@ public class PariActivity extends Activity implements View.OnClickListener {
 
     private Button prevButton;
 
-    private Button objButton;
-
     private ListView historyList;
 
     private OutputStringArrayAdapter outputArrayAdapter;
@@ -106,9 +104,6 @@ public class PariActivity extends Activity implements View.OnClickListener {
 	prevButton = (Button)findViewById(R.id.prevButton);
 	prevButton.setOnClickListener(this);
 	
-	objButton = (Button)findViewById(R.id.objButton);
-	objButton.setOnClickListener(this);
-
 	historyList = (ListView)findViewById(R.id.historyList);
 	outputArrayAdapter = new OutputStringArrayAdapter(this,outputArrayList);
 	historyList.setAdapter(outputArrayAdapter);
@@ -185,7 +180,6 @@ public class PariActivity extends Activity implements View.OnClickListener {
 	    cursor--;
 	    inputText.setText(getFromHistory(histSize - cursor));
 	    break;
-	case R.id.objButton:
 	    
 	default:
 	    break;
@@ -199,7 +193,7 @@ public class PariActivity extends Activity implements View.OnClickListener {
 	try {
 	    histCommand = inputArrayList.get(i);
 	} catch (Exception ex) {
-	    Log.e(MSG_TAG,"Exception trying to retreive " + i + "th element from input history");
+	    Log.e(MSG_TAG,"Exception trying to retrieve " + i + "th element from input history");
 	    cursor = 0;
 	}
 	return histCommand;
