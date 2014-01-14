@@ -23,7 +23,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <pari/pari.h>
+#include <pari.h>
 #include <setjmp.h>
 #include <strings.h>
 
