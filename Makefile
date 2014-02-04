@@ -1,10 +1,12 @@
 .PHONY: all apk paridroid libpari clean ndk-clean pari-clean uberclean
 
 include ./Makefile.include
+CC=$(TOOLCHAIN)/bin/arm-linux-androideabi-gcc
 
 PARI_SRC=$(TOP)/pari
 PARIDROID_SRC=$(TOP)/PariDroid
 NDK_MODULES=$(PARIDROID_SRC)/jni
+PARI_PREFIX=$(NDK_MODULES)/pari
 
 all: libpari paridroid apk
 
@@ -20,13 +22,24 @@ $(NDK_MODULES)/paridroid/org_freemonad_paridroid_PariNative.h: libpari
 	cd $(PARIDROID_SRC)/bin/classes && javah -jni org.freemonad.paridroid.PariNative
 	mv $(PARIDROID_SRC)/bin/classes/org_freemonad_paridroid_PariNative.h $(NDK_MODULES)/paridroid/org_freemonad_paridroid_PariNative.h
 
-libpari:
+libpari-old:
 	cd $(PARI_SRC)/Oandroid-arm && $(MAKE)
 	mkdir -p $(NDK_MODULES)/pari/lib
 	cp $(PARI_SRC)/Oandroid-arm/libpari-2.6.so $(NDK_MODULES)/pari/lib
 	mkdir -p $(NDK_MODULES)/pari/include
 	cp -r $(PARI_SRC)/Oandroid-arm/*.h $(NDK_MODULES)/pari/include
 	cp -r $(PARI_SRC)/src/headers/*.h $(NDK_MODULES)/pari/include
+
+libpari:
+	cd $(PARI_SRC) && \
+	CC=$(CC) RUNTEST="/bin/true" ./Configure --host=arm-linux --builddir=Oandroid-arm --kernel=arm-none --without-readline --prefix=$(PARI_PREFIX) && \
+	sed -i Oandroid-arm/pari.cfg -e "s/^doubleformat=.*/doubleformat='1'/" && \
+	sed -i Oandroid-arm/pari.cfg -e "s/^has_TIOCGWINSZ=.*/has_TIOCGWINSZ='no'/" && \
+	sed -i Oandroid-arm/pari.cfg -e "s/^soname=.*/soname=''/" && \
+	./Configure -l Oandroid-arm && \
+	cd Oandroid-arm && \
+	$(MAKE) all && \
+	make install-include install-lib-dyn
 
 clean:
 	rm -f $(TOP)/PariDroid.apk
