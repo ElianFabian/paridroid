@@ -37,15 +37,8 @@ clean:
 	rm -f $(TOP)/PariDroid.apk
 	cd $(PARIDROID_SRC) && ant clean
 
-ndk-clean:
+distclean: clean
 	cd $(NDK_MODULES) && $(NDK_PATH)/ndk-build clean V=1
-
-pari-clean: 
-	rm -f $(PARI_SRC)/pari.cfg
+	rm -rf $(PARI_PREFIX)
 	rm -rf $(PARI_SRC)/android
-	cd $(PARI_SRC)/Oandroid-arm && $(MAKE) clean
-
-uberclean: clean ndk-clean pari-clean
-	rm -rf $(NDK_MODULES)/pari/lib/*.so
-	rm -rf $(NDK_MODULES)/pari/include/*.h
-
+	rm -rf $(PARI_SRC)/Oandroid-arm
