@@ -26,7 +26,6 @@ libpari:
 	cd $(PARI_SRC) && \
 	CC=$(CC) RUNTEST="/bin/true" ./Configure --host=arm-linux --builddir=Oandroid-arm --kernel=arm-none --without-readline --prefix=$(PARI_PREFIX) && \
 	sed -i Oandroid-arm/pari.cfg -e "s/^doubleformat=.*/doubleformat='1'/" && \
-	sed -i Oandroid-arm/pari.cfg -e "s/^has_TIOCGWINSZ=.*/has_TIOCGWINSZ='no'/" && \
 	sed -i Oandroid-arm/pari.cfg -e "s/^soname=.*/soname=''/" && \
 	./Configure -l Oandroid-arm && \
 	cd Oandroid-arm && \
