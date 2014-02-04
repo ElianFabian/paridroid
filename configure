@@ -138,7 +138,7 @@ sub _gen_pari_config {
 		'pari_release' => '2.6.2',
 		'pari_release_verbose' => '2.6.2 (DEVELOPMENT VERSION)',
 		'version' => '2.6',
-		'libpari_base' => 'pari',
+		'libpari_base' => 'pari-2.6',
 		'static' => 'n',
 		'objdir' => 'Oandroid-arm',
 		'arch' => 'arm',

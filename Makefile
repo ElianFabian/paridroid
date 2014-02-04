@@ -23,7 +23,7 @@ $(NDK_MODULES)/paridroid/org_freemonad_paridroid_PariNative.h: libpari
 libpari:
 	cd $(PARI_SRC)/Oandroid-arm && $(MAKE)
 	mkdir -p $(NDK_MODULES)/pari/lib
-	cp $(PARI_SRC)/Oandroid-arm/libpari.so $(NDK_MODULES)/pari/lib
+	cp $(PARI_SRC)/Oandroid-arm/libpari-2.6.so $(NDK_MODULES)/pari/lib
 	mkdir -p $(NDK_MODULES)/pari/include
 	cp -r $(PARI_SRC)/Oandroid-arm/*.h $(NDK_MODULES)/pari/include
 	cp -r $(PARI_SRC)/src/headers/*.h $(NDK_MODULES)/pari/include

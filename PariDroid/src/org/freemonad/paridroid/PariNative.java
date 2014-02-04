@@ -8,8 +8,9 @@ class PariNative {
 
     static {
         try {
-            Log.i(MSG_TAG, "Loading libpari.so");
-            System.loadLibrary("pari");
+            String lib = "pari-2.6";
+            Log.i(MSG_TAG, "Loading lib" + lib + ".so");
+            System.loadLibrary(lib);
         } catch (Exception ex) {
             Log.e(MSG_TAG, "Error: " + ex.getMessage());
         }
