@@ -26,11 +26,10 @@ libpari:
 	cd $(PARI_SRC) && \
 	CC=$(CC) RUNTEST="/bin/true" ./Configure --host=arm-linux --builddir=Oandroid-arm --kernel=arm-none --without-readline --prefix=$(PARI_PREFIX) && \
 	sed -i Oandroid-arm/pari.cfg -e "s/^doubleformat=.*/doubleformat='1'/" && \
-	sed -i Oandroid-arm/pari.cfg -e "s/^soname=.*/soname=''/" && \
 	./Configure -l Oandroid-arm && \
 	cd Oandroid-arm && \
 	$(MAKE) all && \
-	make install-include install-lib-dyn
+	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so
 
 clean:
 	rm -f $(TOP)/PariDroid.apk

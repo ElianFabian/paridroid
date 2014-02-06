@@ -8,7 +8,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := pari
 
-LOCAL_SRC_FILES := pari/lib/libpari-2.6.so
+LOCAL_SRC_FILES := pari/lib/libpari.so
 
 include $(PREBUILT_SHARED_LIBRARY)
 
