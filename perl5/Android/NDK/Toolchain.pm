@@ -23,7 +23,7 @@ sub new {
 	      'ndk_path'     => $ndk_path,
 	      'install_dir'  => $install_dir,
 	      'llvm_version' => $opts{llvm_version} || undef,
-	      'platform'     => $opts{platform} || 'android-3',
+	      'platform'     => $opts{platform} || 'android-10',
 	      'arch'         => $opts{arch} || 'arm',
 	      'verbose'      => $opts{verbose} || undef,
 	      'mutable'      => '1',
