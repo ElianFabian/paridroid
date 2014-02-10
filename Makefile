@@ -24,8 +24,7 @@ $(NDK_MODULES)/paridroid/org_freemonad_paridroid_PariNative.h: libpari
 
 libpari:
 	cd $(PARI_SRC) && \
-	CC=$(CC) RUNTEST="/bin/true" ./Configure --host=arm-linux --builddir=Oandroid-arm --kernel=arm-none --without-readline --prefix=$(PARI_PREFIX) && \
-	sed -i Oandroid-arm/pari.cfg -e "s/^doubleformat=.*/doubleformat='1'/" && \
+	CC=$(CC) RUNTEST="../runtest" ./Configure --host=arm-linux --builddir=Oandroid-arm --kernel=arm-none --without-readline --prefix=$(PARI_PREFIX) && \
 	./Configure -l Oandroid-arm && \
 	cd Oandroid-arm && \
 	$(MAKE) all && \
