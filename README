@@ -1,0 +1,23 @@
+-*- mode: org -*-
+
+[[http://paridroid.multiprecision.org/][PariDroid]] provides [[http://pari.math.u-bordeaux.fr/][Pari/GP]] for the Android system.
+
+
+* Building and installing PariDroid
+
+See the [[http://paridroid.multiprecision.org/][build instructions online]].
+
+* License
+
+PariDroid is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation. See https://www.gnu.org/licenses/gpl.html .
+
+PariDroid is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with PariDroid.  If not, see [[http://www.gnu.org/licenses/][the GNU website]].
+
