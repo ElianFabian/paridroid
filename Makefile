@@ -30,7 +30,7 @@ libpari:
 	$(MAKE) all && \
 	adb push gp-sta /data && \
 	rm -f gp-dyn && \
-	make dobench RUNTEST=../../runtest.bench && \
+# 	make dobench RUNTEST=../../runtest.bench && \
 	adb shell rm /data/gp-sta /data/pari-ret /data/pari-stdin && \
 	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so
 
