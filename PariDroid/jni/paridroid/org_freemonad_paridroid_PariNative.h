@@ -31,6 +31,14 @@ JNIEXPORT jstring JNICALL Java_org_freemonad_paridroid_PariNative_paridroidEval
 JNIEXPORT jint JNICALL Java_org_freemonad_paridroid_PariNative_getHistSize
   (JNIEnv *, jclass);
 
+/*
+ * Class:     org_freemonad_paridroid_PariNative
+ * Method:    getCommands
+ * Signature: ()[Ljava/lang/String;
+ */
+JNIEXPORT jobjectArray JNICALL Java_org_freemonad_paridroid_PariNative_getCommands
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif

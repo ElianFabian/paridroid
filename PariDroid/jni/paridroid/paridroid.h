@@ -21,4 +21,6 @@ char *paridroid_eval(const char *in);
 
 void paridroid_close(void);
 
+void paridroid_getcommands (char *** commands, int size, int *len);
+
 #endif /*_PARIDROID_H */

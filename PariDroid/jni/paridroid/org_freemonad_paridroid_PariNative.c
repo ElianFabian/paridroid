@@ -2,7 +2,8 @@
  *------------------------------------------------------
  * PariDroidActivity.c - JNI Callbacks from libparidroid.
  *------------------------------------------------------
- * Copyright (C) 2011, Charles Boyd
+ * Copyright (C) 2011 Charles Boyd
+ * Copyright (C) 2014 Andreas Enge <andreas.enge@inria.fr>
  *
  * This file is part of PariDroid.
  *
@@ -63,4 +64,28 @@ jint
 Java_org_freemonad_paridroid_PariNative_getHistSize (JNIEnv *env, jclass obj)
 {
   return paridroid_nb_hist();
+}
+
+jobjectArray
+Java_org_freemonad_paridroid_PariNative_getCommands(JNIEnv *env, jclass cls)
+{
+   /* returns the list of supported gp commands */
+   const int size = 1000;
+   char **commands;
+   int len, i;
+   jobjectArray res;
+
+   commands = (char**) malloc (size * sizeof (char *));
+   paridroid_getcommands (&commands, size, &len);
+   res = (*env)->NewObjectArray (env, (jsize) len,
+                                 (*env)->FindClass (env, "java/lang/String"),
+                                 NULL);
+   for (i = 0; i < len; i++) {
+      jstring s = (*env)->NewStringUTF (env, commands [i]);
+      (*env)->SetObjectArrayElement (env, res, i, s);
+      (*env)->DeleteLocalRef (env, s);
+   }
+   free (commands);
+
+   return res;
 }

@@ -1,4 +1,7 @@
 /**
+ * Copyright (C) 2012, 2013 Charles Boyd
+ * Copyright (C) 2014 Andreas Enge <andreas.enge@inria.fr>
+ *
  * This file is part of PariDroid.
  *
  * PariDroid is free software: you can redistribute it and/or modify
@@ -13,9 +16,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- * Written by Charles Boyd
- * (Copyright 2012-2013)
  */
 
 package org.freemonad.paridroid;
@@ -247,76 +247,12 @@ public class PariActivity extends Activity implements View.OnClickListener {
 	}
     }
 
-   private String extractCommand (String line) {
-      /* Drops the arguments from the command description in "line", so that
-         these need not be deleted on the phone. For instance,
-            factor(x,{lim})
-         becomes
-            factor()
-         */
-      return line.replaceAll ("\\(.*\\)", "()");
-   }
-
     public void setupAutoCompleteView() {
 
 	Resources res = getResources();
-	ArrayList<String> functions = new ArrayList<String>();
 
-	String[] conversions = res.getStringArray(R.array.conversions);
-	for(String line : conversions) {
-	    functions.add(extractCommand (line));
-	}
-
-	String[] elliptic = res.getStringArray(R.array.elliptic_curves);
-	for(String line : elliptic) {
-	    functions.add(extractCommand (line));
-	}
-
-	String[] linear = res.getStringArray(R.array.linear_algebra);
-	for(String line : linear) {
-	    functions.add(extractCommand (line));
-	}
-
-	String[] fields = res.getStringArray(R.array.number_fields);
-	for(String line : fields) {
-	    functions.add(extractCommand (line));
-	}
-
-	String[] operators = res.getStringArray(R.array.operators);
-	for(String line : operators) {
-	    functions.add(extractCommand (line));
-	}
-
-	String[] programming = res.getStringArray(R.array.programming);
-	for(String line : programming) {
-	    functions.add(extractCommand (line));
-	}
-
-	String[] symbolic = res.getStringArray(R.array.symbolic_operators);
-	for(String line : symbolic) {
-	    functions.add(extractCommand (line));
-	}
-
-	String[] theoretical = res.getStringArray(R.array.number_theoretical);
-	for(String line : theoretical) {
-	    functions.add(extractCommand (line));
-	}
-
-	String[] polynomials = res.getStringArray(R.array.polynomials);
-	for(String line : polynomials) {
-	    functions.add(extractCommand (line));
-	}
-
-	String[] sums = res.getStringArray(R.array.sums);
-	for(String line : sums) {
-	    functions.add(extractCommand (line));
-	}
-
-	String[] transcendental = res.getStringArray(R.array.transcendental);
-	for(String line : transcendental) {
-	    functions.add(extractCommand (line));
-	}
-	
+        String [] s = PariNative.getCommands ();
+        ArrayList<String> functions = new ArrayList<String>(Arrays.asList (s));
 	Collections.sort (functions);
 	ArrayAdapter<String> adapter =
 	   new ArrayAdapter<String>(this,R.layout.list_item,

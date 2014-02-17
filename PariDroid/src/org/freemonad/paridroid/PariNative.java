@@ -40,5 +40,7 @@ class PariNative {
     public static native String paridroidEval(String cmd);
 
     public static native int getHistSize();
+
+    public static native String[] getCommands ();
 }
 

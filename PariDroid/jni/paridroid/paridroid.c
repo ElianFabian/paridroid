@@ -150,6 +150,45 @@ paridroid_nb_hist()
   return pari_nb_hist();
 }
 
+
+/* copied from paripriv.h inside the pari project */
+extern const long functions_tblsz;  /* hashcodes table size */
+extern entree **functions_hash;   /* functions hashtable */
+#define EpVALENCE(ep) ((ep)->valence & 0xFF)
+enum { EpNEW = 100, EpALIAS, EpVAR, EpINSTALL };
+
+void
+paridroid_getcommands (char *** commands, int size, int *len)
+{
+   /* copied from the commands function in gp.c in the pari project */
+   long i;
+   entree *ep;
+
+   *len = 0;
+   for (i = 0; i < functions_tblsz; i++)
+      for (ep = functions_hash[i]; ep; ep = ep->next)
+      {
+         switch (EpVALENCE(ep))
+         {
+            case EpVAR:
+               if (typ((GEN)ep->value) == t_CLOSURE)
+                  break;
+               /* fall through */
+            case EpNEW:
+               continue;
+         }
+         if (ep->menu < 13) {
+            if (*len < size) {
+               (*commands) [*len] = ep->name;
+               (*len)++;
+            }
+            else
+               LOGE ("Array too small in paridroid_getcommands\n");
+         }
+      }
+}
+
+
 void
 paridroid_close()
 {
