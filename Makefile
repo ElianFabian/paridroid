@@ -34,6 +34,12 @@ libpari:
 	adb shell rm /data/gp-sta /data/pari-ret /data/pari-stdin && \
 	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so
 
+check: libpari
+	cd $(PARI_SRC)/Oandroid-arm && \
+	adb push gp-sta /data && \
+	make statest-all RUNTEST=../../runtest.bench && \
+	adb shell rm /data/gp-sta /data/pari-ret /data/pari-stdin
+
 clean:
 	rm -f $(TOP)/PariDroid.apk
 	cd $(PARIDROID_SRC) && ant clean
