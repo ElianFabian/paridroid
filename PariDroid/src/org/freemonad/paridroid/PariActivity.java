@@ -20,10 +20,8 @@
 
 package org.freemonad.paridroid;
 
-import org.freemonad.paridroid.R;
-
-import static org.freemonad.paridroid.utils.ParidroidUtils.makeToast;
-import static org.freemonad.paridroid.utils.ParidroidUtils.showOkAlertDialog;
+import static org.freemonad.paridroid.ParidroidUtils.makeToast;
+import static org.freemonad.paridroid.ParidroidUtils.showOkAlertDialog;
 
 import android.app.Activity;
 import android.content.Context;
