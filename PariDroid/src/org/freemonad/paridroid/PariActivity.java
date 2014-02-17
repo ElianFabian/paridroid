@@ -52,6 +52,7 @@ import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.io.*;
 
 public class PariActivity extends Activity implements View.OnClickListener {
@@ -315,7 +316,11 @@ public class PariActivity extends Activity implements View.OnClickListener {
 	for(String line : transcendental) {
 	    functions.add(extractCommand (line));
 	}
-	ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.list_item,functions);
+	
+	Collections.sort (functions);
+	ArrayAdapter<String> adapter =
+	   new ArrayAdapter<String>(this,R.layout.list_item,
+	                            functions);
 	inputText.setAdapter(adapter);
     }
 
