@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# capture stdin and send it to the device
+cat > /tmp/pari-stdin
+adb push /tmp/pari-stdin /data 2> /dev/null
+
+# execute the binary, save its return value in
+# the file pari-ret and drop \r from its output
+adb shell "cd data; ./$* < pari-stdin;"'echo $? > /data/pari-ret' | sed 's/\r//g'
+
+# retrieve pari-ret
+adb pull /data/pari-ret /tmp 2> /dev/null
+
+# return the correct value
+RET=`cat /tmp/pari-ret`
+rm /tmp/pari-ret /tmp/pari-stdin
+exit $RET
