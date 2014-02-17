@@ -91,6 +91,7 @@ public class PariActivity extends Activity implements View.OnClickListener {
 	setTitle(getString(R.string.app_name));
 
 	inputText = (AutoCompleteTextView)findViewById(R.id.inputText);
+	inputText.setDropDownHeight (ViewGroup.LayoutParams.MATCH_PARENT);
 
 	enterButton = (Button)findViewById(R.id.enterButton);
 	enterButton.setOnClickListener(this);
@@ -245,6 +246,16 @@ public class PariActivity extends Activity implements View.OnClickListener {
 	}
     }
 
+   private String extractCommand (String line) {
+      /* Drops the arguments from the command description in "line", so that
+         these need not be deleted on the phone. For instance,
+            factor(x,{lim})
+         becomes
+            factor()
+         */
+      return line.replaceAll ("\\(.*\\)", "()");
+   }
+
     public void setupAutoCompleteView() {
 
 	Resources res = getResources();
@@ -252,57 +263,57 @@ public class PariActivity extends Activity implements View.OnClickListener {
 
 	String[] conversions = res.getStringArray(R.array.conversions);
 	for(String line : conversions) {
-	    functions.add(line);
+	    functions.add(extractCommand (line));
 	}
 
 	String[] elliptic = res.getStringArray(R.array.elliptic_curves);
 	for(String line : elliptic) {
-	    functions.add(line);
+	    functions.add(extractCommand (line));
 	}
 
 	String[] linear = res.getStringArray(R.array.linear_algebra);
 	for(String line : linear) {
-	    functions.add(line);
+	    functions.add(extractCommand (line));
 	}
 
 	String[] fields = res.getStringArray(R.array.number_fields);
 	for(String line : fields) {
-	    functions.add(line);
+	    functions.add(extractCommand (line));
 	}
 
 	String[] operators = res.getStringArray(R.array.operators);
 	for(String line : operators) {
-	    functions.add(line);
+	    functions.add(extractCommand (line));
 	}
 
 	String[] programming = res.getStringArray(R.array.programming);
 	for(String line : programming) {
-	    functions.add(line);
+	    functions.add(extractCommand (line));
 	}
 
 	String[] symbolic = res.getStringArray(R.array.symbolic_operators);
 	for(String line : symbolic) {
-	    functions.add(line);
+	    functions.add(extractCommand (line));
 	}
 
 	String[] theoretical = res.getStringArray(R.array.number_theoretical);
 	for(String line : theoretical) {
-	    functions.add(line);
+	    functions.add(extractCommand (line));
 	}
 
 	String[] polynomials = res.getStringArray(R.array.polynomials);
 	for(String line : polynomials) {
-	    functions.add(line);
+	    functions.add(extractCommand (line));
 	}
 
 	String[] sums = res.getStringArray(R.array.sums);
 	for(String line : sums) {
-	    functions.add(line);
+	    functions.add(extractCommand (line));
 	}
 
 	String[] transcendental = res.getStringArray(R.array.transcendental);
 	for(String line : transcendental) {
-	    functions.add(line);
+	    functions.add(extractCommand (line));
 	}
 	ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.list_item,functions);
 	inputText.setAdapter(adapter);
