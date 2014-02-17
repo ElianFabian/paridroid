@@ -97,7 +97,6 @@ paridroid_init()
 
   static entree functions_gp[]={
     {"quit",0,(void*)paridroid_quit,11,"vD0,L,","quit({status = 0}): quit, return to the system with exit status 'status'."},
-    {"help",0,(void*)help,11,"vr","help(fun): display help for function fun"},
     {NULL,0,NULL,0,NULL,NULL}};
   
   pari_init(paridroid_stack_size, paridroid_maxprime);
