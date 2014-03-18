@@ -26,12 +26,9 @@ libpari:
 	cd $(PARI_SRC) && \
 	CC=$(CC) RUNTEST="../runtest" ./Configure --host=arm-linux --builddir=Oandroid-arm --kernel=arm-none --without-readline --prefix=$(PARI_PREFIX) && \
 	./Configure -l Oandroid-arm && \
+	adb shell rm /data/pari-ret /data/pari-stdin && \
 	cd Oandroid-arm && \
 	$(MAKE) all && \
-	adb push gp-sta /data && \
-	rm -f gp-dyn && \
-# 	make dobench RUNTEST=../../runtest.bench && \
-	adb shell rm /data/gp-sta /data/pari-ret /data/pari-stdin && \
 	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so
 
 check: libpari
