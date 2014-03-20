@@ -112,8 +112,8 @@ paridroid_init()
   print_version("v1.5");
 }
 
-char
-*paridroid_eval(const char *in)
+void
+paridroid_eval(const char *in, char **out, int *returnsgnil)
 {
 
   if(setjmp(env) != 0) {
@@ -132,18 +132,16 @@ char
     z = gp_read_str(in);
   } pari_ENDCATCH;
  
-  if (z != gnil)
-  {
-      char *out;
-      pari_add_hist(z, 0); /* FIXME: change 0 with execution time */
-      if (in[strlen(in)-1]!=';')
-	{
-	  out = GENtostr(z);
-	  droidOutS(out);
-	}
+  pari_add_hist(z, 0); /* FIXME: change 0 with execution time */
+  if (z != gnil) {
+    *returnsgnil = 0;
+    if (in[strlen(in)-1]!=';')
+      droidOutS (GENtostr (z));
   }
+  else
+    returnsgnil = 1;
   droidOutC(0);
-  return droidStr;
+  *out = droidStr;
 }
 
 int

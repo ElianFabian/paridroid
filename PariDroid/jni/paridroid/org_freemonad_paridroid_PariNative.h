@@ -18,9 +18,9 @@ JNIEXPORT void JNICALL Java_org_freemonad_paridroid_PariNative_paridroidInit
 /*
  * Class:     org_freemonad_paridroid_PariNative
  * Method:    paridroidEval
- * Signature: (Ljava/lang/String;)Ljava/lang/String;
+ * Signature: (Ljava/lang/String;)[Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_org_freemonad_paridroid_PariNative_paridroidEval
+JNIEXPORT jobjectArray JNICALL Java_org_freemonad_paridroid_PariNative_paridroidEval
   (JNIEnv *, jclass, jstring);
 
 /*

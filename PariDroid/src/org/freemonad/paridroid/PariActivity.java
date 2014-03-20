@@ -123,8 +123,8 @@ public class PariActivity extends Activity implements View.OnClickListener {
 
     private void evaluate(String cmd) {
 
-        int oldhistSize = PariNative.getHistSize();
-        String result;
+        String [] result;
+        String output;
         
         if (cmd.length() >= 1 && cmd.charAt(0) == '?')
            /* treat metacommand "?" or "??" */
@@ -136,16 +136,15 @@ public class PariActivity extends Activity implements View.OnClickListener {
            result = PariNative.paridroidEval(cmd);
 
         /* remove extraneous line breaks to save screen space */
-        result = result.replaceAll("\n\n", "\n");
-        result = result.replaceAll("\n$", "");
+        output = result [0].replaceAll("\n\n", "\n").replaceAll("\n$", "");
 
         inputArrayList.add(cmd);
         cursor = inputArrayList.size ();
-        if (oldhistSize == PariNative.getHistSize())
-            outputArrayList.add(0, "? " + cmd + "\n" + result);
+        if (result [1].equals ("1"))
+            outputArrayList.add(0, "? " + cmd + "\n" + output);
 	else
             outputArrayList.add(0, "? " + cmd + "\n"
-               + "%" + inputArrayList.size () + " = " + result);
+               + "%" + inputArrayList.size () + " = " + output);
 	outputArrayAdapter.notifyDataSetChanged();
     }
     

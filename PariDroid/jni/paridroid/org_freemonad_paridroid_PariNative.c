@@ -33,14 +33,16 @@ Java_org_freemonad_paridroid_PariNative_paridroidInit(JNIEnv *jenv, jobject obj)
   paridroid_init();
 }
 
-jstring
-Java_org_freemonad_paridroid_PariNative_paridroidEval(JNIEnv *jenv, jobject obj, jstring input)
+jobjectArray
+Java_org_freemonad_paridroid_PariNative_paridroidEval(JNIEnv *env, jobject obj, jstring input)
 {
   const jbyte *cmd;
   char *output;
+  int returnsgnil;
+  jobjectArray res;
 
   // Turn the jstring into a C string.
-  cmd = (*jenv)->GetStringUTFChars(jenv, input, NULL);
+  cmd = (*env)->GetStringUTFChars(env, input, NULL);
 
   // Check if JVM has already thrown out of memory error.
   if (cmd == NULL) {
@@ -48,16 +50,30 @@ Java_org_freemonad_paridroid_PariNative_paridroidEval(JNIEnv *jenv, jobject obj,
     return NULL;
   }
   
-  // Evaluate the command.
-  output = paridroid_eval(cmd);
+  // Evaluate the command; empty is 1 or 0 depending on whether or not
+  // the return value of the command was gnil.
+  paridroid_eval(cmd, &output, &returnsgnil);
 
   // Free the Java objects we no longer need.
-  (*jenv)->ReleaseStringUTFChars(jenv, input, cmd);
+  (*env)->ReleaseStringUTFChars(env, input, cmd);
 
-  // We encode the native string into a jstring and return it.
-  jstring result = (*jenv)->NewStringUTF(jenv,output);
-
-  return result;
+  // We encode the native string into a first jstring object and gnil
+  // into a second jstring object and return both in a jobjectArray.
+  res = (*env)->NewObjectArray (env, (jsize) 2,
+                                (*env)->FindClass (env, "java/lang/String"),
+                                NULL);
+  jstring s = (*env)->NewStringUTF (env, output);
+  (*env)->SetObjectArrayElement (env, res, 0, s);
+  (*env)->DeleteLocalRef (env, s);
+  if (returnsgnil)
+    s = (*env)->NewStringUTF (env, "1");
+  else
+    s = (*env)->NewStringUTF (env, "0");
+  (*env)->SetObjectArrayElement (env, res, 1, s);
+  (*env)->DeleteLocalRef (env, s);
+  
+  
+  return res;
 }
 
 jint 
