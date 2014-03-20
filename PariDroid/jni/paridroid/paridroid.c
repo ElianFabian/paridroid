@@ -144,12 +144,6 @@ paridroid_eval(const char *in, char **out, int *returnsgnil)
   *out = droidStr;
 }
 
-int
-paridroid_nb_hist()
-{
-  return pari_nb_hist();
-}
-
 
 /* copied from paripriv.h inside the pari project */
 extern const long functions_tblsz;  /* hashcodes table size */

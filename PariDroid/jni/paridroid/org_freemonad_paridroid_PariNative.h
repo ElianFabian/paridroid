@@ -25,14 +25,6 @@ JNIEXPORT jobjectArray JNICALL Java_org_freemonad_paridroid_PariNative_paridroid
 
 /*
  * Class:     org_freemonad_paridroid_PariNative
- * Method:    getHistSize
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_org_freemonad_paridroid_PariNative_getHistSize
-  (JNIEnv *, jclass);
-
-/*
- * Class:     org_freemonad_paridroid_PariNative
  * Method:    getCommands
  * Signature: ()[Ljava/lang/String;
  */

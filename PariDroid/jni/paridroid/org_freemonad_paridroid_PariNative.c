@@ -76,12 +76,6 @@ Java_org_freemonad_paridroid_PariNative_paridroidEval(JNIEnv *env, jobject obj, 
   return res;
 }
 
-jint 
-Java_org_freemonad_paridroid_PariNative_getHistSize (JNIEnv *env, jclass obj)
-{
-  return paridroid_nb_hist();
-}
-
 jobjectArray
 Java_org_freemonad_paridroid_PariNative_getCommands(JNIEnv *env, jclass cls)
 {
