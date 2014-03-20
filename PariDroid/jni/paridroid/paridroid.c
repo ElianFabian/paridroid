@@ -2,8 +2,9 @@
  *-----------------------------------------------
  * paridroid.c - Android wrapper around libpari.
  *-----------------------------------------------
- * Copyright (C) 2011, Charles Boyd
- *               2014, Andreas Enge
+ *
+ * Copyright (C) 2011 Charles Boyd
+ *               2014 Andreas Enge <andreas.enge@inria.fr>
  *
  * This file is part of PariDroid.
  *
@@ -98,7 +99,8 @@ paridroid_init()
   static entree functions_gp[]={
     {"quit",0,(void*)paridroid_quit,11,"vD0,L,","quit({status = 0}): quit, return to the system with exit status 'status'."},
     {NULL,0,NULL,0,NULL,NULL}};
-  
+
+  setenv ("GPTMPDIR", "/data/data/org.freemonad.paridroid/cache", 1);
   pari_init(paridroid_stack_size, paridroid_maxprime);
   pari_add_module(functions_gp);
   cb_pari_err_recover = gp_err_recover;
