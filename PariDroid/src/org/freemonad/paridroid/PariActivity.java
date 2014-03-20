@@ -140,6 +140,7 @@ public class PariActivity extends Activity implements View.OnClickListener {
         result = result.replaceAll("\n$", "");
 
         inputArrayList.add(cmd);
+        cursor = inputArrayList.size ();
         if (oldhistSize == PariNative.getHistSize())
             outputArrayList.add(0, "? " + cmd + "\n" + result);
 	else
@@ -158,7 +159,6 @@ public class PariActivity extends Activity implements View.OnClickListener {
 	switch (v.getId()) {
 	case R.id.enterButton:
 	    evaluate(in);
-	    cursor = inputArrayList.size ();
 	    clear();
 	    break;
 	case R.id.clearButton:
