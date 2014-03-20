@@ -108,9 +108,6 @@ public class PariActivity extends Activity implements View.OnClickListener {
 	outputArrayAdapter = new OutputStringArrayAdapter(this,outputArrayList);
 	historyList.setAdapter(outputArrayAdapter);
 
-	String example = "for(i=0,20,print(fibonacci(i)))";
-	inputText.setText(example);
-
 	setupAutoCompleteView();
 
 	inputText.setOnKeyListener(new OnKeyListener() {
