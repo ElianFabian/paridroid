@@ -122,18 +122,18 @@ public class PariActivity extends Activity implements View.OnClickListener {
     }
 
     private void evaluate(String cmd) {
-
+        String executeCmd = cmd;
         String [] result;
         String output;
+        boolean isHelp = false;
         
-        if (cmd.length() >= 1 && cmd.charAt(0) == '?')
-           /* treat metacommand "?" or "??" */
-           if (cmd.length() >= 2 && cmd.charAt(1) == '?')
-              result = PariNative.paridroidEval("help(" + cmd.substring(2) + ")");
-           else
-              result = PariNative.paridroidEval("help(" + cmd.substring(1) + ")");
-        else
-           result = PariNative.paridroidEval(cmd);
+        if (cmd.length() >= 1 && cmd.charAt(0) == '?') {
+           /* treat metacommand "?" or an arbitrary number of leading "?" */
+           executeCmd = "help(" + cmd.replaceAll ("^\\?*", "") + ")";
+           isHelp = true;
+        }
+
+        result = PariNative.paridroidEval(executeCmd);
 
         /* remove extraneous line breaks to save screen space */
         output = result [0].replaceAll("\n\n", "\n").replaceAll("\n$", "");
