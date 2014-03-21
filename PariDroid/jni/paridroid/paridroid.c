@@ -76,10 +76,12 @@ paridroid_quit(long exitcode)
   paridroid_close();
 }
 
-void
-print_version(char *vers)
+#define XSTR(s) STR(s)
+#define STR(s) #s
+static void
+print_version()
 {
-  LOGI("PARIDROID_LIBRARY_VERSION = %s", vers);
+  LOGI("PARIDROID_VERSION = " XSTR(PARIDROID_VERSION));
 }
 
 void
@@ -99,7 +101,7 @@ paridroid_init()
   pariOut=&droidOut;
   pariErr=&droidOut;
   
-  print_version("v1.5");
+  print_version();
 }
 
 void

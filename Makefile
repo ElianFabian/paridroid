@@ -3,7 +3,7 @@
 include ./Makefile.include
 CC=$(TOOLCHAIN)/bin/arm-linux-androideabi-gcc
 
-VERSION=$(shell grep versionName PariDroid/AndroidManifest.xml | grep -o '[0-9].*[0-9]')
+PARIDROID_VERSION=$(shell grep versionName PariDroid/AndroidManifest.xml | grep -o '[0-9].*[0-9]')
 PARI_SRC=$(TOP)/pari
 PARIDROID_SRC=$(TOP)/PariDroid
 NDK_MODULES=$(PARIDROID_SRC)/jni
@@ -12,10 +12,10 @@ PARI_PREFIX=$(NDK_MODULES)/pari
 all: libpari paridroid apk
 
 apk: paridroid
-	cp $(PARIDROID_SRC)/bin/PariDroid-debug.apk $(TOP)/PariDroid-$(VERSION).apk
+	cp $(PARIDROID_SRC)/bin/PariDroid-debug.apk $(TOP)/PariDroid-$(PARIDROID_VERSION).apk
 
 paridroid: $(NDK_MODULES)/paridroid/org_freemonad_paridroid_PariNative.h
-	cd $(NDK_MODULES) && $(NDK_PATH)/ndk-build V=1
+	cd $(NDK_MODULES) && $(NDK_PATH)/ndk-build APP_CFLAGS="-DPARIDROID_VERSION=$(PARIDROID_VERSION)" V=1
 	cd $(PARIDROID_SRC) && ant debug
 
 $(NDK_MODULES)/paridroid/org_freemonad_paridroid_PariNative.h: libpari
@@ -47,3 +47,4 @@ distclean: clean
 	rm -rf $(PARI_PREFIX)
 	rm -rf $(PARI_SRC)/android
 	rm -rf $(PARI_SRC)/Oandroid-arm
+
