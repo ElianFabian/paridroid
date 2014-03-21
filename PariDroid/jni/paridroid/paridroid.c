@@ -77,16 +77,6 @@ paridroid_quit(long exitcode)
 }
 
 void
-help(const char *s)
-{
-  entree *ep = is_entry(s);
-  if (ep && ep->help)
-    pari_printf("%s\n",ep->help);
-  else
-    pari_printf("Function %s not found\n",s);
-}
-
-void
 print_version(char *vers)
 {
   LOGI("PARIDROID_LIBRARY_VERSION = %s", vers);
