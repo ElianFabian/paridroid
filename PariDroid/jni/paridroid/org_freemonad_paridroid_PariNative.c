@@ -23,7 +23,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <jni.h>
 #include "paridroid.h"
 #include "org_freemonad_paridroid_PariNative.h"
 
