@@ -28,13 +28,13 @@
 #include "org_freemonad_paridroid_PariNative.h"
 
 void
-Java_org_freemonad_paridroid_PariNative_paridroidInit(JNIEnv *jenv, jobject obj)
+Java_org_freemonad_paridroid_PariNative_paridroidInit(JNIEnv *jenv, jclass cls)
 {
   paridroid_init();
 }
 
 jobjectArray
-Java_org_freemonad_paridroid_PariNative_paridroidEval(JNIEnv *env, jobject obj, jstring input)
+Java_org_freemonad_paridroid_PariNative_paridroidEval(JNIEnv *env, jclass cls, jstring input)
 {
   const jbyte *cmd;
   char *output;
