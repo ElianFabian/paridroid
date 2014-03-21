@@ -118,22 +118,21 @@ paridroid_init()
 void
 paridroid_eval(const char *in, char **out, int *returnsgnil)
 {
+  avma=top;
+
+  s_droidStr.n=0;
 
   if(setjmp(env) != 0) {
     LOGE("setjmp different from zero");
-    return "";
+    pari_add_hist(gnil, 0);
+    droidOutC(0);
+    *out = droidStr;
+    *returnsgnil = 1;
+    return;
   }
 
-  s_droidStr.n=0;
-  avma=top;
-
   volatile GEN z = gnil;
-  pari_CATCH(CATCH_ALL)
-  {
-    droidOutS(pari_err2str(pari_err_last()));
-  } pari_TRY {
-    z = gp_read_str(in);
-  } pari_ENDCATCH;
+  z = gp_read_str(in);
  
   pari_add_hist(z, 0); /* FIXME: change 0 with execution time */
   if (z != gnil) {
@@ -142,7 +141,7 @@ paridroid_eval(const char *in, char **out, int *returnsgnil)
       droidOutS (GENtostr (z));
   }
   else
-    returnsgnil = 1;
+    *returnsgnil = 1;
   droidOutC(0);
   *out = droidStr;
 }
