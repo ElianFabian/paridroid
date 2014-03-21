@@ -85,11 +85,22 @@ print_version()
 }
 
 void
+static help(const char *s)
+{
+  entree *ep = is_entry(s);
+  if (ep && ep->help)
+    pari_printf("%s\n",ep->help);
+  else
+    pari_printf("Function %s not found\n",s);
+}
+
+void
 paridroid_init()
 {
 
   static entree functions_gp[]={
     {"quit",0,(void*)paridroid_quit,11,"vD0,L,","quit({status = 0}): quit, return to the system with exit status 'status'."},
+    {"help",0,(void*)help,11,"vr","help(fun): display help for function fun"},
     {NULL,0,NULL,0,NULL,NULL}};
 
   setenv ("GPTMPDIR", "/data/data/org.freemonad.paridroid/cache", 1);
