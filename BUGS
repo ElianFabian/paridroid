@@ -1,0 +1,6 @@
+Online help ("?") is implemented by adding a function named "help" to the
+interpreter and rewriting the command to call this function. As in pari-2.7.0
+every function call leaves an entry (and return value) in the history,
+whereas the online help does not, this results in different numbering of
+results as in the desktop version. A fix will be worked on.
+
