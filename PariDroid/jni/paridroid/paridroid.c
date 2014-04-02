@@ -118,32 +118,34 @@ paridroid_init()
 void
 paridroid_eval(const char *in, char **out, int *returnsgnil)
 {
-  avma=top;
+   pari_sp av = avma;
 
-  s_droidStr.n=0;
+   s_droidStr.n=0;
 
-  if(setjmp(env) != 0) {
-    LOGE("setjmp different from zero");
-    pari_add_hist(gnil, 0);
-    droidOutC(0);
-    *out = droidStr;
-    *returnsgnil = 1;
-    return;
-  }
+   if(setjmp(env) != 0) {
+      LOGE("setjmp different from zero");
+      pari_add_hist(gnil, 0);
+      droidOutC(0);
+      *out = droidStr;
+      *returnsgnil = 1;
+   }
+   else {
+      volatile GEN z = gnil;
+      z = gp_read_str(in);
 
-  volatile GEN z = gnil;
-  z = gp_read_str(in);
- 
-  pari_add_hist(z, 0); /* FIXME: change 0 with execution time */
-  if (z != gnil) {
-    *returnsgnil = 0;
-    if (in[strlen(in)-1]!=';')
-      droidOutS (GENtostr (z));
-  }
-  else
-    *returnsgnil = 1;
-  droidOutC(0);
-  *out = droidStr;
+      pari_add_hist(z, 0); /* FIXME: change 0 with execution time */
+      if (z != gnil) {
+         *returnsgnil = 0;
+         if (in[strlen(in)-1]!=';')
+            droidOutS (GENtostr (z));
+      }
+      else
+         *returnsgnil = 1;
+      droidOutC(0);
+      *out = droidStr;
+   }
+
+   avma = av;
 }
 
 
