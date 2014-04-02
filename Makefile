@@ -3,7 +3,7 @@
 include ./Makefile.include
 CC=$(TOOLCHAIN)/bin/arm-linux-androideabi-gcc
 
-PARIDROID_VERSION=$(shell grep versionName PariDroid/AndroidManifest.xml | grep -o '[0-9].*[0-9]')
+PARIDROID_VERSION=$(shell grep versionName PariDroid/AndroidManifest.xml | grep -o '".*"' | tr -d '"')
 PARI_SRC=$(TOP)/pari
 PARIDROID_SRC=$(TOP)/PariDroid
 NDK_MODULES=$(PARIDROID_SRC)/jni
