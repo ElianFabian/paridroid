@@ -1,4 +1,6 @@
-Version 2.7.0.1.0:
+Version 2.7.1.1.0 (May 2014):
+  Compilation with version 2.7.1 of Pari/GP.
+Version 2.7.0.1.0 (April 2014):
   Initial release.
 
 
