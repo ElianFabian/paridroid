@@ -25,7 +25,7 @@ $(NDK_MODULES)/paridroid/org_freemonad_paridroid_PariNative.h: libpari
 
 libpari:
 	cd $(PARI_SRC) && \
-	CC=$(CC) RUNTEST="../runtest" ./Configure --host=arm-linux --builddir=Oandroid-arm --kernel=arm-none --without-readline --prefix=$(PARI_PREFIX) --datadir=/data/data/org.freemonad.paridroid && \
+	CC=$(CC) RUNTEST="../runtest" ./Configure --host=arm-linux --builddir=Oandroid-arm --kernel=arm-none --without-readline --graphic=none --prefix=$(PARI_PREFIX) --datadir=/data/data/org.freemonad.paridroid && \
 	./Configure -l Oandroid-arm && \
 	adb shell rm /data/pari-ret /data/pari-stdin && \
 	cd Oandroid-arm && \
