@@ -144,7 +144,10 @@ public class PariActivity extends Activity implements View.OnClickListener {
          /* remove extraneous line breaks to save screen space */
          output = result [0].replaceAll("\n\n", "\n").replaceAll("\n$", "");
 
-         outputArrayList.add(0, "? " + cmd + "\n" + output);
+         if (output.length () != 0)
+            outputArrayList.add(0, "? " + cmd + "\n" + output);
+         else
+            outputArrayList.add(0, "? " + cmd);
          outputArrayAdapter.notifyDataSetChanged();
       }
    }
