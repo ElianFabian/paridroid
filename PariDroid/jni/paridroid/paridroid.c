@@ -109,7 +109,7 @@ paridroid_init()
   cb_pari_err_recover = gp_err_recover;
   pari_stack_init(&s_droidStr,sizeof(*droidStr),(void**)&droidStr);
   
-  pariOut=&droidOut;
+  pariOut=&droidOut; /* destinaton of pari_printf */
   pariErr=&droidOut;
   
   print_version();
@@ -136,8 +136,10 @@ paridroid_eval(const char *in, char **out, int *returnsgnil)
       pari_add_hist(z, 0); /* FIXME: change 0 with execution time */
       if (z != gnil) {
          *returnsgnil = 0;
-         if (in[strlen(in)-1]!=';')
-            droidOutS (GENtostr (z));
+         if (in[strlen(in)-1]!=';') {
+            pari_printf ("%%%lu = ", pari_nb_hist ());
+            output (z);
+         }
       }
       else
          *returnsgnil = 1;

@@ -49,7 +49,7 @@ Java_fr_ubordeaux_math_paridroid_PariNative_paridroidEval(JNIEnv *env, jclass cl
     return NULL;
   }
   
-  // Evaluate the command; empty is 1 or 0 depending on whether or not
+  // Evaluate the command; returnsgnil is 1 or 0 depending on whether or not
   // the return value of the command was gnil.
   paridroid_eval(cmd, &output, &returnsgnil);
 

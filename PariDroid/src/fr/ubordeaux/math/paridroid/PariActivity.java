@@ -142,11 +142,7 @@ public class PariActivity extends Activity implements View.OnClickListener {
 
       inputArrayList.add(cmd);
       cursor = inputArrayList.size ();
-      if (result [1].equals ("1"))
-         outputArrayList.add(0, "? " + cmd + "\n" + output);
-      else
-         outputArrayList.add(0, "? " + cmd + "\n"
-            + "%" + inputArrayList.size () + " = " + output);
+      outputArrayList.add(0, "? " + cmd + "\n" + output);
       outputArrayAdapter.notifyDataSetChanged();
    }
 
