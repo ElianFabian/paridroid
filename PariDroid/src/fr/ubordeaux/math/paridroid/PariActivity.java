@@ -131,7 +131,7 @@ public class PariActivity extends Activity implements View.OnClickListener {
       /* check for empty command */
       if (cmd.replaceAll ("^[:whitespace:]*$", "").length () != 0) {
          inputArrayList.add(cmd);
-         cursor = inputArrayList.size ();
+         cursor++;
 
          if (cmd.length() >= 1 && cmd.charAt(0) == '?')
             /* treat metacommand "?" or an arbitrary number of leading "?" */
@@ -177,7 +177,7 @@ public class PariActivity extends Activity implements View.OnClickListener {
       case R.id.nextButton:
          clear();
          cursor++;
-         if (cursor == inputArrayList.size())
+         if (cursor >= inputArrayList.size())
             cursor = 0; /* cycle through */
          inputText.setText(getFromHistory(cursor));
          break;
