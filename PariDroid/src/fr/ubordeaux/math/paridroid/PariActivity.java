@@ -18,10 +18,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.freemonad.paridroid;
+package fr.ubordeaux.math.paridroid;
 
-import static org.freemonad.paridroid.ParidroidUtils.makeToast;
-import static org.freemonad.paridroid.ParidroidUtils.showOkAlertDialog;
+import static fr.ubordeaux.math.paridroid.ParidroidUtils.makeToast;
+import static fr.ubordeaux.math.paridroid.ParidroidUtils.showOkAlertDialog;
 
 import android.app.Activity;
 import android.content.Context;

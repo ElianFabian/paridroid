@@ -18,7 +18,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.freemonad.paridroid;
+package fr.ubordeaux.math.paridroid;
 
 import android.util.Log;
 

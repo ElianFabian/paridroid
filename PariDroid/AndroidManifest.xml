@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="org.freemonad.paridroid"
+          package="fr.ubordeaux.math.paridroid"
           android:versionCode="3"
           android:versionName="2.7.2.1.2dev"
           android:installLocation="preferExternal">

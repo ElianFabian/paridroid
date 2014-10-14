@@ -28,7 +28,7 @@
 #include <setjmp.h>
 #include <strings.h>
 
-#include "org_freemonad_paridroid_PariNative.h"
+#include "fr_ubordeaux_math_paridroid_PariNative.h"
 #include "paridroid.h"
 
 /** number of bytes to initialize pari stack with */
@@ -103,7 +103,7 @@ paridroid_init()
     {"help",0,(void*)help,11,"vr","help(fun): display help for function fun"},
     {NULL,0,NULL,0,NULL,NULL}};
 
-  setenv ("GPTMPDIR", "/data/data/org.freemonad.paridroid/cache", 1);
+  setenv ("GPTMPDIR", "/data/data/fr.ubordeaux.math.paridroid/cache", 1);
   pari_init(paridroid_stack_size, paridroid_maxprime);
   pari_add_module(functions_gp);
   cb_pari_err_recover = gp_err_recover;

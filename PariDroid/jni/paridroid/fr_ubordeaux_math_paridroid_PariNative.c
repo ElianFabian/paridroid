@@ -1,6 +1,6 @@
 /**
  *------------------------------------------------------
- * PariDroidActivity.c - JNI Callbacks from libparidroid.
+ * PariNative.c - JNI Callbacks from libparidroid.
  *------------------------------------------------------
  * Copyright (C) 2011 Charles Boyd
  * Copyright (C) 2014 Andreas Enge <andreas.enge@inria.fr>
@@ -24,16 +24,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include "paridroid.h"
-#include "org_freemonad_paridroid_PariNative.h"
+#include "fr_ubordeaux_math_paridroid_PariNative.h"
 
 void
-Java_org_freemonad_paridroid_PariNative_paridroidInit(JNIEnv *jenv, jclass cls)
+Java_fr_ubordeaux_math_paridroid_PariNative_paridroidInit(JNIEnv *jenv, jclass cls)
 {
   paridroid_init();
 }
 
 jobjectArray
-Java_org_freemonad_paridroid_PariNative_paridroidEval(JNIEnv *env, jclass cls, jstring input)
+Java_fr_ubordeaux_math_paridroid_PariNative_paridroidEval(JNIEnv *env, jclass cls, jstring input)
 {
   const jbyte *cmd;
   char *output;
@@ -76,7 +76,7 @@ Java_org_freemonad_paridroid_PariNative_paridroidEval(JNIEnv *env, jclass cls, j
 }
 
 jobjectArray
-Java_org_freemonad_paridroid_PariNative_getCommands(JNIEnv *env, jclass cls)
+Java_fr_ubordeaux_math_paridroid_PariNative_getCommands(JNIEnv *env, jclass cls)
 {
    /* returns the list of supported gp commands */
    const int size = 1000;

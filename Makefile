@@ -14,18 +14,18 @@ all: libpari paridroid apk
 apk: paridroid
 	cp $(PARIDROID_SRC)/bin/PariDroid-debug.apk $(TOP)/PariDroid-$(PARIDROID_VERSION).apk
 
-paridroid: $(NDK_MODULES)/paridroid/org_freemonad_paridroid_PariNative.h
+paridroid: $(NDK_MODULES)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
 	cd $(NDK_MODULES) && $(NDK_PATH)/ndk-build APP_CFLAGS="-DPARIDROID_VERSION=$(PARIDROID_VERSION)" V=1
 	cd $(PARIDROID_SRC) && ant debug
 
-$(NDK_MODULES)/paridroid/org_freemonad_paridroid_PariNative.h: libpari
+$(NDK_MODULES)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h: libpari
 	cd $(PARIDROID_SRC) && ant debug
-	cd $(PARIDROID_SRC)/bin/classes && javah -jni org.freemonad.paridroid.PariNative
-	mv $(PARIDROID_SRC)/bin/classes/org_freemonad_paridroid_PariNative.h $(NDK_MODULES)/paridroid/org_freemonad_paridroid_PariNative.h
+	cd $(PARIDROID_SRC)/bin/classes && javah -jni fr.ubordeaux.math.paridroid.PariNative
+	mv $(PARIDROID_SRC)/bin/classes/fr_ubordeaux_math_paridroid_PariNative.h $(NDK_MODULES)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
 
 libpari:
 	cd $(PARI_SRC) && \
-	CC=$(CC) RUNTEST="../runtest" ./Configure --host=arm-linux --builddir=Oandroid-arm --kernel=arm-none --without-readline --graphic=none --prefix=$(PARI_PREFIX) --datadir=/data/data/org.freemonad.paridroid && \
+	CC=$(CC) RUNTEST="../runtest" ./Configure --host=arm-linux --builddir=Oandroid-arm --kernel=arm-none --without-readline --graphic=none --prefix=$(PARI_PREFIX) --datadir=/data/data/fr.ubordeaux.math.paridroid && \
 	./Configure -l Oandroid-arm && \
 	adb shell rm /data/pari-ret /data/pari-stdin && \
 	cd Oandroid-arm && \
