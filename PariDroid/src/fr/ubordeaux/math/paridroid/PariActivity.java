@@ -221,7 +221,7 @@ public class PariActivity extends Activity implements View.OnClickListener {
          return true;
       case R.id.docs:
          makeToast(this,"For documentation, please visit:\n"+
-                              "http://www.paridroid.libremath.org");
+                              "http://paridroid.multiprecision.org");
          return true;
       case R.id.app_license:
          showOkAlertDialog(this,"This program is free software: you can redistribute it and/or modify\n"+
