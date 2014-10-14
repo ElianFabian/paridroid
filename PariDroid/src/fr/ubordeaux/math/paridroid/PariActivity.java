@@ -203,19 +203,19 @@ public class PariActivity extends Activity implements View.OnClickListener {
 
    public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId()) {
-      case R.id.app_settings:
+      case R.id.defaults:
          return true;
-      case R.id.setStacksize:
+      case R.id.setParisize:
          clear();
-         inputText.setText("default(parisize, ? )");
+         inputText.setText("default(parisize, )");
          return true;
-      case R.id.setRealPrecision:
+      case R.id.setRealprecision:
          clear();
-         inputText.setText("default(realprecision, ? )");
+         inputText.setText("default(realprecision, )");
          return true;
-      case R.id.setSeriesPrecision:
+      case R.id.setSeriesprecision:
          clear();
-         inputText.setText("default(seriesprecision, ? )");
+         inputText.setText("default(seriesprecision, )");
          return true;
       case R.id.docs:
          makeToast(this, "For documentation, please visit:\n"+

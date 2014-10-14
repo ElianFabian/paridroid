@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:id="@+id/app_settings"
-	android:title="@string/settings">
+  <item android:id="@+id/defaults"
+	android:title="@string/defaults">
     <menu>
-      <item android:id="@+id/setStacksize"
-	    android:title="@string/stack_size"/>
-      <item android:id="@+id/setRealPrecision"
-	    android:title="@string/real_precision"/>
-      <item android:id="@+id/setSeriesPrecision"
-	    android:title="@string/series_precision"/>
+      <item android:id="@+id/setParisize"
+	    android:title="@string/parisize"/>
+      <item android:id="@+id/setRealprecision"
+	    android:title="@string/realprecision"/>
+      <item android:id="@+id/setSeriesprecision"
+	    android:title="@string/seriesprecision"/>
     </menu>
   </item>
   <item android:id="@+id/docs"
