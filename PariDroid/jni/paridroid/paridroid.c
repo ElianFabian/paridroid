@@ -133,9 +133,9 @@ paridroid_eval(const char *in, char **out, int *returnsgnil)
       volatile GEN z = gnil;
       z = gp_read_str(in);
 
-      pari_add_hist(z, 0); /* FIXME: change 0 with execution time */
       if (z != gnil) {
          *returnsgnil = 0;
+         pari_add_hist(z, 0); /* FIXME: change 0 with execution time */
          if (in[strlen(in)-1]!=';') {
             pari_printf ("%%%lu = ", pari_nb_hist ());
             output (z);
