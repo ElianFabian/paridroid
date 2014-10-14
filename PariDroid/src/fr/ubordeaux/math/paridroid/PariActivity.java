@@ -217,6 +217,10 @@ public class PariActivity extends Activity implements View.OnClickListener {
          clear();
          inputText.setText("default(seriesprecision, )");
          return true;
+      case R.id.setTimer:
+         clear();
+         inputText.setText("default(timer, )");
+         return true;
       case R.id.docs:
          makeToast(this, "For documentation, please visit:\n"+
                          "http://paridroid.multiprecision.org");

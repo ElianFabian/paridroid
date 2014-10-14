@@ -9,6 +9,8 @@
 	    android:title="@string/realprecision"/>
       <item android:id="@+id/setSeriesprecision"
 	    android:title="@string/seriesprecision"/>
+      <item android:id="@+id/setTimer"
+            android:title="@string/timer"/>
     </menu>
   </item>
   <item android:id="@+id/docs"
