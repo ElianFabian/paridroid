@@ -205,10 +205,6 @@ public class PariActivity extends Activity implements View.OnClickListener {
       switch (item.getItemId()) {
       case R.id.app_settings:
          return true;
-      case R.id.setMaxprime:
-         clear();
-         inputText.setText("default(primelimit, ? )");
-         return true;
       case R.id.setStacksize:
          clear();
          inputText.setText("default(parisize, ? )");
