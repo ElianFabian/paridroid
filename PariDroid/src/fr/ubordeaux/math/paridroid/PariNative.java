@@ -24,41 +24,41 @@ import android.util.Log;
 
 class PariNative {
 
-    public static final String MSG_TAG = "PariDroid::PariNative";
+   public static final String MSG_TAG = "PariDroid::PariNative";
 
-    static {
-        try {
-            String lib = "pari";
-            Log.i(MSG_TAG, "Loading lib" + lib + ".so");
-            System.loadLibrary(lib);
-        } catch (Exception ex) {
-            Log.e(MSG_TAG, "Error: " + ex.getMessage());
-        }
-    }
+   static {
+      try {
+         String lib = "pari";
+         Log.i(MSG_TAG, "Loading lib" + lib + ".so");
+         System.loadLibrary(lib);
+      } catch (Exception ex) {
+         Log.e(MSG_TAG, "Error: " + ex.getMessage());
+      }
+   }
 
-    static {
-        try {
-            Log.i(MSG_TAG,"Loading libparidroid.so");
-            System.loadLibrary("paridroid");
-        } catch (Exception ex) {
-            Log.e(MSG_TAG, "Error: " + ex.getMessage());
-        }
-    }
+   static {
+      try {
+         Log.i(MSG_TAG,"Loading libparidroid.so");
+         System.loadLibrary("paridroid");
+      } catch (Exception ex) {
+         Log.e(MSG_TAG, "Error: " + ex.getMessage());
+      }
+   }
 
-    /* JNI CALLBACK DECLARATIONS */
+   /* JNI CALLBACK DECLARATIONS */
 
-    /**
-     * Declaration of JNI callback to paridroid_init().
-     */
-    public static native void paridroidInit();
+   /**
+   * Declaration of JNI callback to paridroid_init().
+   */
+   public static native void paridroidInit();
 
-    /**
-     * Declaration of JNI callback to paridroid_eval().
-     * @param cmd: The GP command to run.
-     * @return Output from GP interpreter.
-     */
-    public static native String [] paridroidEval(String cmd);
+   /**
+   * Declaration of JNI callback to paridroid_eval().
+   * @param cmd: The GP command to run.
+   * @return Output from GP interpreter.
+   */
+   public static native String [] paridroidEval(String cmd);
 
-    public static native String[] getCommands ();
+   public static native String[] getCommands ();
 }
 
