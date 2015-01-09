@@ -25,6 +25,8 @@ import static fr.ubordeaux.math.paridroid.ParidroidUtils.showOkAlertDialog;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -85,7 +87,17 @@ public class PariActivity extends Activity implements View.OnClickListener {
    }
 
    private void initialize() {
-      setTitle(getString(R.string.app_name));
+
+      String version;
+      try {
+         PackageInfo pi = getPackageManager ().getPackageInfo (getPackageName (), 0);
+         version = pi.versionName;
+      }
+      catch (NameNotFoundException e)
+      {
+         version = "";
+      }
+      setTitle(getString(R.string.app_name) + " " + version);
 
       inputText = (AutoCompleteTextView)findViewById(R.id.inputText);
       inputText.setDropDownHeight (ViewGroup.LayoutParams.MATCH_PARENT);
