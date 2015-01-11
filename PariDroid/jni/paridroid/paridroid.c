@@ -177,7 +177,7 @@ extern entree **functions_hash;   /* functions hashtable */
 enum { EpNEW = 100, EpALIAS, EpVAR, EpINSTALL };
 
 void
-paridroid_getcommands (char *** commands, int size, int *len)
+paridroid_getcommands (const char *** commands, int size, int *len)
 {
    /* copied from the commands function in gp.c in the pari project */
    long i;
