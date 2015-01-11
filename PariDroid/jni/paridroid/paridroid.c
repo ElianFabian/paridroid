@@ -97,7 +97,7 @@ help(const char *s)
 }
 
 static GEN
-sd_timer(const char *v, long flag)
+mysd_timer(const char *v, long flag)
 {
    return sd_toggle(v,flag,"timer", &chrono);
 }
@@ -111,7 +111,7 @@ paridroid_init()
     {NULL,0,NULL,0,NULL,NULL}};
 
   static entree defaults_gp[]={
-    {"timer",0,(void*)sd_timer,16,"","(default) toggle timer on/off"},
+    {"timer",0,(void*)mysd_timer,16,"","(default) toggle timer on/off"},
     {NULL,0,NULL,0,NULL,NULL}};
 
   setenv ("GPTMPDIR", "/data/data/fr.ubordeaux.math.paridroid/cache", 1);
