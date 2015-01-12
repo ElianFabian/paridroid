@@ -5,6 +5,7 @@
  *
  * Copyright (C) 2011 Charles Boyd
  *               2014 Andreas Enge <andreas.enge@inria.fr>
+ *               2015 Bill Allombert <bill.allombert@math.u-bordeaux.fr>
  *
  * This file is part of PariDroid.
  *

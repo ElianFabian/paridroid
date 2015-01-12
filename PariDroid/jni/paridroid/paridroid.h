@@ -4,7 +4,7 @@
  *-----------------------------------------------
  *
  * Copyright (C) 2011 Charles Boyd
- *               2014 Andreas Enge <andreas.enge@inria.fr>
+ *               2014, 2015 Andreas Enge <andreas.enge@inria.fr>
  *
  * This file is part of PariDroid.
  *
@@ -45,6 +45,6 @@ void paridroid_eval(const char *in, char **out, int *returnsgnil);
 
 void paridroid_close(void);
 
-void paridroid_getcommands (char *** commands, int size, int *len);
+void paridroid_getcommands (const char *** commands, int size, int *len);
 
 #endif /*_PARIDROID_H */
