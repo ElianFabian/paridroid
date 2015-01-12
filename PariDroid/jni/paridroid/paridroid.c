@@ -153,7 +153,7 @@ paridroid_eval(const char *in, char **out, int *returnsgnil)
 
       if (z != gnil) {
          *returnsgnil = 0;
-         pari_add_hist(z, 0); /* FIXME: change 0 with execution time */
+         pari_add_hist(z, time);
          if (chrono && time > 0)
             pari_printf ("time = %li ms.\n", time);
          if (in[strlen(in)-1]!=';') {
