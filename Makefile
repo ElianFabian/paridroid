@@ -1,21 +1,23 @@
-.PHONY: all apk paridroid libpari clean ndk-clean pari-clean uberclean
+.PHONY: all apk paridroid libpari check clean dist-clean
 
-include ./Makefile.include
-CC=$(TOOLCHAIN)/bin/arm-linux-androideabi-gcc
+include Makefile.include
+
+SYSROOT=$(NDK)/platforms/$(NDK_PLATFORM)/arch-arm
+CC="$(NDK)/toolchains/arm-linux-androideabi-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/arm-linux-androideabi-gcc --sysroot=$(SYSROOT)"
 
 PARIDROID_VERSION=$(shell grep versionName PariDroid/AndroidManifest.xml | grep -o '".*"' | tr -d '"')
-PARI_SRC=$(TOP)/pari
-PARIDROID_SRC=$(TOP)/PariDroid
+PARI_SRC=pari
+PARIDROID_SRC=$(CURDIR)/PariDroid
 NDK_MODULES=$(PARIDROID_SRC)/jni
 PARI_PREFIX=$(NDK_MODULES)/pari
 
 all: libpari paridroid apk
 
 apk: paridroid
-	cp $(PARIDROID_SRC)/bin/PariDroid-debug.apk $(TOP)/PariDroid-$(PARIDROID_VERSION).apk
+	cp $(PARIDROID_SRC)/bin/PariDroid-debug.apk PariDroid-$(PARIDROID_VERSION).apk
 
 paridroid: $(NDK_MODULES)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
-	cd $(NDK_MODULES) && $(NDK_PATH)/ndk-build APP_CFLAGS="-DPARIDROID_VERSION=$(PARIDROID_VERSION)" V=1
+	cd $(NDK_MODULES) && $(NDK)/ndk-build APP_CFLAGS="-DPARIDROID_VERSION=$(PARIDROID_VERSION)" V=1
 	cd $(PARIDROID_SRC) && ant debug
 
 $(NDK_MODULES)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h: libpari
@@ -39,11 +41,11 @@ check: libpari
 	adb shell rm /data/gp-sta /data/pari-ret /data/pari-stdin
 
 clean:
-	rm -f $(TOP)/PariDroid*.apk
+	rm -f PariDroid*.apk
 	cd $(PARIDROID_SRC) && ant clean
 
 distclean: clean
-	cd $(NDK_MODULES) && $(NDK_PATH)/ndk-build clean V=1
+	cd $(NDK_MODULES) && $(NDK)/ndk-build clean V=1
 	rm -rf $(PARI_PREFIX)
 	rm -rf $(PARI_SRC)/android
 	rm -rf $(PARI_SRC)/Oandroid-arm
