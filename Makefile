@@ -1,4 +1,4 @@
-.PHONY: all apk paridroid libpari check clean dist-clean
+.PHONY: all apk paridroid libpari libpari-config libpari-make check clean dist-clean
 
 include Makefile.include
 
@@ -25,12 +25,14 @@ $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h: libpari
 	cd $(PARIDROID_SRC)/bin/classes && javah -jni fr.ubordeaux.math.paridroid.PariNative
 	mv $(PARIDROID_SRC)/bin/classes/fr_ubordeaux_math_paridroid_PariNative.h $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
 
-libpari:
+libpari: libpari-config libpari-make
+
+libpari-config:
 	cd $(PARI_SRC) && \
-	CC=$(CC) RUNTEST="../runtest" ./Configure --host=arm-linux --builddir=Oandroid-arm --kernel=arm-none --without-readline --graphic=none --prefix=$(PARI_PREFIX) --datadir=/data/data/fr.ubordeaux.math.paridroid && \
-	./Configure -l Oandroid-arm && \
-	adb shell rm /data/pari-ret /data/pari-stdin && \
-	cd Oandroid-arm && \
+	CC=$(CC) RUNTEST="../runtest" ./Configure --host=arm-linux --builddir=Oandroid-arm --kernel=arm-none --without-readline --graphic=none --prefix=$(PARI_PREFIX) --datadir=/data/data/fr.ubordeaux.math.paridroid
+
+libpari-make:
+	cd $(PARI_SRC)/Oandroid-arm && \
 	$(MAKE) all && \
 	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so
 
