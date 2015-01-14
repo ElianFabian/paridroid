@@ -8,22 +8,22 @@ CC="$(NDK)/toolchains/arm-linux-androideabi-$(GCC_VERSION)/prebuilt/linux-x86_64
 PARIDROID_VERSION=$(shell grep versionName PariDroid/AndroidManifest.xml | grep -o '".*"' | tr -d '"')
 PARI_SRC=pari
 PARIDROID_SRC=$(CURDIR)/PariDroid
-NDK_MODULES=$(PARIDROID_SRC)/jni
-PARI_PREFIX=$(NDK_MODULES)/pari
+JNI=$(PARIDROID_SRC)/jni
+PARI_PREFIX=$(JNI)/pari
 
 all: libpari paridroid apk
 
 apk: paridroid
 	cp $(PARIDROID_SRC)/bin/PariDroid-debug.apk PariDroid-$(PARIDROID_VERSION).apk
 
-paridroid: $(NDK_MODULES)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
-	cd $(NDK_MODULES) && $(NDK)/ndk-build APP_CFLAGS="-DPARIDROID_VERSION=$(PARIDROID_VERSION)" V=1
+paridroid: $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
+	cd $(JNI) && $(NDK)/ndk-build APP_CFLAGS="-DPARIDROID_VERSION=$(PARIDROID_VERSION)" V=1
 	cd $(PARIDROID_SRC) && ant debug
 
-$(NDK_MODULES)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h: libpari
+$(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h: libpari
 	cd $(PARIDROID_SRC) && ant debug
 	cd $(PARIDROID_SRC)/bin/classes && javah -jni fr.ubordeaux.math.paridroid.PariNative
-	mv $(PARIDROID_SRC)/bin/classes/fr_ubordeaux_math_paridroid_PariNative.h $(NDK_MODULES)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
+	mv $(PARIDROID_SRC)/bin/classes/fr_ubordeaux_math_paridroid_PariNative.h $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
 
 libpari:
 	cd $(PARI_SRC) && \
@@ -45,7 +45,7 @@ clean:
 	cd $(PARIDROID_SRC) && ant clean
 
 distclean: clean
-	cd $(NDK_MODULES) && $(NDK)/ndk-build clean V=1
+	cd $(JNI) && $(NDK)/ndk-build clean V=1
 	rm -rf $(PARI_PREFIX)
 	rm -rf $(PARI_SRC)/android
 	rm -rf $(PARI_SRC)/Oandroid-arm
