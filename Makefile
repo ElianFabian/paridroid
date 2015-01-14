@@ -1,7 +1,11 @@
+# This Makefile uses the environment variable $(NDK), which needs to
+# contain the path to the Android NDK. Please set it in your environment
+# before invoking make.
+
 .PHONY: all apk paridroid libpari libpari-config libpari-make check clean dist-clean
 
-include Makefile.include
-
+NDK_PLATFORM=android-9
+GCC_VERSION=4.8
 SYSROOT=$(NDK)/platforms/$(NDK_PLATFORM)/arch-arm
 CC="$(NDK)/toolchains/arm-linux-androideabi-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/arm-linux-androideabi-gcc --sysroot=$(SYSROOT)"
 
