@@ -2,7 +2,7 @@
 # contain the path to the Android NDK. Please set it in your environment
 # before invoking make.
 
-.PHONY: all apk paridroid libpari libpari-config libpari-make check clean dist-clean
+.PHONY: all apk paridroid pari pari-config check clean dist-clean
 
 NDK_PLATFORM=android-9
 GCC_VERSION=4.8
@@ -10,37 +10,58 @@ SYSROOT=$(NDK)/platforms/$(NDK_PLATFORM)/arch-arm
 CC="$(NDK)/toolchains/arm-linux-androideabi-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/arm-linux-androideabi-gcc --sysroot=$(SYSROOT)"
 
 PARIDROID_VERSION=$(shell grep versionName PariDroid/AndroidManifest.xml | grep -o '".*"' | tr -d '"')
-PARI_SRC=pari
-PARIDROID_SRC=$(CURDIR)/PariDroid
-JNI=$(PARIDROID_SRC)/jni
-PARI_PREFIX=$(JNI)/pari
+PARI_VERSION=$(shell echo $(PARIDROID_VERSION) | cut -d. -f1-3)
 
-all: libpari paridroid apk
+PARIDROID_SRC=$(CURDIR)/PariDroid
+PARI_SRC=$(CURDIR)/srclib/pari
+JNI=$(PARIDROID_SRC)/jni
+
+all: paridroid apk
 
 apk: paridroid
 	cp $(PARIDROID_SRC)/bin/PariDroid-debug.apk PariDroid-$(PARIDROID_VERSION).apk
 
-paridroid: $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
+paridroid: pari $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
 	cd $(JNI) && $(NDK)/ndk-build APP_CFLAGS="-DPARIDROID_VERSION=$(PARIDROID_VERSION)" V=1
 	cd $(PARIDROID_SRC) && ant debug
 
-$(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h: libpari
+pari: pari-config pari-make
+
+pari-make:
+	cd $(PARI_SRC)/Oandroid-arm && \
+	$(MAKE) all && \
+	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so DESTDIR=$(PARIDROID_SRC)/jni/pari
+
+
+# This is supposed to be executed only once; subsequent updates need to be
+# executed via "git pull" by hand, so that the Makefile remains usable
+# offline.
+$(PARI_SRC):
+	mkdir -p $(PARI_SRC)
+	git clone http://pari.math.u-bordeaux.fr/git/pari.git $(PARI_SRC)
+
+
+# The following targets create files that ultimately are supposed to be under
+# version control, but that can be generated automatically.
+
+# Create a C header file from the java class interfacing with the pari
+# library; this gives the prototypes of functions to be written by hand in
+# the corresponding C source file. The result is under version control.
+$(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h: $(PARIDROID_SRC)/src/fr/ubordeaux/math/paridroid/PariNative.java
 	cd $(PARIDROID_SRC) && ant debug
 	cd $(PARIDROID_SRC)/bin/classes && javah -jni fr.ubordeaux.math.paridroid.PariNative
 	mv $(PARIDROID_SRC)/bin/classes/fr_ubordeaux_math_paridroid_PariNative.h $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
 
-libpari: libpari-config libpari-make
-
-libpari-config:
+# Create a pari configuration by running the tests on an Android emulator.
+# Such an emulator is usually not available in build environments, so the
+# resulting configuration files, which depend on the pari version, need to
+# be moved to the config/ subdirectory, from where they are copied when
+# compiling a pari library.
+pari-config:
 	cd $(PARI_SRC) && \
-	CC=$(CC) RUNTEST="../runtest" ./Configure --host=arm-linux --builddir=Oandroid-arm --kernel=arm-none --without-readline --graphic=none --prefix=$(PARI_PREFIX) --datadir=/data/data/fr.ubordeaux.math.paridroid
+	CC=$(CC) RUNTEST="../../runtest" ./Configure --host=arm-linux --builddir=Oandroid-arm --kernel=arm-none --without-readline --graphic=none --prefix=/ --datadir=/data/data/fr.ubordeaux.math.paridroid
 
-libpari-make:
-	cd $(PARI_SRC)/Oandroid-arm && \
-	$(MAKE) all && \
-	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so
-
-check: libpari
+check: pari
 	cd $(PARI_SRC)/Oandroid-arm && \
 	adb push gp-sta /data && \
 	make statest-all RUNTEST=../../runtest.bench && \
@@ -49,10 +70,10 @@ check: libpari
 clean:
 	rm -f PariDroid*.apk
 	cd $(PARIDROID_SRC) && ant clean
+	cd $(JNI) && $(NDK)/ndk-build clean V=1
 
 distclean: clean
-	cd $(JNI) && $(NDK)/ndk-build clean V=1
-	rm -rf $(PARI_PREFIX)
-	rm -rf $(PARI_SRC)/android
 	rm -rf $(PARI_SRC)/Oandroid-arm
+	rm -f $(PARI_SRC)/config-arm-linux*
+	rm -f $(PARI_SRC)/config/linux-arm*
 
