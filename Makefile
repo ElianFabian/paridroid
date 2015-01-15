@@ -2,7 +2,7 @@
 # contain the path to the Android NDK. Please set it in your environment
 # before invoking make.
 
-.PHONY: all apk paridroid pari pari-config check clean dist-clean
+.PHONY: all apk paridroid pari pari-config pari-make pari-real-config check clean dist-clean
 
 NDK_PLATFORM=android-9
 GCC_VERSION=4.8
@@ -11,12 +11,17 @@ CC="$(NDK)/toolchains/arm-linux-androideabi-$(GCC_VERSION)/prebuilt/linux-x86_64
 
 PARIDROID_VERSION=$(shell grep versionName PariDroid/AndroidManifest.xml | grep -o '".*"' | tr -d '"')
 PARI_VERSION=$(shell echo $(PARIDROID_VERSION) | cut -d. -f1-3)
+ifeq "$(PARI_VERSION)" "2.8.0"
+   PARI_GIT="master"
+else
+   PARI_GIT=pari-$(PARI_VERSION)
+endif
 
 PARIDROID_SRC=$(CURDIR)/PariDroid
 PARI_SRC=$(CURDIR)/srclib/pari
 JNI=$(PARIDROID_SRC)/jni
 
-all: paridroid apk
+all: apk
 
 apk: paridroid
 	cp $(PARIDROID_SRC)/bin/PariDroid-debug.apk PariDroid-$(PARIDROID_VERSION).apk
@@ -25,9 +30,15 @@ paridroid: pari $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
 	cd $(JNI) && $(NDK)/ndk-build APP_CFLAGS="-DPARIDROID_VERSION=$(PARIDROID_VERSION)" V=1
 	cd $(PARIDROID_SRC) && ant debug
 
-pari: pari-config pari-make
+pari: pari-make
 
-pari-make:
+pari-config:
+	rm -rf $(PARI_SRC)/Oandroid-arm
+	cd $(PARI_SRC) && git checkout $(PARI_GIT)
+	cd $(PARI_SRC) && \
+	CC=$(CC) RUNTEST="../../runtest" ./Configure --host=arm-linux --builddir=Oandroid-arm --kernel=arm-none --without-readline --graphic=none --prefix=/ --datadir=/data/data/fr.ubordeaux.math.paridroid
+
+pari-make: pari-config
 	cd $(PARI_SRC)/Oandroid-arm && \
 	$(MAKE) all && \
 	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so DESTDIR=$(PARIDROID_SRC)/jni/pari
@@ -57,9 +68,10 @@ $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h: $(PARIDROID_SRC)/src/
 # resulting configuration files, which depend on the pari version, need to
 # be moved to the config/ subdirectory, from where they are copied when
 # compiling a pari library.
-pari-config:
+pari-real-config:
 	cd $(PARI_SRC) && \
 	CC=$(CC) RUNTEST="../../runtest" ./Configure --host=arm-linux --builddir=Oandroid-arm --kernel=arm-none --without-readline --graphic=none --prefix=/ --datadir=/data/data/fr.ubordeaux.math.paridroid
+
 
 check: pari
 	cd $(PARI_SRC)/Oandroid-arm && \
