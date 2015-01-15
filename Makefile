@@ -17,8 +17,9 @@ else
    PARI_GIT=pari-$(PARI_VERSION)
 endif
 
-PARIDROID_SRC=$(CURDIR)/PariDroid
-PARI_SRC=$(CURDIR)/srclib/pari
+TOP=$(CURDIR)
+PARIDROID_SRC=$(TOP)/PariDroid
+PARI_SRC=$(TOP)/srclib/pari
 JNI=$(PARIDROID_SRC)/jni
 
 all: apk
@@ -36,11 +37,11 @@ pari-config: $(PARI_SRC)
 	rm -rf $(PARI_SRC)/Oandroid-arm
 	cd $(PARI_SRC) && git checkout $(PARI_GIT)
 	cd $(PARI_SRC) && \
-	CC=$(CC) RUNTEST="../../runtest" ./Configure --host=arm-linux --builddir=Oandroid-arm --kernel=arm-none --without-readline --graphic=none --prefix=/ --datadir=/data/data/fr.ubordeaux.math.paridroid
+	./Configure -l $(TOP)/config/$(PARI_VERSION)/pari.cfg
 
 pari-make: pari-config
 	cd $(PARI_SRC)/Oandroid-arm && \
-	$(MAKE) all && \
+	$(MAKE) CC=$(CC) all && \
 	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so DESTDIR=$(JNI)/pari
 
 
@@ -69,8 +70,12 @@ $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h: $(PARIDROID_SRC)/src/
 # be moved to the config/ subdirectory, from where they are copied when
 # compiling a pari library.
 pari-real-config:
+	rm -rf $(PARI_SRC)/Oandroid-arm
 	cd $(PARI_SRC) && \
-	CC=$(CC) RUNTEST="../../runtest" ./Configure --host=arm-linux --builddir=Oandroid-arm --kernel=arm-none --without-readline --graphic=none --prefix=/ --datadir=/data/data/fr.ubordeaux.math.paridroid
+	CC=$(CC) RUNTEST="../../runtest" ./Configure --host=arm-linux --builddir=Oandroid-arm --kernel=arm-none --without-readline --graphic=none --prefix=/ --datadir=/data/data/fr.ubordeaux.math.paridroid && \
+	sed -i 's/^TOP=.*/TOP=../' Oandroid-arm/pari.cfg && \
+	sed -i 's/^RUNTEST=.*/RUNTEST=/' Oandroid-arm/pari.cfg && \
+	sed -i 's/^prefix=.*/prefix=/' Oandroid-arm/pari.cfg
 
 
 check: pari
