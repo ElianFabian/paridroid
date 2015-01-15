@@ -32,7 +32,7 @@ paridroid: pari $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
 
 pari: pari-make
 
-pari-config:
+pari-config: $(PARI_SRC)
 	rm -rf $(PARI_SRC)/Oandroid-arm
 	cd $(PARI_SRC) && git checkout $(PARI_GIT)
 	cd $(PARI_SRC) && \
@@ -41,7 +41,7 @@ pari-config:
 pari-make: pari-config
 	cd $(PARI_SRC)/Oandroid-arm && \
 	$(MAKE) all && \
-	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so DESTDIR=$(PARIDROID_SRC)/jni/pari
+	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so DESTDIR=$(JNI)/pari
 
 
 # This is supposed to be executed only once; subsequent updates need to be
@@ -83,6 +83,7 @@ clean:
 	rm -f PariDroid*.apk
 	cd $(PARIDROID_SRC) && ant clean
 	cd $(JNI) && $(NDK)/ndk-build clean V=1
+	rm -rf $(JNI)/pari
 
 distclean: clean
 	rm -rf $(PARI_SRC)/Oandroid-arm
