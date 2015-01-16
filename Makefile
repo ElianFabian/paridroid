@@ -21,6 +21,7 @@ TOP=$(CURDIR)
 PARIDROID_SRC=$(TOP)/PariDroid
 PARI_SRC=$(TOP)/srclib/pari
 JNI=$(PARIDROID_SRC)/jni
+TARGET=Oandroid-arm
 
 all: apk
 
@@ -36,13 +37,13 @@ paridroid: pari $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
 pari: pari-make
 
 pari-config: $(PARI_SRC)
-	rm -rf $(PARI_SRC)/Oandroid-arm
+	rm -rf $(PARI_SRC)/$(TARGET)
 	cd $(PARI_SRC) && git checkout $(PARI_GIT)
 	cd $(PARI_SRC) && \
 	./Configure -l $(TOP)/config/$(PARI_VERSION)/pari.cfg
 
 pari-make: pari-config
-	cd $(PARI_SRC)/Oandroid-arm && \
+	cd $(PARI_SRC)/$(TARGET) && \
 	$(MAKE) CC=$(CC) all && \
 	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so DESTDIR=$(JNI)/pari
 
@@ -72,16 +73,16 @@ $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h: $(PARIDROID_SRC)/src/
 # be moved to the config/ subdirectory, from where they are copied when
 # compiling a pari library.
 pari-real-config:
-	rm -rf $(PARI_SRC)/Oandroid-arm
+	rm -rf $(PARI_SRC)/$(TARGET)
 	cd $(PARI_SRC) && \
-	CC=$(CC) RUNTEST="../../runtest" ./Configure --host=arm-linux --builddir=Oandroid-arm --kernel=arm-none --without-readline --graphic=none --prefix=/ --datadir=/data/data/fr.ubordeaux.math.paridroid && \
-	sed -i 's/^TOP=.*/TOP=../' Oandroid-arm/pari.cfg && \
-	sed -i 's/^RUNTEST=.*/RUNTEST=/' Oandroid-arm/pari.cfg && \
-	sed -i 's/^prefix=.*/prefix=/' Oandroid-arm/pari.cfg
+	CC=$(CC) RUNTEST="../../runtest" ./Configure --host=arm-linux --builddir=$(TARGET) --kernel=arm-none --without-readline --graphic=none --prefix=/ --datadir=/data/data/fr.ubordeaux.math.paridroid && \
+	sed -i 's/^TOP=.*/TOP=../' $(TARGET)/pari.cfg && \
+	sed -i 's/^RUNTEST=.*/RUNTEST=/' $(TARGET)/pari.cfg && \
+	sed -i 's/^prefix=.*/prefix=/' $(TARGET)/pari.cfg
 
 
 check: pari
-	cd $(PARI_SRC)/Oandroid-arm && \
+	cd $(PARI_SRC)/$(TARGET) && \
 	adb push gp-sta /data && \
 	make statest-all RUNTEST=../../runtest.bench && \
 	adb shell rm /data/gp-sta /data/pari-ret /data/pari-stdin
@@ -93,7 +94,7 @@ clean:
 	rm -rf $(JNI)/pari
 
 distclean: clean
-	rm -rf $(PARI_SRC)/Oandroid-arm
+	rm -rf $(PARI_SRC)/$(TARGET)
 	rm -f $(PARI_SRC)/config-arm-linux*
 	rm -f $(PARI_SRC)/config/linux-arm*
 
