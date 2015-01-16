@@ -20,7 +20,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := paridroid
 
-LOCAL_C_INCLUDES := pari/include
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/pari/include
 
 LOCAL_LDLIBS := -llog
 

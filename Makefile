@@ -28,7 +28,7 @@ apk: paridroid
 	cp $(PARIDROID_SRC)/bin/PariDroid-debug.apk PariDroid-$(PARIDROID_VERSION).apk
 
 paridroid: pari $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
-	cd $(JNI) && $(NDK)/ndk-build APP_CFLAGS="-DPARIDROID_VERSION=$(PARIDROID_VERSION)" V=1
+	cd $(PARIDROID_SRC) && $(NDK)/ndk-build APP_CFLAGS="-DPARIDROID_VERSION=$(PARIDROID_VERSION)" V=1
 	cd $(PARIDROID_SRC) && ant debug
 
 pari: pari-make
