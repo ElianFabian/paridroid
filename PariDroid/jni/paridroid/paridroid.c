@@ -4,7 +4,7 @@
  *-----------------------------------------------
  *
  * Copyright (C) 2011 Charles Boyd
- *               2014 Andreas Enge <andreas.enge@inria.fr>
+ *               2014, 2015 Andreas Enge <andreas.enge@inria.fr>
  *               2015 Bill Allombert <bill.allombert@math.u-bordeaux.fr>
  *
  * This file is part of PariDroid.
@@ -75,7 +75,7 @@ static PariOUT droidOut = {droidOutC, droidOutS, droidOutF};
 void 
 paridroid_quit(long exitcode) 
 {
-  LOGW("Call to paridroid_quit: exit code = %l", exitcode);
+  LOGW("Call to paridroid_quit: exit code = %ld", exitcode);
   paridroid_close();
 }
 

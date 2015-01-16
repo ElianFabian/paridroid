@@ -80,11 +80,11 @@ Java_fr_ubordeaux_math_paridroid_PariNative_getCommands(JNIEnv *env, jclass cls)
 {
    /* returns the list of supported gp commands */
    const int size = 1000;
-   char **commands;
+   const char **commands;
    int len, i;
    jobjectArray res;
 
-   commands = (char**) malloc (size * sizeof (char *));
+   commands = (const char**) malloc (size * sizeof (char *));
    paridroid_getcommands (&commands, size, &len);
    res = (*env)->NewObjectArray (env, (jsize) len,
                                  (*env)->FindClass (env, "java/lang/String"),
