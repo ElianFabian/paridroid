@@ -7,7 +7,7 @@
 NDK_PLATFORM=android-9
 GCC_VERSION=4.8
 SYSROOT=$(NDK)/platforms/$(NDK_PLATFORM)/arch-arm
-CC="$(NDK)/toolchains/arm-linux-androideabi-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/arm-linux-androideabi-gcc --sysroot=$(SYSROOT)"
+CC='$(NDK)/toolchains/arm-linux-androideabi-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/arm-linux-androideabi-gcc --sysroot=$(SYSROOT)'
 
 PARIDROID_VERSION=$(shell grep versionName PariDroid/AndroidManifest.xml | grep -o '".*"' | tr -d '"')
 PARI_VERSION=$(shell echo $(PARIDROID_VERSION) | cut -d. -f1-3)
@@ -40,12 +40,13 @@ pari-config: $(PARI_SRC)
 	rm -rf $(PARI_SRC)/$(TARGET)
 	cd $(PARI_SRC) && git checkout $(PARI_GIT)
 	cd $(PARI_SRC) && \
-	./Configure -l $(TOP)/config/$(PARI_VERSION)/pari.cfg
+	sed "s?XXXCCXXX?$(CC)?" $(TOP)/config/$(PARI_VERSION)/pari.cfg > pari.cfg && \
+	./Configure -l ./pari.cfg
 
 pari-make: pari-config
 	cd $(PARI_SRC)/$(TARGET) && \
-	$(MAKE) CC=$(CC) all && \
-	$(MAKE) CC=$(CC) install-include install-lib-dyn LIBPARI_SONAME=libpari.so DESTDIR=$(JNI)/pari
+	$(MAKE) all && \
+	$(MAKE) install-include install-lib-dyn LIBPARI_SONAME=libpari.so DESTDIR=$(JNI)/pari
 
 
 # This is supposed to be executed only once; subsequent updates need to be
@@ -72,19 +73,28 @@ $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h: $(PARIDROID_SRC)/src/
 # resulting configuration files, which depend on the pari version, need to
 # be moved to the config/ subdirectory, from where they are copied when
 # compiling a pari library.
+# The calls to sed eliminate all references to files on the configuring machine
+# and the option -Wall to the linker.
 pari-real-config:
 	rm -rf $(PARI_SRC)/$(TARGET)
 	cd $(PARI_SRC) && \
-	CC=$(CC) RUNTEST="../../runtest" ./Configure --host=arm-linux --builddir=$(TARGET) --kernel=arm-none --without-readline --graphic=none --prefix=/ --datadir=/data/data/fr.ubordeaux.math.paridroid && \
+	CC=$(CC) RUNTEST=$(TOP)/runtest ./Configure --host=arm-linux --builddir=$(TARGET) --kernel=arm-none --without-readline --graphic=none --prefix=/ --datadir=/data/data/fr.ubordeaux.math.paridroid && \
 	sed -i 's/^TOP=.*/TOP=../' $(TARGET)/pari.cfg && \
 	sed -i 's/^RUNTEST=.*/RUNTEST=/' $(TARGET)/pari.cfg && \
+	sed -i 's/^CC=.*/CC=XXXCCXXX/' $(TARGET)/pari.cfg && \
+	sed -i 's/^LD=.*/LD=XXXCCXXX/' $(TARGET)/pari.cfg && \
+	sed -i 's/^LDused=.*/LDused=/' $(TARGET)/pari.cfg && \
+	sed -i 's/^DLLD=.*/DLLD=XXXCCXXX/' $(TARGET)/pari.cfg && \
+	sed -i 's/^MODLD=.*/MODLD=/' $(TARGET)/pari.cfg && \
+	sed -i 's/^modules_build=.*/modules_build=/' $(TARGET)/pari.cfg && \
 	sed -i 's/^prefix=.*/prefix=/' $(TARGET)/pari.cfg
+#	sed -i "s/^LDFLAGS='-O3\ -Wall/LDFLAGS='-O3/" $(TARGET)/pari.cfg
 
 
 check: pari
 	cd $(PARI_SRC)/$(TARGET) && \
 	adb push gp-sta /data && \
-	make statest-all RUNTEST=../../runtest.bench && \
+	make statest-all RUNTEST=$(TOP)/runtest.bench && \
 	adb shell rm /data/gp-sta /data/pari-ret /data/pari-stdin
 
 clean:
