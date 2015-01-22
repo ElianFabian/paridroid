@@ -12,7 +12,7 @@ CC='$(NDK)/toolchains/arm-linux-androideabi-$(GCC_VERSION)/prebuilt/linux-x86_64
 PARIDROID_VERSION=$(shell grep versionName PariDroid/AndroidManifest.xml | grep -o '".*"' | tr -d '"')
 PARI_VERSION=$(shell echo $(PARIDROID_VERSION) | cut -d. -f1-3)
 ifeq "$(PARI_VERSION)" "2.8.0"
-   PARI_GIT="master"
+   PARI_GIT=origin/master
 else
    PARI_GIT=pari-$(PARI_VERSION)
 endif
@@ -38,6 +38,9 @@ pari: pari-config pari-make
 
 pari-config: $(PARI_SRC)
 	rm -rf $(PARI_SRC)/$(TARGET)
+ifeq "$(PARI_GIT)" "origin/master"
+	cd $(PARI_SRC) && git fetch
+endif
 	cd $(PARI_SRC) && git checkout $(PARI_GIT)
 	cd $(PARI_SRC) && \
 	sed "s?XXXCCXXX?$(CC)?" $(TOP)/config/$(PARI_VERSION)/pari.cfg > pari.cfg && \
