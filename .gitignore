@@ -17,13 +17,6 @@ PariDroid/obj
 # Local configuration file (sdk path, etc)
 local.properties
 
-# Eclipse project files
-.classpath
-.project
-
-# pari source
+# pari library
 pari/
 
-# include files
-Makefile.in
-Makefile.include
