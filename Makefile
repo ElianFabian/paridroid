@@ -19,7 +19,7 @@ endif
 
 TOP=$(CURDIR)
 PARIDROID_SRC=$(TOP)/PariDroid
-PARI_SRC=$(TOP)/srclib/pari
+PARI_SRC=$(TOP)/../srclib/pari
 JNI=$(PARIDROID_SRC)/jni
 TARGET=Oandroid-arm
 
@@ -34,7 +34,7 @@ paridroid: pari $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
 	cd $(PARIDROID_SRC) && $(NDK)/ndk-build APP_CFLAGS="-DPARIDROID_VERSION=$(PARIDROID_VERSION)" V=1
 	cd $(PARIDROID_SRC) && ant release
 
-pari: pari-make
+pari: pari-config pari-make
 
 pari-config: $(PARI_SRC)
 	rm -rf $(PARI_SRC)/$(TARGET)
