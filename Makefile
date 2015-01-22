@@ -45,7 +45,7 @@ pari-config: $(PARI_SRC)
 pari-make: pari-config
 	cd $(PARI_SRC)/$(TARGET) && \
 	$(MAKE) CC=$(CC) all && \
-	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so DESTDIR=$(JNI)/pari
+	$(MAKE) CC=$(CC) install-include install-lib-dyn LIBPARI_SONAME=libpari.so DESTDIR=$(JNI)/pari
 
 
 # This is supposed to be executed only once; subsequent updates need to be
