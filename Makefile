@@ -2,7 +2,7 @@
 # contain the path to the Android NDK. Please set it in your environment
 # before invoking make.
 
-.PHONY: all apk pari pari-config pari-make pari-real-config check clean dist-clean
+.PHONY: all apk apk-fast pari pari-config pari-make pari-real-config check clean dist-clean
 
 NDK_PLATFORM=android-9
 GCC_VERSION=4.8
@@ -25,7 +25,9 @@ TARGET=Oandroid-arm
 
 all: apk
 
-apk: pari $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
+apk: pari apk-fast
+
+apk-fast: $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
 	cd $(PARIDROID_SRC) && $(NDK)/ndk-build APP_CFLAGS="-DPARIDROID_VERSION=$(PARIDROID_VERSION)" V=1
 	cd $(PARIDROID_SRC) && ant release
 	cp $(PARIDROID_SRC)/bin/PariDroid-release-unsigned.apk $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk
