@@ -28,7 +28,7 @@ all: apk
 apk: pari apk-fast
 
 apk-fast: $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
-	cd $(PARIDROID_SRC) && $(NDK)/ndk-build APP_CFLAGS="-DPARIDROID_VERSION=$(PARIDROID_VERSION)" V=1
+	cd $(PARIDROID_SRC) && $(NDK)/ndk-build V=1
 	cd $(PARIDROID_SRC) && ant release
 	cp $(PARIDROID_SRC)/bin/PariDroid-release-unsigned.apk $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk
 	jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $(HOME)/.android/debug.keystore -storepass android $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk androiddebugkey

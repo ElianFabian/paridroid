@@ -79,14 +79,6 @@ paridroid_quit(long exitcode)
   paridroid_close();
 }
 
-#define XSTR(s) STR(s)
-#define STR(s) #s
-static void
-print_version()
-{
-  LOGI("PARIDROID_VERSION = " XSTR(PARIDROID_VERSION));
-}
-
 static void
 help(const char *s)
 {
@@ -124,8 +116,6 @@ paridroid_init()
   
   pariOut=&droidOut; /* destinaton of pari_printf */
   pariErr=&droidOut;
-  
-  print_version();
 }
 
 void
