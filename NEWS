@@ -1,5 +1,6 @@
-Recent changes
-  The build process has been simplified and aligned on that for D-Froid.
+Version 2.7.2.1.3 (January 2015):
+  Simplify the build process and align it on that for D-Froid.
+  First version on the F-Droid and Google Play stores.
 
 Version 2.7.2.1.2 (January 2015):
   Add timer.
