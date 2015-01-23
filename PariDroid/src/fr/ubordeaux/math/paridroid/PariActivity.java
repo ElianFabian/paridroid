@@ -69,9 +69,9 @@ public class PariActivity extends Activity implements View.OnClickListener {
 
    private Button prevButton;
 
-   private ListView historyList;
+   private ListView resultList;
 
-   private OutputStringArrayAdapter outputArrayAdapter;
+   private ArrayAdapter outputArrayAdapter;
 
    private ArrayList<String> outputArrayList = new ArrayList<String>(255);
 
@@ -114,9 +114,9 @@ public class PariActivity extends Activity implements View.OnClickListener {
       prevButton = (Button)findViewById(R.id.prevButton);
       prevButton.setOnClickListener(this);
 
-      historyList = (ListView)findViewById(R.id.historyList);
-      outputArrayAdapter = new OutputStringArrayAdapter(this,outputArrayList);
-      historyList.setAdapter(outputArrayAdapter);
+      resultList = (ListView)findViewById(R.id.resultList);
+      outputArrayAdapter = new ArrayAdapter(this,R.layout.result_list_item,outputArrayList);
+      resultList.setAdapter(outputArrayAdapter);
 
       setupAutoCompleteView();
 
@@ -253,27 +253,12 @@ public class PariActivity extends Activity implements View.OnClickListener {
       ArrayList<String> functions = new ArrayList<String>(Arrays.asList (s));
       Collections.sort (functions);
       ArrayAdapter<String> adapter =
-         new ArrayAdapter<String>(this,R.layout.list_item,
+         new ArrayAdapter<String>(this,R.layout.suggestion_list_item,
                                  functions);
       inputText.setAdapter(adapter);
    }
 
    public void onDestroy() {
       super.onDestroy();
-   }
-
-   /* Nested Classes */
-   protected class OutputStringArrayAdapter extends ArrayAdapter<String> {
-
-      OutputStringArrayAdapter(Context context, ArrayList<String> stringArrayList) {
-         super(context, android.R.layout.simple_list_item_1, stringArrayList);
-      }
-
-      public View getView(int position, View convertView, ViewGroup parent) {
-         TextView txt = new TextView(this.getContext());
-         txt.setTypeface (Typeface.MONOSPACE);
-         txt.setText(this.getItem(position));
-         return txt;
-      }
    }
 }
