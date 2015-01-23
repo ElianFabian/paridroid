@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2012, 2013 Charles Boyd
- * Copyright (C) 2014 Andreas Enge <andreas.enge@inria.fr>
+ * Copyright (C) 2014, 2015 Andreas Enge <andreas.enge@inria.fr>
  *
  * This file is part of PariDroid.
  *
@@ -234,8 +234,7 @@ public class PariActivity extends Activity implements View.OnClickListener {
          inputText.setText("default(timer, )");
          return true;
       case R.id.docs:
-         makeToast(this, "For documentation, please visit:\n"+
-                         "http://paridroid.multiprecision.org");
+         makeToast(this, getString (R.string.url));
          return true;
       case R.id.app_license:
          showOkAlertDialog(this, "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\nSee the GNU General Public License for more details.\nhttp://www.gnu.org/licenses/gpl.txt");
