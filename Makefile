@@ -38,10 +38,7 @@ pari: pari-config pari-make
 
 pari-config: $(PARI_SRC)
 	rm -rf $(PARI_SRC)/$(TARGET)
-ifeq "$(PARI_GIT)" "origin/master"
-	cd $(PARI_SRC) && git fetch
-endif
-	cd $(PARI_SRC) && git checkout $(PARI_GIT)
+	cd $(PARI_SRC) && git fetch && git checkout $(PARI_GIT)
 	cd $(PARI_SRC) && \
 	sed "s?XXXCCXXX?$(CC)?" $(TOP)/config/$(PARI_VERSION)/pari.cfg > pari.cfg && \
 	./Configure -l ./pari.cfg
