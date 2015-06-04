@@ -78,8 +78,8 @@ pari-config: $(PARI_SRC)
 
 pari-make:
 	cd $(PARI_SRC)/$(TARGET) && \
-	$(MAKE) -j all && \
-	$(MAKE) install-include install-lib-dyn LIBPARI_SONAME=libpari.so DESTDIR=$(JNI)/pari
+	$(MAKE) all && \
+	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so DESTDIR=$(JNI)/pari
 
 pari-check:
 	cd $(PARI_SRC)/$(TARGET) && \
