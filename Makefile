@@ -43,7 +43,7 @@ pari-standalone: pari-config-standalone pari-make
 
 # Updates the pari source tree and switches to the version from
 # AndroidManifest.xml
-pari-checkout:
+pari-checkout: $(PARI_SRC)
 	cd $(PARI_SRC) && git fetch && git checkout $(PARI_GIT)
 
 # Create a pari configuration by running the tests on an Android emulator.
