@@ -76,9 +76,11 @@ pari-config: $(PARI_SRC)
 	sed "s?XXXCCXXX?$(CC)?" $(TOP)/config/$(PARI_VERSION)/pari.cfg > pari.cfg && \
 	./Configure -l ./pari.cfg
 
+# If $(CORES) is set in the environment, it specifies the level of
+# parallelism; otherwise, all compilation jobs are launched at the same time.
 pari-make:
 	cd $(PARI_SRC)/$(TARGET) && \
-	$(MAKE) all && \
+	make -j $(CORES) all && \
 	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so DESTDIR=$(JNI)/pari
 
 pari-check:
