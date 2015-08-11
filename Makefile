@@ -2,7 +2,7 @@
 # contain the path to the Android NDK. Please set it in your environment
 # before invoking make.
 
-.PHONY: all apk apk-fast pari pari-standalone pari-checkout pari-config-standalone config pari-config pari-make pari-check check check-standalone clean dist-clean
+.PHONY: all apk apk-fast pari pari-standalone pari-checkout pari-config-standalone config pari-config pari-make pari-check check check-standalone clean distclean
 
 NDK_PLATFORM=android-9
 GCC_VERSION=4.9
