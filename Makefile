@@ -5,7 +5,7 @@
 .PHONY: all apk apk-fast pari pari-standalone pari-checkout pari-config-standalone config pari-config pari-make pari-check check check-standalone clean dist-clean
 
 NDK_PLATFORM=android-9
-GCC_VERSION=4.8
+GCC_VERSION=4.9
 SYSROOT=$(NDK)/platforms/$(NDK_PLATFORM)/arch-arm
 CC='$(NDK)/toolchains/arm-linux-androideabi-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/arm-linux-androideabi-gcc --sysroot=$(SYSROOT)'
 
