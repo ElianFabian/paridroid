@@ -2,7 +2,7 @@
 # contain the path to the Android NDK. Please set it in your environment
 # before invoking make.
 
-.PHONY: all apk apk-fast pari pari-standalone pari-checkout pari-config-standalone config pari-config pari-make pari-check check check-standalone clean distclean
+.PHONY: all version apk apk-fast pari pari-standalone pari-checkout pari-config-standalone config pari-config pari-make pari-check check check-standalone clean distclean
 
 NDK_PLATFORM=android-9
 GCC_VERSION=4.9
@@ -25,6 +25,15 @@ TARGET=Oandroid-arm
 
 all: apk
 
+# Check whether the $(NDK) environment variable is defined and emit a warning
+# otherwise.
+# Print some version information for debugging and logging purposes.
+version:
+	@if test -z "$$NDK"; then echo 'THE ENVIRONMENT VARIABLE $$NDK MUST BE DEFINED!'; fi
+	@echo Compiler: $(CC)
+	@echo PARIDROID_VERSION: $(PARIDROID_VERSION)
+	@echo PARI_VERSION: $(PARI_VERSION)
+
 apk: pari apk-fast
 
 apk-fast: $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
@@ -35,7 +44,7 @@ apk-fast: $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
 	zipalign -f 4 $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk PariDroid-$(PARIDROID_VERSION).apk
 
 # Use the pari version specified in AndroidManifest.xml.
-pari: pari-checkout pari-config pari-make
+pari: version pari-checkout pari-config pari-make
 
 # Use the pari version that happens to be in the source tree; useful for
 # manual checking of pari versions independently of the Android manifest.
@@ -53,7 +62,7 @@ pari-checkout: $(PARI_SRC)
 # compiling a pari library.
 # The calls to sed eliminate all references to files on the configuring machine
 # and the option -Wall to the linker.
-pari-config-standalone:
+pari-config-standalone: version
 	rm -rf $(PARI_SRC)/$(TARGET)
 	cd $(PARI_SRC) && \
 	CC=$(CC) RUNTEST=$(TOP)/runtest ./Configure --host=arm-linux --builddir=$(TARGET) --kernel=arm-none --without-readline --graphic=none --prefix=/ --datadir=/data/data/fr.ubordeaux.math.paridroid && \
