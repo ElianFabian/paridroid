@@ -11,7 +11,7 @@ CC='$(NDK)/toolchains/arm-linux-androideabi-$(GCC_VERSION)/prebuilt/linux-x86_64
 
 PARIDROID_VERSION=$(shell grep versionName PariDroid/AndroidManifest.xml | grep -o '".*"' | tr -d '"')
 PARI_VERSION=$(shell echo $(PARIDROID_VERSION) | cut -d. -f1-3)
-ifeq "$(PARI_VERSION)" "2.8.0"
+ifeq "$(PARI_VERSION)" "2.10.0"
    PARI_GIT=origin/master
 else
    PARI_GIT=pari-$(PARI_VERSION)
