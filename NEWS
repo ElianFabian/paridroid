@@ -1,6 +1,8 @@
 Version 2.11.0.1.5 (July 2018):
   Compilation with version 2.11.0 of Pari/GP.
   Fix the text colour for autocompletion suggestions.
+  Make the app more usable in landscape mode by preventing the keyboard
+    and the edit field to take up all vertical space.
 
 Version 2.9.3.1.4 (October 2017):
   Compilation with version 2.9.3 of Pari/GP.
