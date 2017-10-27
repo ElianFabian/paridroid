@@ -1,6 +1,7 @@
 /**
  * Copyright (C) 2012, 2013 Charles Boyd
  * Copyright (C) 2014, 2015 Andreas Enge <andreas.enge@inria.fr>
+ * Copyright (C) 2016, 2017 Laurent Facq <laurent.facq@math.u-bordeaux.fr>
  *
  * This file is part of PariDroid.
  *
@@ -46,6 +47,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,7 +61,7 @@ public class PariActivity extends Activity implements View.OnClickListener {
     
    public static final String MSG_TAG = "PariDroid";
 
-   private AutoCompleteTextView inputText;
+   private MultiAutoCompleteTextView inputText;
 
    private Button enterButton;
 
@@ -99,7 +101,7 @@ public class PariActivity extends Activity implements View.OnClickListener {
       }
       setTitle(getString(R.string.app_name) + " " + version);
 
-      inputText = (AutoCompleteTextView)findViewById(R.id.inputText);
+      inputText = (MultiAutoCompleteTextView)findViewById(R.id.inputText);
       inputText.setDropDownHeight (ViewGroup.LayoutParams.MATCH_PARENT);
 
       enterButton = (Button)findViewById(R.id.enterButton);
@@ -245,18 +247,50 @@ public class PariActivity extends Activity implements View.OnClickListener {
    }
 
    public void setupAutoCompleteView() {
+      
+       Resources res = getResources();
+       
+       String[] s = PariNative.getCommands();
+       ArrayList<String> functions = new ArrayList<String>(Arrays.asList(s));
+       Collections.sort(functions);
+       ArrayAdapter<String> adapter
+         = new ArrayAdapter<String>(this, R.layout.suggestion_list_item,
+                                    functions);
+       inputText.setAdapter(adapter);
 
-      Resources res = getResources();
+       inputText.setTokenizer(new MultiAutoCompleteTextView.Tokenizer(){
 
-      String [] s = PariNative.getCommands ();
-      ArrayList<String> functions = new ArrayList<String>(Arrays.asList (s));
-      Collections.sort (functions);
-      ArrayAdapter<String> adapter =
-         new ArrayAdapter<String>(this,R.layout.suggestion_list_item,
-                                 functions);
-      inputText.setAdapter(adapter);
+          public int findTokenStart(CharSequence text, int cursor) {
+             // Returns the start of the token that ends at offset cursor
+             // within text.
+             int i = cursor;
+             if(i>0)
+                Log.d("textchar ",""+text.charAt(i - 1));
+             while (i > 0 && Character.isLetter(text.charAt(i - 1)))
+                i--;
+            return i;
+          }
+
+          public int findTokenEnd(CharSequence text, int cursor) {
+             // Returns the end of the token (minus trailing punctuation)
+             // that begins at offset cursor within text.
+             int i = cursor;
+             int len = text.length();
+             while (i < len)
+                if (Character.isLetter(text.charAt(i)))
+                   i++;
+             return i;
+          }
+
+          public CharSequence terminateToken(CharSequence text) {
+             // Returns text, modified, if necessary, to ensure that it
+             // ends with a token terminator (for example a space or comma).
+            return text + "(" ;
+          }
+
+      });
    }
-
+    
    public void onDestroy() {
       super.onDestroy();
    }
