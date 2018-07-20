@@ -1,3 +1,6 @@
+Version 2.11.0.1.5 (July 2018):
+  Compilation with version 2.11.0 of Pari/GP.
+
 Version 2.9.3.1.4 (October 2017):
   Compilation with version 2.9.3 of Pari/GP.
 
@@ -36,7 +39,7 @@ Version 2.7.0.1.0 (April 2014):
   Initial release.
 
 
-Copyright (C) 2014, 2015 Andreas Enge <andreas.enge@inria.fr>
+Copyright (C) 2014, 2015, 2016, 2017, 2018 Andreas Enge <andreas.enge@inria.fr>
 
 Copying and distribution of this file, with or without modification,
 are permitted in any medium without royalty provided the copyright
