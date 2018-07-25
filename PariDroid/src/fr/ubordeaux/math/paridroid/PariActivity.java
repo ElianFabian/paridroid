@@ -1,7 +1,7 @@
 /**
  * Copyright (C) 2012, 2013 Charles Boyd
  * Copyright (C) 2014, 2015 Andreas Enge <andreas.enge@inria.fr>
- * Copyright (C) 2016, 2017 Laurent Facq <laurent.facq@math.u-bordeaux.fr>
+ * Copyright (C) 2016, 2017, 2018 Laurent Facq <laurent.facq@math.u-bordeaux.fr>
  *
  * This file is part of PariDroid.
  *
@@ -26,11 +26,13 @@ import static fr.ubordeaux.math.paridroid.ParidroidUtils.showOkAlertDialog;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -236,7 +238,9 @@ public class PariActivity extends Activity implements View.OnClickListener {
          inputText.setText("default(timer, )");
          return true;
       case R.id.docs:
-         makeToast(this, getString (R.string.url));
+         Intent show_url = new Intent(Intent.ACTION_VIEW);
+         show_url.setData(Uri.parse(getString(R.string.doc_url)));
+         startActivity(show_url);
          return true;
       case R.id.app_license:
          showOkAlertDialog(this, "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\nSee the GNU General Public License for more details.\nhttp://www.gnu.org/licenses/gpl.txt");
