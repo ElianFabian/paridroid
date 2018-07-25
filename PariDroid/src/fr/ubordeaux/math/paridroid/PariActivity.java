@@ -149,11 +149,21 @@ public class PariActivity extends Activity implements View.OnClickListener {
          inputArrayList.add(cmd);
          cursor++;
 
-         if (cmd.length() >= 1 && cmd.charAt(0) == '?')
-            /* treat metacommand "?" or an arbitrary number of leading "?" */
-            executeCmd = "help(" + cmd.replaceAll ("^\\?*", "") + ")";
+         if (cmd.length() >= 1 && cmd.charAt(0) == '?') {
+             if (cmd.length() >= 2 && cmd.charAt(1) == '?') {
+                 Intent show_url = new Intent(Intent.ACTION_VIEW);
+                 show_url.setData(
+                    Uri.parse(getString(R.string.doc_url)
+                              + cmd.replaceAll("^\\?*", "")
+                                   .replaceAll("^ *", "")));
+                 startActivity(show_url);
+                 return;
+             }
+             else
+                 executeCmd = "help(" + cmd.replaceAll("^\\?*", "") + ")";
+         }
          else
-            executeCmd = cmd;
+             executeCmd = cmd;
 
          result = PariNative.paridroidEval(executeCmd);
 
