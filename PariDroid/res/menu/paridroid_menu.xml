@@ -1,18 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:id="@+id/defaults"
-	android:title="@string/defaults">
-    <menu>
-      <item android:id="@+id/setParisize"
-	    android:title="@string/parisize"/>
-      <item android:id="@+id/setRealprecision"
-	    android:title="@string/realprecision"/>
-      <item android:id="@+id/setSeriesprecision"
-	    android:title="@string/seriesprecision"/>
-      <item android:id="@+id/setTimer"
-            android:title="@string/timer"/>
-    </menu>
-  </item>
   <item android:id="@+id/docs"
 	android:title="@string/documentation"/>
   <item android:id="@+id/app_license"
