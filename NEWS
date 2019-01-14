@@ -1,3 +1,6 @@
+Version 2.11.1.1.6 (XXX):
+  Compilation with version 2.11.1 of Pari/GP.
+
 Version 2.11.0.1.5 (July 2018):
   Compilation with version 2.11.0 of Pari/GP.
   Fix the text colour for autocompletion suggestions.
