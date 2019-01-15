@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="app_name">PariDroid</string>
-  <string name="defaults">Defaults</string>
-  <string name="parisize">parisize</string>
-  <string name="realprecision">realprecision</string>
-  <string name="seriesprecision">seriesprecision</string>
-  <string name="timer">timer</string>
   <string name="documentation">Documentation</string>
   <string name="license">License</string>
   <string name="doc_url">http://pari.math.u-bordeaux.fr/dochtml/help-stable/</string>
