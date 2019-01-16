@@ -1,0 +1,19 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+   <EditTextPreference
+      android:key="parisize"
+      android:title="parisize"
+      android:defaultValue="8M"
+      android:selectAllOnFocus="true"
+      android:singleLine="true"
+      android:maxLines="1"
+   />
+   <EditTextPreference
+      android:key="primelimit"
+      android:title="primelimit"
+      android:defaultValue="500000"
+      android:selectAllOnFocus="true"
+      android:singleLine="true"
+      android:maxLines="1"
+   />
+</PreferenceScreen>
+

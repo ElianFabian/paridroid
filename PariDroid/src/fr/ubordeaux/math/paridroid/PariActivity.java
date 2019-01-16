@@ -1,7 +1,7 @@
 /**
  * Copyright (C) 2012, 2013 Charles Boyd
- * Copyright (C) 2014, 2015, 2018 Andreas Enge <andreas.enge@inria.fr>
- * Copyright (C) 2016, 2017, 2018 Laurent Facq <laurent.facq@math.u-bordeaux.fr>
+ * Copyright (C) 2014, 2015, 2018, 2019 Andreas Enge <andreas.enge@inria.fr>
+ * Copyright (C) 2016, 2017, 2018, 2019 Laurent Facq <laurent.facq@math.u-bordeaux.fr>
  *
  * This file is part of PariDroid.
  *
@@ -229,6 +229,10 @@ public class PariActivity extends Activity implements View.OnClickListener {
 
    public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId()) {
+      case R.id.settings:
+         Intent settings = new Intent (this, PariSettings.class);
+         startActivity (settings);
+         return true;
       case R.id.docs:
          Intent show_url = new Intent(Intent.ACTION_VIEW);
          show_url.setData(Uri.parse(getString(R.string.doc_url)));
