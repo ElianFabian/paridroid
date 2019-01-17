@@ -4,7 +4,7 @@
  *-----------------------------------------------
  *
  * Copyright (C) 2011 Charles Boyd
- *               2014, 2015 Andreas Enge <andreas.enge@inria.fr>
+ *               2014, 2015, 2019 Andreas Enge <andreas.enge@inria.fr>
  *               2015 Bill Allombert <bill.allombert@math.u-bordeaux.fr>
  *
  * This file is part of PariDroid.
@@ -121,8 +121,6 @@ paridroid_init()
 void
 paridroid_eval(const char *in, char **out, int *returnsgnil)
 {
-   pari_sp av = avma;
-
    s_droidStr.n=0;
 
    if(setjmp(env) != 0) {
@@ -157,7 +155,7 @@ paridroid_eval(const char *in, char **out, int *returnsgnil)
       *out = droidStr;
    }
 
-   avma = av;
+   avma = pari_mainstack->top;
 }
 
 
