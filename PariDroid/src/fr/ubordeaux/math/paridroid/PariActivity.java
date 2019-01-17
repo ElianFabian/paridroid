@@ -27,6 +27,7 @@ import static fr.ubordeaux.math.paridroid.ParidroidUtils.showOkAlertDialog;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
@@ -35,6 +36,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -86,7 +88,13 @@ public class PariActivity extends Activity implements View.OnClickListener {
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.main);
-      PariNative.paridroidInit();
+
+      /* Recover parisize and primelimit from the preferences. */
+      SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+      long parisize = Long.valueOf (prefs.getString ("parisize", "8000000"));
+      long primelimit = Long.valueOf (prefs.getString ("primelimit", "500000"));
+      PariNative.paridroidInit(parisize, primelimit);
+
       initialize();
    }
 

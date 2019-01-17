@@ -4,7 +4,7 @@
  *-----------------------------------------------
  *
  * Copyright (C) 2011 Charles Boyd
- *               2014, 2015 Andreas Enge <andreas.enge@inria.fr>
+ *               2014, 2015, 2019 Andreas Enge <andreas.enge@inria.fr>
  *
  * This file is part of PariDroid.
  *
@@ -39,7 +39,7 @@
 
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "libparidroid", __VA_ARGS__)
 
-void paridroid_init(void);
+void paridroid_init(long parisize, long primelimit);
 
 void paridroid_eval(const char *in, char **out, int *returnsgnil);
 

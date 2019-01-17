@@ -32,12 +32,6 @@
 #include "fr_ubordeaux_math_paridroid_PariNative.h"
 #include "paridroid.h"
 
-/** number of bytes to initialize pari stack with */
-size_t paridroid_stack_size = 4000000;
-
-/** maximum value for the prime table */
-ulong paridroid_maxprime = 500509;
-
 /** Error handling */
 jmp_buf env;
 
@@ -96,7 +90,7 @@ mysd_timer(const char *v, long flag)
 }
 
 void
-paridroid_init()
+paridroid_init(long parisize, long primelimit)
 {
   static entree functions_gp[]={
     {"quit",0,(void*)paridroid_quit,11,"vD0,L,","quit({status = 0}): quit, return to the system with exit status 'status'."},
@@ -108,7 +102,7 @@ paridroid_init()
     {NULL,0,NULL,0,NULL,NULL}};
 
   setenv ("GPTMPDIR", "/data/data/fr.ubordeaux.math.paridroid/cache", 1);
-  pari_init(paridroid_stack_size, paridroid_maxprime);
+  pari_init(parisize, primelimit);
   pari_add_module(functions_gp);
   pari_add_defaults_module (defaults_gp);
   cb_pari_err_recover = gp_err_recover;

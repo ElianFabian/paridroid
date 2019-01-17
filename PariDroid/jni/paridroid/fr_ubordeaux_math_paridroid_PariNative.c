@@ -3,7 +3,7 @@
  * PariNative.c - JNI Callbacks from libparidroid.
  *------------------------------------------------------
  * Copyright (C) 2011 Charles Boyd
- * Copyright (C) 2014 Andreas Enge <andreas.enge@inria.fr>
+ * Copyright (C) 2014, 2019 Andreas Enge <andreas.enge@inria.fr>
  *
  * This file is part of PariDroid.
  *
@@ -27,9 +27,9 @@
 #include "fr_ubordeaux_math_paridroid_PariNative.h"
 
 void
-Java_fr_ubordeaux_math_paridroid_PariNative_paridroidInit(JNIEnv *jenv, jclass cls)
+Java_fr_ubordeaux_math_paridroid_PariNative_paridroidInit(JNIEnv *env, jclass cls, jlong parisize, jlong primelimit)
 {
-  paridroid_init();
+  paridroid_init(parisize, primelimit);
 }
 
 jobjectArray

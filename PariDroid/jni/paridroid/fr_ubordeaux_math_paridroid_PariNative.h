@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     fr_ubordeaux_math_paridroid_PariNative
  * Method:    paridroidInit
- * Signature: ()V
+ * Signature: (JJ)V
  */
 JNIEXPORT void JNICALL Java_fr_ubordeaux_math_paridroid_PariNative_paridroidInit
-  (JNIEnv *, jclass);
+  (JNIEnv *, jclass, jlong, jlong);
 
 /*
  * Class:     fr_ubordeaux_math_paridroid_PariNative

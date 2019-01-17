@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2012, 2013 Charles Boyd
- * Copyright (C) 2014 Andreas Enge <andreas.enge@inria.fr>
+ * Copyright (C) 2014, 2019 Andreas Enge <andreas.enge@inria.fr>
  *
  * This file is part of PariDroid.
  *
@@ -50,7 +50,7 @@ class PariNative {
    /**
    * Declaration of JNI callback to paridroid_init().
    */
-   public static native void paridroidInit();
+   public static native void paridroidInit(long parisize, long primelimit);
 
    /**
    * Declaration of JNI callback to paridroid_eval().
