@@ -2,7 +2,8 @@
    <EditTextPreference
       android:key="parisize"
       android:title="parisize"
-      android:defaultValue="8M"
+      android:inputType="number"
+      android:defaultValue="8000000"
       android:selectAllOnFocus="true"
       android:singleLine="true"
       android:maxLines="1"
@@ -10,6 +11,7 @@
    <EditTextPreference
       android:key="primelimit"
       android:title="primelimit"
+      android:inputType="number"
       android:defaultValue="500000"
       android:selectAllOnFocus="true"
       android:singleLine="true"
