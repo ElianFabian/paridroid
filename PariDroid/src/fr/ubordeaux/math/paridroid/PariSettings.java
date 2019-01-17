@@ -21,19 +21,34 @@ package fr.ubordeaux.math.paridroid;
 
 import android.os.Bundle;
 import android.preference.EditTextPreference;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
 
 public class PariSettings extends PreferenceActivity {
+   /* Call-back class to set the summary of a preference to its value
+      when it is changed, and to change the corresponding pari default. */
+
+   private static Preference.OnPreferenceChangeListener change = new Preference.OnPreferenceChangeListener() {
+
+      public boolean onPreferenceChange (Preference pref, Object val) {
+         String string = val.toString ();
+         pref.setSummary (string);
+         String cmd = "default(" + pref.getKey () + "," + string + ");";
+         PariNative.paridroidEval (cmd);
+         return true;
+      }
+   };
 
    public void onCreate (Bundle savedInstanceState) {
       super.onCreate (savedInstanceState);
       addPreferencesFromResource (R.xml.settings);
-      /* Print the current value of the preferences */
       EditTextPreference pref;
       pref = (EditTextPreference) findPreference ("parisize");
-      pref.setSummary (pref.getText ());
+      pref.setOnPreferenceChangeListener (change);
+      change.onPreferenceChange (pref, pref.getText ());
       pref = (EditTextPreference) findPreference ("primelimit");
-      pref.setSummary (pref.getText ());
+      pref.setOnPreferenceChangeListener (change);
+      change.onPreferenceChange (pref, pref.getText ());
    }
 }
 
