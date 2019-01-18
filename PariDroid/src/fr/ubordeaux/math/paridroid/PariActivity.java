@@ -91,8 +91,8 @@ public class PariActivity extends Activity implements View.OnClickListener {
 
       /* Recover parisize and primelimit from the preferences. */
       SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-      long parisize = Long.valueOf (prefs.getString ("parisize", "8000000"));
-      long primelimit = Long.valueOf (prefs.getString ("primelimit", "500000"));
+      long parisize = Long.valueOf (prefs.getString ("parisize", getString (R.string.parisize_default)));
+      long primelimit = Long.valueOf (prefs.getString ("primelimit", getString (R.string.primelimit_default)));
       PariNative.paridroidInit(parisize, primelimit);
 
       initialize();
