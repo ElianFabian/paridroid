@@ -9,6 +9,15 @@
       android:maxLines="1"
    />
    <EditTextPreference
+      android:key="parisizemax"
+      android:title="parisizemax"
+      android:inputType="number"
+      android:defaultValue="@string/parisizemax_default"
+      android:selectAllOnFocus="true"
+      android:singleLine="true"
+      android:maxLines="1"
+   />
+   <EditTextPreference
       android:key="primelimit"
       android:title="primelimit"
       android:inputType="number"
