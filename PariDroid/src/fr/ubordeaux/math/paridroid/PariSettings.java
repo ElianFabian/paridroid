@@ -22,7 +22,9 @@ package fr.ubordeaux.math.paridroid;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.preference.PreferenceActivity;
+import java.util.Set;
 
 public class PariSettings extends PreferenceActivity {
    /* Call-back class to set the summary of a preference to its value
@@ -42,13 +44,13 @@ public class PariSettings extends PreferenceActivity {
    public void onCreate (Bundle savedInstanceState) {
       super.onCreate (savedInstanceState);
       addPreferencesFromResource (R.xml.settings);
-      EditTextPreference pref;
-      pref = (EditTextPreference) findPreference ("parisize");
-      pref.setOnPreferenceChangeListener (change);
-      change.onPreferenceChange (pref, pref.getText ());
-      pref = (EditTextPreference) findPreference ("primelimit");
-      pref.setOnPreferenceChangeListener (change);
-      change.onPreferenceChange (pref, pref.getText ());
+      Set <String> keys = PreferenceManager
+         .getDefaultSharedPreferences (this).getAll ().keySet ();
+      for (String key : keys) {
+         EditTextPreference pref = (EditTextPreference) findPreference (key);
+         pref.setOnPreferenceChangeListener (change);
+         change.onPreferenceChange (pref, pref.getText ());
+      }
    }
 }
 
