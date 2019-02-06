@@ -95,25 +95,60 @@ paridroid_eval(const char *in, char **out, int *returnsgnil)
 
    if(setjmp(env) != 0) {
       LOGE("setjmp different from zero");
+#if PARI_VERSION_CODE < 134144
+   /* Test for version < 2.12.0 */
       pari_add_hist(gnil, 0);
+#else
+      pari_add_hist(gnil, 0, 0);
+#endif
+
       droidOutC(0);
       *out = droidStr;
       *returnsgnil = 1;
    }
    else {
       volatile GEN z = gnil;
+#if PARI_VERSION_CODE < 134144
       pari_timer T;
       long time;
+#else
+      pari_timer T, Tw;
+      long time, rtime;
+#endif
 
+#if PARI_VERSION_CODE < 134144
       timer_start (&T);
+#else
+      timer_start (&T);
+      walltimer_start (&Tw);
+#endif
       z = gp_read_str(in);
+#if PARI_VERSION_CODE < 134144
       time = timer_delay (&T);
+#else
+      time = timer_delay (&T);
+      rtime = walltimer_delay (&Tw);
+#endif
 
       if (z != gnil) {
          *returnsgnil = 0;
+#if PARI_VERSION_CODE < 134144
          pari_add_hist(z, time);
+#else
+         pari_add_hist(z, time, rtime);
+#endif
          if (GP_DATA->chrono && time > 0)
+#if PARI_VERSION_CODE < 134144
             pari_printf ("time = %s", gp_format_time (time));
+#else
+            if (pari_mt_nbthreads == 1)
+               pari_printf ("time = %s.\n",
+                  gp_format_time (time));
+            else
+               pari_printf ("cpu time = %s, real time = %s.\n",
+                  gp_format_time (time),
+                  gp_format_time (rtime));
+#endif
          if (in[strlen(in)-1]!=';') {
             pari_printf ("%%%lu = ", pari_nb_hist ());
             output (z);
