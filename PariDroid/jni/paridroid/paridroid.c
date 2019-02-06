@@ -70,22 +70,12 @@ paridroid_quit(long exitcode)
   paridroid_close();
 }
 
-static void
-help(const char *s)
-{
-  entree *ep = is_entry(s);
-  if (ep && ep->help)
-    pari_printf("%s\n",ep->help);
-  else
-    pari_printf("Function %s not found\n",s);
-}
 
 void
 paridroid_init(long parisize, long primelimit)
 {
   static entree functions_gp[]={
     {"quit",0,(void*)paridroid_quit,11,"vD0,L,","quit({status = 0}): quit, return to the system with exit status 'status'."},
-    {"help",0,(void*)help,11,"vr","help(fun): display help for function fun"},
     {NULL,0,NULL,0,NULL,NULL}};
 
   setenv ("GPTMPDIR", "/data/data/fr.ubordeaux.math.paridroid/cache", 1);
