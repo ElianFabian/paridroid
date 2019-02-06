@@ -40,9 +40,6 @@ void gp_err_recover(long numerr)
   longjmp(env, numerr); 
 }
 
-/* timer default */
-static int chrono = 0;
-
 static char *droidStr;
 
 static pari_stack s_droidStr;
@@ -83,12 +80,6 @@ help(const char *s)
     pari_printf("Function %s not found\n",s);
 }
 
-static GEN
-mysd_timer(const char *v, long flag)
-{
-   return sd_toggle(v,flag,"timer", &chrono);
-}
-
 void
 paridroid_init(long parisize, long primelimit)
 {
@@ -97,14 +88,9 @@ paridroid_init(long parisize, long primelimit)
     {"help",0,(void*)help,11,"vr","help(fun): display help for function fun"},
     {NULL,0,NULL,0,NULL,NULL}};
 
-  static entree defaults_gp[]={
-    {"timer",0,(void*)mysd_timer,16,"","(default) toggle timer on/off"},
-    {NULL,0,NULL,0,NULL,NULL}};
-
   setenv ("GPTMPDIR", "/data/data/fr.ubordeaux.math.paridroid/cache", 1);
   pari_init(parisize, primelimit);
   pari_add_module(functions_gp);
-  pari_add_defaults_module (defaults_gp);
   cb_pari_err_recover = gp_err_recover;
   pari_stack_init(&s_droidStr,sizeof(*droidStr),(void**)&droidStr);
   
@@ -136,8 +122,8 @@ paridroid_eval(const char *in, char **out, int *returnsgnil)
       if (z != gnil) {
          *returnsgnil = 0;
          pari_add_hist(z, time);
-         if (chrono && time > 0)
-            pari_printf ("time = %li ms.\n", time);
+         if (GP_DATA->chrono && time > 0)
+            pari_printf ("time = %s", gp_format_time (time));
          if (in[strlen(in)-1]!=';') {
             pari_printf ("%%%lu = ", pari_nb_hist ());
             output (z);
