@@ -1,14 +1,14 @@
 #!/bin/sh
 
 # copy the binary to /data
-adb push $1 /data 2> /dev/null
+adb push $1 /data > /dev/null 2>&1
 
 # execute the binary, save its return value in
 # the file pari-ret and drop \r from its output
 adb shell "cd data; ./$@;"'echo $? > /data/pari-ret' | sed 's/\r//g'
 
 # retrieve pari-ret
-adb pull /data/pari-ret /tmp 2> /dev/null
+adb pull /data/pari-ret /tmp > /dev/null 2>&1
 
 # delete the pushed and generated files
 adb shell rm /data/$1
