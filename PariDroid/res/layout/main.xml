@@ -9,6 +9,8 @@
       android:id="@+id/inputText"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:textColor="#fff"
+      android:background="#000"
       android:scrollbars="vertical"
       android:imeOptions="flagNoExtractUi">
    </MultiAutoCompleteTextView>
@@ -51,6 +53,6 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:textColor="#ff0"
+      android:background="#000"
    />
 </LinearLayout>
-               
