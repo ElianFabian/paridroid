@@ -57,6 +57,8 @@ import android.widget.Toast;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 import java.io.*;
 
 public class PariActivity extends Activity implements View.OnClickListener {
@@ -92,6 +94,12 @@ public class PariActivity extends Activity implements View.OnClickListener {
       long parisize = Long.valueOf (prefs.getString ("parisize", getString (R.string.parisize_default)));
       long primelimit = Long.valueOf (prefs.getString ("primelimit", getString (R.string.primelimit_default)));
       PariNative.paridroidInit(parisize, primelimit);
+      /* Set all preferences. */
+      Map <String, ?> map = prefs.getAll ();
+      Set <String> keys = map.keySet ();
+      for (String key : keys)
+         if (!key.equals ("parisize") && !key.equals ("primelimit"))
+            PariUtil.setDefault (key, map.get (key).toString ());
 
       initialize();
    }
