@@ -35,8 +35,7 @@ public class PariSettings extends PreferenceActivity {
       public boolean onPreferenceChange (Preference pref, Object val) {
          String string = val.toString ();
          pref.setSummary (string);
-         String cmd = "default(" + pref.getKey () + "," + string + ");";
-         PariNative.paridroidEval (cmd);
+         PariUtil.setDefault (pref.getKey (), string);
          return true;
       }
    };
