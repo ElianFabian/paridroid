@@ -88,6 +88,32 @@ paridroid_init(long parisize, long primelimit)
   pariErr=&droidOut;
 }
 
+static void
+lim_lines_output(char *s, long n, long max_lin)
+{
+  long lin, col, width;
+  char c;
+  if (!*s) return;
+  width = term_width();
+  lin = 1;
+  col = n;
+
+  if (lin > max_lin) return;
+  while ( (c = *s++) )
+  {
+    if (lin >= max_lin)
+      if (c == '\n' || col >= width-5)
+      {
+        pari_sp av = avma;
+        pari_puts(term_get_color(NULL, c_ERR)); avma=av;
+        pari_puts("[+++]"); return;
+      }
+    if (c == '\n')         { col = -1; lin++; }
+    else if (col == width) { col =  0; lin++; }
+    col++; pari_putc(c);
+  }
+}
+
 void
 paridroid_eval(const char *in, char **out, int *returnsgnil)
 {
@@ -151,7 +177,14 @@ paridroid_eval(const char *in, char **out, int *returnsgnil)
 #endif
          if (in[strlen(in)-1]!=';') {
             pari_printf ("%%%lu = ", pari_nb_hist ());
-            output (z);
+  char *s;
+  s = GENtostr(z);
+  if (GP_DATA->lim_lines)
+    lim_lines_output(s, 0, GP_DATA->lim_lines);
+  else
+    pari_puts(s);
+  pari_free(s);
+
          }
       }
       else
@@ -170,7 +203,7 @@ extern entree **functions_hash;   /* functions hashtable */
 #define EpVALENCE(ep) ((ep)->valence & 0xFF)
 enum { EpNEW = 100, EpALIAS, EpVAR, EpINSTALL };
 
-void
+   void
 paridroid_getcommands (const char *** commands, int size, int *len)
 {
    /* copied from the commands function in gp.c in the pari project */
