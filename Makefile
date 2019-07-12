@@ -4,13 +4,10 @@
 
 .PHONY: all version apk apk-fast pari pari-standalone pari-checkout pari-config-standalone config pari-config pari-make pari-check check check-standalone clean distclean
 
-NDK_PLATFORM=android-9
+NDK_PLATFORM=android-24
 GCC_VERSION=4.9
 SYSROOT=$(NDK)/platforms/$(NDK_PLATFORM)/arch-arm
 CC='$(NDK)/toolchains/arm-linux-androideabi-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/arm-linux-androideabi-gcc --sysroot=$(SYSROOT)'
-# The following two lines will be needed with android-ndk >= r14.
-#SYSROOT_INCLUDE=$(NDK)/sysroot/usr/include
-#CC='$(NDK)/toolchains/arm-linux-androideabi-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/arm-linux-androideabi-gcc --sysroot=$(SYSROOT) -I$(SYSROOT_INCLUDE) -I$(SYSROOT_INCLUDE)/arm-linux-androideabi'
 
 PARIDROID_VERSION=$(shell grep versionName PariDroid/AndroidManifest.xml | grep -o '".*"' | tr -d '"')
 PARI_VERSION=$(shell echo $(PARIDROID_VERSION) | cut -d. -f1-3)
