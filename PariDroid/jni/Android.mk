@@ -10,6 +10,8 @@ LOCAL_MODULE := pari
 
 LOCAL_SRC_FILES := pari/lib/libpari.so
 
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/pari/include
+
 include $(PREBUILT_SHARED_LIBRARY)
 
 ############################
@@ -19,8 +21,6 @@ include $(PREBUILT_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := paridroid
-
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/pari/include
 
 LOCAL_LDLIBS := -llog
 
