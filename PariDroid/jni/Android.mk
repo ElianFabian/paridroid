@@ -8,9 +8,9 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := pari
 
-LOCAL_SRC_FILES := pari/lib/libpari.so
+LOCAL_SRC_FILES := $(TARGET_ARCH_ABI)/pari/lib/libpari.so
 
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/pari/include
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/$(TARGET_ARCH_ABI)/pari/include
 
 include $(PREBUILT_SHARED_LIBRARY)
 
