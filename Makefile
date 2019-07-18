@@ -31,10 +31,10 @@ ANDROID_TARGET_ARM=armeabi-v7a
 ANDROID_TARGET_AARCH64=arm64-v8a
 
 # Choose the architecture
-CC=$(CC_ARM)
-TARGET_CPU=$(TARGET_CPU_ARM)
-PARI_TARGET=$(PARI_TARGET_ARM)
-ANDROID_TARGET=$(ANDROID_TARGET_ARM)
+CC=$(CC_AARCH64)
+TARGET_CPU=$(TARGET_CPU_AARCH64)
+PARI_TARGET=$(PARI_TARGET_AARCH64)
+ANDROID_TARGET=$(ANDROID_TARGET_AARCH64)
 
 PARIDROID_VERSION=$(shell grep versionName PariDroid/AndroidManifest.xml | grep -o '".*"' | tr -d '"')
 PARI_VERSION=$(shell echo $(PARIDROID_VERSION) | cut -d. -f1-3)
@@ -154,10 +154,12 @@ clean:
 	rm -f PariDroid*.apk
 	cd $(PARIDROID_SRC) && ant clean
 	cd $(JNI) && $(NDK)/ndk-build clean V=1 APP_ABI=$(ANDROID_TARGET)
-	rm -rf $(JNI)/pari
+	rm -rf $(JNI)/$(ANDROID_TARGET_ARM)
+	rm -rf $(JNI)/$(ANDROID_TARGET_AARCH64)
 
 distclean: clean
-	rm -rf $(PARI_SRC)/$(PARI_TARGET)
-	rm -f $(PARI_SRC)/config-arm-linux*
-	rm -f $(PARI_SRC)/config/linux-arm*
+	rm -rf $(PARI_SRC)/$(PARI_TARGET_ARM)
+	rm -rf $(PARI_SRC)/$(PARI_TARGET_AARCH64)
+	rm -f $(PARI_SRC)/config-$(TARGET_CPU_ARM)-linux*
+	rm -f $(PARI_SRC)/config-$(TARGET_CPU_AARCH64)-linux*
 
