@@ -2,7 +2,7 @@
 # contain the path to the Android NDK. Please set it in your environment
 # before invoking make.
 
-.PHONY: all version apk apk-fast pari pari-standalone pari-checkout pari-config-standalone config pari-config pari-make pari-check check check-standalone clean distclean
+.PHONY: all version apk apk-fast pari pari-standalone pari-checkout pari-config-standalone pari-make pari-make-arm pari-make-aarch64 pari-check check check-standalone clean distclean
 
 # Specify the GNU triplets for the cross compiler with the notation of
 # https://www.gnu.org/savannah-checkouts/gnu/autoconf/manual/autoconf-2.69/html_node/System-Type.html#System-Type
@@ -29,12 +29,6 @@ PARI_TARGET_ARM=Oandroid-$(TARGET_CPU_ARM)
 PARI_TARGET_AARCH64=Oandroid-$(TARGET_CPU_AARCH64)
 ANDROID_TARGET_ARM=armeabi-v7a
 ANDROID_TARGET_AARCH64=arm64-v8a
-
-# Choose the architecture
-CC=$(CC_AARCH64)
-TARGET_CPU=$(TARGET_CPU_AARCH64)
-PARI_TARGET=$(PARI_TARGET_AARCH64)
-ANDROID_TARGET=$(ANDROID_TARGET_AARCH64)
 
 PARIDROID_VERSION=$(shell grep versionName PariDroid/AndroidManifest.xml | grep -o '".*"' | tr -d '"')
 PARI_VERSION=$(shell echo $(PARIDROID_VERSION) | cut -d. -f1-3)
@@ -63,14 +57,14 @@ version:
 apk: pari apk-fast
 
 apk-fast: $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
-	cd $(PARIDROID_SRC) && $(NDK)/ndk-build V=1 NDK_TOOLCHAIN_VERSION=4.9 APP_ABI=$(ANDROID_TARGET)
+	cd $(PARIDROID_SRC) && $(NDK)/ndk-build V=1 NDK_TOOLCHAIN_VERSION=4.9 APP_ABI="$(ANDROID_TARGET_ARM) $(ANDROID_TARGET_AARCH64)"
 	cd $(PARIDROID_SRC) && ant release
 	cp $(PARIDROID_SRC)/bin/PariDroid-release-unsigned.apk $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk
 	jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $(HOME)/.android/debug.keystore -storepass android $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk androiddebugkey
 	zipalign -f 4 $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk PariDroid-$(PARIDROID_VERSION).apk
 
 # Use the pari version specified in AndroidManifest.xml.
-pari: version pari-checkout pari-config pari-make
+pari: version pari-checkout pari-make
 
 # Use the pari version that happens to be in the source tree; useful for
 # manual checking of pari versions independently of the Android manifest.
@@ -105,16 +99,25 @@ pari-config-standalone: version
 
 # Configure pari using the pari.cfg taken from the appropriate config/
 # subdirectory corresponding to the version in AndroidManifest.xml.
-pari-config: $(PARI_SRC)
-	rm -rf $(PARI_SRC)/$(PARI_TARGET)
-	cd $(PARI_SRC) && \
-	sed "s?XXXCCXXX?$(CC)?" $(TOP)/config/$(PARI_VERSION)/$(TARGET_CPU)/pari.cfg > pari.cfg && \
-	./Configure -l ./pari.cfg
+pari-make: pari-make-arm pari-make-aarch64
 
-pari-make:
-	cd $(PARI_SRC)/$(PARI_TARGET) && \
+pari-make-arm:
+	rm -rf $(PARI_SRC)/$(PARI_TARGET_ARM)
+	cd $(PARI_SRC) && \
+	sed "s?XXXCCXXX?$(CC_ARM)?" $(TOP)/config/$(PARI_VERSION)/$(TARGET_CPU_ARM)/pari.cfg > pari.cfg && \
+	./Configure -l ./pari.cfg
+	cd $(PARI_SRC)/$(PARI_TARGET_ARM) && \
 	make -j $(shell getconf _NPROCESSORS_CONF) all && \
-	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so DESTDIR=$(JNI)/$(ANDROID_TARGET)/pari
+	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so DESTDIR=$(JNI)/$(ANDROID_TARGET_ARM)/pari
+
+pari-make-aarch64:
+	rm -rf $(PARI_SRC)/$(PARI_TARGET_AARCH64)
+	cd $(PARI_SRC) && \
+	sed "s?XXXCCXXX?$(CC_AARCH64)?" $(TOP)/config/$(PARI_VERSION)/$(TARGET_CPU_AARCH64)/pari.cfg > pari.cfg && \
+	./Configure -l ./pari.cfg
+	cd $(PARI_SRC)/$(PARI_TARGET_AARCH64) && \
+	make -j $(shell getconf _NPROCESSORS_CONF) all && \
+	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so DESTDIR=$(JNI)/$(ANDROID_TARGET_AARCH64)/pari
 
 pari-check:
 	cd $(PARI_SRC)/$(PARI_TARGET) && \
@@ -153,7 +156,7 @@ check-standalone: pari-standalone pari-check
 clean:
 	rm -f PariDroid*.apk
 	cd $(PARIDROID_SRC) && ant clean
-	cd $(JNI) && $(NDK)/ndk-build clean V=1 APP_ABI=$(ANDROID_TARGET)
+	cd $(JNI) && $(NDK)/ndk-build clean V=1 APP_ABI="$(ANDROID_TARGET_ARM) $(ANDROID_TARGET_AARCH64)"
 	rm -rf $(JNI)/$(ANDROID_TARGET_ARM)
 	rm -rf $(JNI)/$(ANDROID_TARGET_AARCH64)
 
