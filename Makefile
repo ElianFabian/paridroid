@@ -123,14 +123,14 @@ pari-check: pari-check-arm pari-check-aarch64
 
 pari-check-arm: 
 	cd $(PARI_SRC)/$(PARI_TARGET_ARM) && \
-	adb root \
+	adb root && \
 	adb push gp-sta /data && \
 	make statest-all RUNTEST=$(TOP)/runtest.bench && \
 	adb shell rm /data/gp-sta /data/pari-ret /data/pari-stdin
 
 pari-check-aarch64:
 	cd $(PARI_SRC)/$(PARI_TARGET_AARCH64) && \
-	adb root \
+	adb root && \
 	adb push gp-sta /data && \
 	make statest-all RUNTEST=$(TOP)/runtest.bench && \
 	adb shell rm /data/gp-sta /data/pari-ret /data/pari-stdin
