@@ -16,18 +16,22 @@ TARGET_SYSTEM_AARCH64=$(TARGET_KERNEL)-$(TARGET_OS_AARCH64)
 TARGET_ARM=$(TARGET_CPU_ARM)-$(TARGET_SYSTEM_ARM)
 TARGET_AARCH64=$(TARGET_CPU_AARCH64)-$(TARGET_SYSTEM_AARCH64)
 
-# Settings for the cross compiler
-NDK_PLATFORM=android-24
+# Settings for the cross compiler.
+# Compile the arm and aarch64 targets with different versions of
+# NDK_PLATFORM: aarch64 appears in android-21; to be able to run on older
+# Android versions, we compile the arm target with earlier tools.
+NDK_PLATFORM_ARM=android-9
+NDK_PLATFORM_AARCH64=android-21
 GCC_VERSION=4.9
-SYSROOT_ARM=$(NDK)/platforms/$(NDK_PLATFORM)/arch-arm
-SYSROOT_AARCH64=$(NDK)/platforms/$(NDK_PLATFORM)/arch-arm64
+SYSROOT_ARM=$(NDK)/platforms/$(NDK_PLATFORM_ARM)/arch-arm
+SYSROOT_AARCH64=$(NDK)/platforms/$(NDK_PLATFORM_AARCH64)/arch-arm64
 CC_ARM='$(NDK)/toolchains/$(TARGET_ARM)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/$(TARGET_ARM)-gcc --sysroot=$(SYSROOT_ARM)'
 CC_AARCH64='$(NDK)/toolchains/$(TARGET_AARCH64)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/$(TARGET_AARCH64)-gcc --sysroot=$(SYSROOT_AARCH64)'
 
 # Settings for the PARI and Android target CPUs
 PARI_TARGET_ARM=Oandroid-$(TARGET_CPU_ARM)
 PARI_TARGET_AARCH64=Oandroid-$(TARGET_CPU_AARCH64)
-ANDROID_TARGET_ARM=armeabi-v7a
+ANDROID_TARGET_ARM=armeabi
 ANDROID_TARGET_AARCH64=arm64-v8a
 
 PARIDROID_VERSION=$(shell grep versionName PariDroid/AndroidManifest.xml | grep -o '".*"' | tr -d '"')
