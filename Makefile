@@ -1,7 +1,3 @@
-# This Makefile uses the environment variable $(NDK), which needs to
-# contain the path to the Android NDK. Please set it in your environment
-# before invoking make.
-
 .PHONY: all version apk apk-fast pari pari-standalone pari-checkout pari-config-standalone pari-make pari-make-arm pari-make-aarch64 pari-check check check-standalone clean distclean
 
 # Specify the GNU triplets for the cross compiler with the notation of
@@ -17,6 +13,7 @@ TARGET_ARM=$(TARGET_CPU_ARM)-$(TARGET_SYSTEM_ARM)
 TARGET_AARCH64=$(TARGET_CPU_AARCH64)-$(TARGET_SYSTEM_AARCH64)
 
 # Settings for the cross compiler.
+NDK?=/usr/local/android-ndk-r13b
 # Compile the arm and aarch64 targets with different versions of
 # NDK_PLATFORM: aarch64 appears in android-21; to be able to run on older
 # Android versions, we compile the arm target with earlier tools.
@@ -49,11 +46,8 @@ JNI=$(PARIDROID_SRC)/jni
 
 all: apk
 
-# Check whether the $(NDK) environment variable is defined and emit a warning
-# otherwise.
 # Print some version information for debugging and logging purposes.
 version:
-	@if test -z "$$NDK"; then echo 'THE ENVIRONMENT VARIABLE $$NDK MUST BE DEFINED!'; fi
 	@echo Compiler: $(CC)
 	@echo PARIDROID_VERSION: $(PARIDROID_VERSION)
 	@echo PARI_VERSION: $(PARI_VERSION)
