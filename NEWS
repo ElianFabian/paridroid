@@ -1,9 +1,3 @@
-Recent changes:
-  The default binary requires at least an API version of 21, that is,
-    Android 5.0. The tools for previous versions do not compile for the
-    aarch64 architecture, which is a new requirement for distributing
-    binaries through the Google store.
-
 Version 2.11.2.1.6 (July 2019):
   Compilation with version 2.11.1 of Pari/GP.
   Fix a bug with defaults (parisizemax) not honoured from the start.
