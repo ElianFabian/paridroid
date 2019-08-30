@@ -48,7 +48,8 @@ all: apk
 
 # Print some version information for debugging and logging purposes.
 version:
-	@echo Compiler: $(CC)
+	@echo Compiler $(ANDROID_TARGET_ARM): $(CC_ARM)
+	@echo Compiler $(ANDROID_TARGET_AARCH64): $(CC_AARCH64)
 	@echo PARIDROID_VERSION: $(PARIDROID_VERSION)
 	@echo PARI_VERSION: $(PARI_VERSION)
 
