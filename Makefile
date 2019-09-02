@@ -1,4 +1,4 @@
-.PHONY: all version apk apk-fast pari pari-standalone pari-checkout pari-config-standalone pari-make pari-make-arm pari-make-aarch64 pari-check check check-standalone clean distclean
+.PHONY: all version apk apk-fast ndk pari pari-standalone pari-checkout pari-config-standalone pari-make pari-make-arm pari-make-aarch64 pari-check check check-standalone clean distclean
 
 # Specify the GNU triplets for the cross compiler with the notation of
 # https://www.gnu.org/savannah-checkouts/gnu/autoconf/manual/autoconf-2.69/html_node/System-Type.html#System-Type
@@ -69,8 +69,10 @@ version:
 
 apk: pari apk-fast
 
-apk-fast: $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
+ndk: $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
 	cd $(PARIDROID_SRC) && $(NDK)/ndk-build V=1 NDK_TOOLCHAIN_VERSION=4.9 APP_ABI=$(APP_ABI)
+
+apk-fast: ndk
 	cd $(PARIDROID_SRC) && ant release
 	cp $(PARIDROID_SRC)/bin/PariDroid-release-unsigned.apk $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk
 	jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $(HOME)/.android/debug.keystore -storepass android $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk androiddebugkey
