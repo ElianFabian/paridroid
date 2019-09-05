@@ -175,18 +175,11 @@ pari-check-x86:
 
 pari-check-arm: 
 	cd $(PARI_SRC)/$(PARI_TARGET_ARM) && \
-	adb root && \
-	adb push gp-sta /data && \
-	make statest-all RUNTEST=$(TOP)/runtest.bench && \
-	adb shell rm /data/gp-sta /data/pari-ret /data/pari-stdin
+	make statest-all
 
 pari-check-aarch64:
 	cd $(PARI_SRC)/$(PARI_TARGET_AARCH64) && \
-	adb root && \
-	adb push gp-sta /data && \
-	make statest-all RUNTEST=$(TOP)/runtest.bench && \
-	adb shell rm /data/gp-sta /data/pari-ret /data/pari-stdin
-
+	make statest-all 
 
 # This is supposed to be executed only once; subsequent updates need to be
 # executed via "git pull" by hand, so that the Makefile remains usable
