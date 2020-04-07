@@ -49,10 +49,10 @@ ANDROID_TARGET_X86_64=x86_64
 ANDROID_TARGET_ARM=armeabi
 ANDROID_TARGET_AARCH64=arm64-v8a
 
-# Choose what to pu in APK :
-#APP_ABI="$(ANDROID_TARGET_X86_64)"
-#APP_ABI="$(ANDROID_TARGET_X86)"
-#APP_ABI="$(ANDROID_TARGET_ARM) $(ANDROID_TARGET_AARCH64) $(ANDROID_TARGET_X86) $(ANDROID_TARGET_X86_64)"
+# Choose what to put into the apk.
+# The emulator can use x86 targets.
+# APP_ABI="$(ANDROID_TARGET_ARM) $(ANDROID_TARGET_AARCH64) $(ANDROID_TARGET_X86) $(ANDROID_TARGET_X86_64)"
+# For the release, ARM architectures are enough.
 APP_ABI="$(ANDROID_TARGET_ARM) $(ANDROID_TARGET_AARCH64)"
 
 PARIDROID_VERSION=$(shell grep versionName PariDroid/AndroidManifest.xml | grep -o '".*"' | tr -d '"')

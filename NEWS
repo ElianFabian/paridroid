@@ -1,5 +1,9 @@
+Version 2.11.2.1.7dev (April 2020):
+  Create an .apk file with specific code for 32 bit (armeabi) and 64 bit
+    (arm64-v8a) ARM architectures.
+
 Version 2.11.2.1.6 (July 2019):
-  Compilation with version 2.11.1 of Pari/GP.
+  Compilation with version 2.11.2 of Pari/GP.
   Fix a bug with defaults (parisizemax) not honoured from the start.
 
 Version 2.11.1.1.6 (January 2019):
@@ -60,7 +64,7 @@ Version 2.7.0.1.0 (April 2014):
   Initial release.
 
 
-Copyright (C) 2014, 2015, 2016, 2017, 2018 Andreas Enge <andreas.enge@inria.fr>
+Copyright (C) 2014, 2015, 2016, 2017, 2018, 2019, 2020 Andreas Enge <andreas.enge@inria.fr>
 
 Copying and distribution of this file, with or without modification,
 are permitted in any medium without royalty provided the copyright
