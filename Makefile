@@ -1,4 +1,4 @@
-.PHONY: all version apk apk-fast ndk pari pari-standalone pari-checkout pari-config-standalone pari-make pari-make-arm pari-make-aarch64 pari-check check check-standalone clean distclean
+.PHONY: all version apk apk-fast ndk pari pari-checkout pari-build pari-build-arm pari-build-aarch64 pari-build-x86 pari-build-x86-64 pari-configure-arm pari-configure-aarch64 pari-configure-x86 pari-configure-x86-64 pari-make-arm pari-make-aarch64 pari-make-x86 pari-make-x86-64 pari-make-arm pari-make-aarch64 pari-make-x86 pari-make-x86-64 check pari-check pari-check-arm pari-check-aarch64 pari-check-x86 clean distclean
 
 # Specify the GNU triplets for the cross compiler with the notation of
 # https://www.gnu.org/savannah-checkouts/gnu/autoconf/manual/autoconf-2.69/html_node/System-Type.html#System-Type
@@ -25,35 +25,35 @@ NDK?=/usr/local/android-ndk-r13b
 # Compile the arm and aarch64 targets with different versions of
 # NDK_PLATFORM: aarch64 appears in android-21; to be able to run on older
 # Android versions, we compile the arm target with earlier tools.
-NDK_PLATFORM_X86=android-9
-NDK_PLATFORM_X86_64=android-21
 NDK_PLATFORM_ARM=android-9
 NDK_PLATFORM_AARCH64=android-21
+NDK_PLATFORM_X86=android-9
+NDK_PLATFORM_X86_64=android-21
 GCC_VERSION=4.9
-SYSROOT_X86_64=$(NDK)/platforms/$(NDK_PLATFORM_X86_64)/arch-x86_64
-SYSROOT_X86=$(NDK)/platforms/$(NDK_PLATFORM_X86)/arch-x86
 SYSROOT_ARM=$(NDK)/platforms/$(NDK_PLATFORM_ARM)/arch-arm
 SYSROOT_AARCH64=$(NDK)/platforms/$(NDK_PLATFORM_AARCH64)/arch-arm64
-CC_X86='$(NDK)/toolchains/$(TARGET_X86)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/i686-linux-android-gcc --sysroot=$(SYSROOT_X86)'
-CC_X86_64='$(NDK)/toolchains/$(TARGET_X86_64)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/$(TARGET_X86_64)-linux-android-gcc --sysroot=$(SYSROOT_X86_64)'
+SYSROOT_X86=$(NDK)/platforms/$(NDK_PLATFORM_X86)/arch-x86
+SYSROOT_X86_64=$(NDK)/platforms/$(NDK_PLATFORM_X86_64)/arch-x86_64
 CC_ARM='$(NDK)/toolchains/$(TARGET_ARM)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/$(TARGET_ARM)-gcc --sysroot=$(SYSROOT_ARM)'
 CC_AARCH64='$(NDK)/toolchains/$(TARGET_AARCH64)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/$(TARGET_AARCH64)-gcc --sysroot=$(SYSROOT_AARCH64)'
+CC_X86='$(NDK)/toolchains/$(TARGET_X86)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/i686-linux-android-gcc --sysroot=$(SYSROOT_X86)'
+CC_X86_64='$(NDK)/toolchains/$(TARGET_X86_64)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/$(TARGET_X86_64)-linux-android-gcc --sysroot=$(SYSROOT_X86_64)'
 
 # Settings for the PARI and Android target CPUs
-PARI_TARGET_X86=Oandroid-$(TARGET_CPU_X86)
-PARI_TARGET_X86_64=Oandroid-$(TARGET_CPU_X86_64)
-PARI_TARGET_ARM=Oandroid-$(TARGET_CPU_ARM)
-PARI_TARGET_AARCH64=Oandroid-$(TARGET_CPU_AARCH64)
-ANDROID_TARGET_X86=x86
-ANDROID_TARGET_X86_64=x86_64
+PARI_TARGET_ARM=Olinux-$(TARGET_CPU_ARM)
+PARI_TARGET_AARCH64=Olinux-$(TARGET_CPU_AARCH64)
+PARI_TARGET_X86=Olinux-$(TARGET_CPU_X86)
+PARI_TARGET_X86_64=Olinux-$(TARGET_CPU_X86_64)
 ANDROID_TARGET_ARM=armeabi
 ANDROID_TARGET_AARCH64=arm64-v8a
+ANDROID_TARGET_X86=x86
+ANDROID_TARGET_X86_64=x86_64
 
 # Choose what to put into the apk.
 # The emulator can use x86 targets.
-# APP_ABI="$(ANDROID_TARGET_ARM) $(ANDROID_TARGET_AARCH64) $(ANDROID_TARGET_X86) $(ANDROID_TARGET_X86_64)"
+APP_ABI="$(ANDROID_TARGET_ARM) $(ANDROID_TARGET_AARCH64) $(ANDROID_TARGET_X86) $(ANDROID_TARGET_X86_64)"
 # For the release, ARM architectures are enough.
-APP_ABI="$(ANDROID_TARGET_ARM) $(ANDROID_TARGET_AARCH64)"
+# APP_ABI="$(ANDROID_TARGET_ARM) $(ANDROID_TARGET_AARCH64)"
 
 PARIDROID_VERSION=$(shell grep versionName PariDroid/AndroidManifest.xml | grep -o '".*"' | tr -d '"')
 PARI_VERSION=$(shell echo $(PARIDROID_VERSION) | cut -d. -f1-3)
@@ -72,10 +72,10 @@ all: apk
 
 # Print some version information for debugging and logging purposes.
 version:
-	@echo Compiler $(ANDROID_TARGET_X86): $(CC_X86)
-	@echo Compiler $(ANDROID_TARGET_X86_64): $(CC_X86_64)
 	@echo Compiler $(ANDROID_TARGET_ARM): $(CC_ARM)
 	@echo Compiler $(ANDROID_TARGET_AARCH64): $(CC_AARCH64)
+	@echo Compiler $(ANDROID_TARGET_X86): $(CC_X86)
+	@echo Compiler $(ANDROID_TARGET_X86_64): $(CC_X86_64)
 	@echo PARIDROID_VERSION: $(PARIDROID_VERSION)
 	@echo PARI_VERSION: $(PARI_VERSION)
 
@@ -91,87 +91,96 @@ apk-fast: ndk
 	zipalign -f 4 $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk PariDroid-$(PARIDROID_VERSION).apk
 
 # Use the pari version specified in AndroidManifest.xml.
-pari: version pari-checkout pari-make
-
-# Use the pari version that happens to be in the source tree; useful for
-# manual checking of pari versions independently of the Android manifest.
-pari-standalone: pari-config-standalone pari-make
+pari: version pari-checkout pari-build
 
 # Updates the pari source tree and switches to the version from
 # AndroidManifest.xml
 pari-checkout: $(PARI_SRC)
 	cd $(PARI_SRC) && git fetch && git checkout $(PARI_GIT)
 
-# Create a pari configuration by running the tests on an Android emulator.
-# Such an emulator is usually not available in build environments, so the
-# resulting configuration files, which depend on the pari version, need to
-# be moved to the config/ subdirectory, from where they are copied when
-# compiling a pari library.
-# The calls to sed eliminate all references to files on the configuring machine
-# and the option -Wall to the linker.
-pari-config-standalone: version
-	rm -rf $(PARI_SRC)/$(PARI_TARGET)
-	cd $(PARI_SRC) && \
-	CC=$(CC) RUNTEST=$(TOP)/runtest ./Configure --host=$(TARGET_CPU)-linux --builddir=$(PARI_TARGET) --kernel=$(TARGET_CPU)-none --without-readline --graphic=none --prefix=/ --datadir=/data/data/fr.ubordeaux.math.paridroid && \
-	sed -i 's/^TOP=.*/TOP=../' $(PARI_TARGET)/pari.cfg && \
-	sed -i 's/^RUNTEST=.*/RUNTEST=/' $(PARI_TARGET)/pari.cfg && \
-	sed -i 's/^CC=.*/CC=XXXCCXXX/' $(PARI_TARGET)/pari.cfg && \
-	sed -i 's/^LD=.*/LD=XXXCCXXX/' $(PARI_TARGET)/pari.cfg && \
-	sed -i 's/^LDused=.*/LDused=/' $(PARI_TARGET)/pari.cfg && \
-	sed -i 's/^DLLD=.*/DLLD=XXXCCXXX/' $(PARI_TARGET)/pari.cfg && \
-	sed -i 's/^MODLD=.*/MODLD=/' $(PARI_TARGET)/pari.cfg && \
-	sed -i 's/^modules_build=.*/modules_build=/' $(PARI_TARGET)/pari.cfg && \
-	sed -i 's/^prefix=.*/prefix=/' $(PARI_TARGET)/pari.cfg
-#	sed -i "s/^LDFLAGS='-O3\ -Wall/LDFLAGS='-O3/" $(PARI_TARGET)/pari.cfg
+pari-build: pari-build-arm pari-build-aarch64 pari-build-x86 pari-build-x86-64
 
-# Configure pari using the pari.cfg taken from the appropriate config/
-# subdirectory corresponding to the version in AndroidManifest.xml.
-pari-make: pari-make-x86-64 pari-make-x86  pari-make-arm pari-make-aarch64
+pari-build-arm: pari-configure-arm pari-make-arm
 
-pari-make-x86:
-	rm -rf $(PARI_SRC)/$(PARI_TARGET_X86)
-	cd $(PARI_SRC) && \
-	sed "s?XXXCCXXX?$(CC_X86)?" $(TOP)/config/$(PARI_VERSION)/$(TARGET_CPU_X86)/pari.cfg > pari.cfg && \
-	./Configure -l ./pari.cfg
-	cd $(PARI_SRC)/$(PARI_TARGET_X86) && \
-	make -j $(shell getconf _NPROCESSORS_CONF) all && \
-	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so DESTDIR=$(JNI)/$(ANDROID_TARGET_X86)/pari
+pari-build-aarch64: pari-configure-aarch64 pari-make-aarch64
 
-pari-make-x86-64:
-	rm -rf $(PARI_SRC)/$(PARI_TARGET_X86_64)
-	cd $(PARI_SRC) && \
-	sed "s?XXXCCXXX?$(CC_X86_64)?" $(TOP)/config/$(PARI_VERSION)/$(TARGET_CPU_X86_64)/pari.cfg > pari.cfg && \
-	./Configure -l ./pari.cfg
-	cd $(PARI_SRC)/$(PARI_TARGET_X86_64) && \
-	make -j $(shell getconf _NPROCESSORS_CONF) all && \
-	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so DESTDIR=$(JNI)/$(ANDROID_TARGET_X86_64)/pari
+pari-build-x86: pari-configure-x86 pari-make-x86
 
-pari-make-arm:
+pari-build-x86-64: pari-configure-x86-64 pari-make-x86-64
+
+pari-configure-arm:
+	# First use the PARI mechanism for configuration, but not executing
+	# any compiled code in a cross-compilation context.
 	rm -rf $(PARI_SRC)/$(PARI_TARGET_ARM)
 	cd $(PARI_SRC) && \
-	sed "s?XXXCCXXX?$(CC_ARM)?" $(TOP)/config/$(PARI_VERSION)/$(TARGET_CPU_ARM)/pari.cfg > pari.cfg && \
-	./Configure -l ./pari.cfg
+	CC=$(CC_ARM) RUNTEST=true ./Configure --prefix=$(JNI)/$(ANDROID_TARGET_ARM)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --without-gmp --host=$(TARGET_CPU_ARM)-linux
+	# Correct the resulting pari.cfg.
 	cd $(PARI_SRC)/$(PARI_TARGET_ARM) && \
-	make -j $(shell getconf _NPROCESSORS_CONF) all && \
-	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so DESTDIR=$(JNI)/$(ANDROID_TARGET_ARM)/pari
+	sed -i "s/^doubleformat=''/doubleformat='1'/" pari.cfg
+	# Finally run Configure again with the new pari.cfg to create other
+	# output files such as paricfg.h.
+	cd $(PARI_SRC) && \
+	./Configure -l $(PARI_TARGET_ARM)/pari.cfg
 
-pari-make-aarch64:
+pari-configure-aarch64:
 	rm -rf $(PARI_SRC)/$(PARI_TARGET_AARCH64)
 	cd $(PARI_SRC) && \
-	sed "s?XXXCCXXX?$(CC_AARCH64)?" $(TOP)/config/$(PARI_VERSION)/$(TARGET_CPU_AARCH64)/pari.cfg > pari.cfg && \
-	./Configure -l ./pari.cfg
+	CC=$(CC_AARCH64) RUNTEST=true ./Configure --prefix=$(JNI)/$(ANDROID_TARGET_AARCH64)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --without-gmp --host=$(TARGET_CPU_AARCH64)-linux
+	cd $(PARI_SRC)/$(PARI_TARGET_AARCH64) && \
+	sed -i "s/^asmarch='none'/asmarch='aarch64'/" pari.cfg && \
+	sed -i "s/^kernlvl0='none'/kernlvl0='aarch64'/" pari.cfg && \
+	sed -i "s/(portable C kernel) 32-bit/(aarch64 kernel) 64-bit/" pari.cfg && \
+	sed -i "s/^doubleformat=''/doubleformat='-'/" pari.cfg && \
+	sed -i "s/^sizeof_long='4'/sizeof_long='8'/" pari.cfg
+	cd $(PARI_SRC) && \
+	./Configure -l $(PARI_TARGET_AARCH64)/pari.cfg
+
+pari-configure-x86:
+	rm -rf $(PARI_SRC)/$(PARI_TARGET_X86)
+	cd $(PARI_SRC) && \
+	CC=$(CC_X86) RUNTEST=true ./Configure --prefix=$(JNI)/$(ANDROID_TARGET_X86)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --without-gmp --host=$(TARGET_CPU_X86)-linux
+	cd $(PARI_SRC)/$(PARI_TARGET_X86) && \
+	sed -i "s/^asmarch='none'/asmarch='ix86'/" pari.cfg && \
+	sed -i "s/^kernlvl0='none'/kernlvl0='ix86'/" pari.cfg && \
+	sed -i "s/(portable C kernel) 32-bit/(x86 kernel) 32-bit/" pari.cfg && \
+	sed -i "s/^doubleformat=''/doubleformat='1'/" pari.cfg
+	cd $(PARI_SRC) && \
+	./Configure -l $(PARI_TARGET_X86)/pari.cfg
+
+pari-configure-x86-64:
+	rm -rf $(PARI_SRC)/$(PARI_TARGET_X86_64)
+	cd $(PARI_SRC) && \
+	CC=$(CC_X86_64) RUNTEST=true ./Configure --prefix=$(JNI)/$(ANDROID_TARGET_X86_64)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --without-gmp --host=$(TARGET_CPU_X86_64)-linux
+	cd $(PARI_SRC)/$(PARI_TARGET_X86_64) && \
+	sed -i "s/^asmarch='ix86'/asmarch='x86_64'/" pari.cfg && \
+	sed -i "s/^kernlvl0='ix86'/kernlvl0='x86_64'/" pari.cfg && \
+	sed -i "s/(ix86 kernel) 32-bit/(x86-64 kernel) 64-bit/" pari.cfg && \
+	sed -i "s/^doubleformat=''/doubleformat='-'/" pari.cfg && \
+	sed -i "s/^sizeof_long='4'/sizeof_long='8'/" pari.cfg
+	cd $(PARI_SRC) && \
+	./Configure -l $(PARI_TARGET_X86_64)/pari.cfg
+
+pari-make-arm:
+	cd $(PARI_SRC)/$(PARI_TARGET_ARM) && \
+	make -j $(shell getconf _NPROCESSORS_CONF) all && \
+	make install-include install-lib-dyn
+
+pari-make-aarch64:
 	cd $(PARI_SRC)/$(PARI_TARGET_AARCH64) && \
 	make -j $(shell getconf _NPROCESSORS_CONF) all && \
-	make install-include install-lib-dyn LIBPARI_SONAME=libpari.so DESTDIR=$(JNI)/$(ANDROID_TARGET_AARCH64)/pari
+	make install-include install-lib-dyn
+
+pari-make-x86:
+	cd $(PARI_SRC)/$(PARI_TARGET_X86) && \
+	make -j $(shell getconf _NPROCESSORS_CONF) all && \
+	make install-include install-lib-dyn
+
+pari-make-x86-64:
+	cd $(PARI_SRC)/$(PARI_TARGET_X86_64) && \
+	make -j $(shell getconf _NPROCESSORS_CONF) all && \
+	make install-include install-lib-dyn
 
 pari-check: pari-check-arm pari-check-aarch64
-
-pari-check-x86: 
-	cd $(PARI_SRC)/$(PARI_TARGET_X86) && \
-	adb root && \
-	adb push gp-sta /data && \
-	make statest-all RUNTEST=$(TOP)/runtest.bench && \
-	adb shell rm /data/gp-sta /data/pari-ret /data/pari-stdin
 
 pari-check-arm: 
 	cd $(PARI_SRC)/$(PARI_TARGET_ARM) && \
@@ -180,6 +189,13 @@ pari-check-arm:
 pari-check-aarch64:
 	cd $(PARI_SRC)/$(PARI_TARGET_AARCH64) && \
 	make statest-all 
+
+pari-check-x86: 
+	cd $(PARI_SRC)/$(PARI_TARGET_X86) && \
+	adb root && \
+	adb push gp-sta /data && \
+	make statest-all RUNTEST=$(TOP)/runtest.bench && \
+	adb shell rm /data/gp-sta /data/pari-ret /data/pari-stdin
 
 # This is supposed to be executed only once; subsequent updates need to be
 # executed via "git pull" by hand, so that the Makefile remains usable
@@ -201,23 +217,24 @@ $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h: $(PARIDROID_SRC)/src/
 	mv $(PARIDROID_SRC)/bin/classes/fr_ubordeaux_math_paridroid_PariNative.h $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
 
 
-# Use the pari version specified in AndroidManifest.xml.
 check: pari pari-check
-
-# Use the pari version that happens to be in the source tree; useful for
-# manual checking of pari versions independently of the Android manifest.
-check-standalone: pari-standalone pari-check
 
 clean:
 	rm -f PariDroid*.apk
 	cd $(PARIDROID_SRC) && ant clean
-	cd $(JNI) && $(NDK)/ndk-build clean V=1 APP_ABI="$(ANDROID_TARGET_ARM) $(ANDROID_TARGET_AARCH64)"
+	cd $(JNI) && $(NDK)/ndk-build clean V=1 APP_ABI="$(ANDROID_TARGET_ARM) $(ANDROID_TARGET_AARCH64) $(ANDROID_TARGET_X86) $(ANDROID_TARGET_X86_64)"
 	rm -rf $(JNI)/$(ANDROID_TARGET_ARM)
 	rm -rf $(JNI)/$(ANDROID_TARGET_AARCH64)
+	rm -rf $(JNI)/$(ANDROID_TARGET_X86)
+	rm -rf $(JNI)/$(ANDROID_TARGET_X86_64)
 
 distclean: clean
 	rm -rf $(PARI_SRC)/$(PARI_TARGET_ARM)
 	rm -rf $(PARI_SRC)/$(PARI_TARGET_AARCH64)
+	rm -rf $(PARI_SRC)/$(PARI_TARGET_X86)
+	rm -rf $(PARI_SRC)/$(PARI_TARGET_X86_64)
 	rm -f $(PARI_SRC)/config-$(TARGET_CPU_ARM)-linux*
 	rm -f $(PARI_SRC)/config-$(TARGET_CPU_AARCH64)-linux*
+	rm -f $(PARI_SRC)/config-$(TARGET_CPU_X86)-linux*
+	rm -f $(PARI_SRC)/config-$(TARGET_CPU_X86_64)-linux*
 
