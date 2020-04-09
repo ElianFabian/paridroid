@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="fr.ubordeaux.math.paridroid"
           android:versionCode="19"
-          android:versionName="2.11.3.1.7dev"
+          android:versionName="2.11.3.1.7"
           android:installLocation="preferExternal">
   <application android:icon="@drawable/icon"
                android:label="@string/app_name"
