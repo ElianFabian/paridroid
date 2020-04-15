@@ -1,4 +1,4 @@
-.PHONY: all version apk apk-fast ndk pari pari-checkout pari-build pari-build-arm pari-build-aarch64 pari-build-x86 pari-build-x86-64 pari-configure-arm pari-configure-aarch64 pari-configure-x86 pari-configure-x86-64 pari-make-arm pari-make-aarch64 pari-make-x86 pari-make-x86-64 pari-make-arm pari-make-aarch64 pari-make-x86 pari-make-x86-64 check pari-check pari-check-arm pari-check-aarch64 pari-check-x86 clean distclean
+.PHONY: all version apk apk-fast ndk pari pari-checkout pari-build pari-build-arm pari-build-aarch64 pari-build-x86 pari-build-x86-64 pari-configure-arm pari-configure-aarch64 pari-configure-x86 pari-configure-x86-64 pari-make-generic pari-make-arm pari-make-aarch64 pari-make-x86 pari-make-x86-64 pari-make-arm pari-make-aarch64 pari-make-x86 pari-make-x86-64 check pari-check pari-check-arm pari-check-aarch64 pari-check-x86 clean distclean
 
 # Specify the GNU triplets for the cross compiler with the notation of
 # https://www.gnu.org/savannah-checkouts/gnu/autoconf/manual/autoconf-2.69/html_node/System-Type.html#System-Type
@@ -160,25 +160,22 @@ pari-configure-x86-64:
 	cd $(PARI_SRC) && \
 	./Configure -l $(PARI_TARGET_X86_64)/pari.cfg
 
-pari-make-arm:
-	cd $(PARI_SRC)/$(PARI_TARGET_ARM) && \
+pari-make-generic:
+	cd $(PARI_SRC)/$(PARI_TARGET) && \
 	make -j $(shell getconf _NPROCESSORS_CONF) all && \
 	make install-include install-lib-dyn
+
+pari-make-arm:
+	make PARI_TARGET=$(PARI_TARGET_ARM) pari-make-generic
 
 pari-make-aarch64:
-	cd $(PARI_SRC)/$(PARI_TARGET_AARCH64) && \
-	make -j $(shell getconf _NPROCESSORS_CONF) all && \
-	make install-include install-lib-dyn
+	make PARI_TARGET=$(PARI_TARGET_AARCH64) pari-make-generic
 
 pari-make-x86:
-	cd $(PARI_SRC)/$(PARI_TARGET_X86) && \
-	make -j $(shell getconf _NPROCESSORS_CONF) all && \
-	make install-include install-lib-dyn
+	make PARI_TARGET=$(PARI_TARGET_X86) pari-make-generic
 
 pari-make-x86-64:
-	cd $(PARI_SRC)/$(PARI_TARGET_X86_64) && \
-	make -j $(shell getconf _NPROCESSORS_CONF) all && \
-	make install-include install-lib-dyn
+	make PARI_TARGET=$(PARI_TARGET_X86_64) pari-make-generic
 
 pari-check: pari-check-arm pari-check-aarch64
 
