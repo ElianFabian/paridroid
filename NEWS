@@ -1,3 +1,8 @@
+Version 2.11.4.1.7 (April 2020):
+  Compilation with version 2.11.4 of Pari/GP.
+  Updates to the build system, which now calls the configuration step of
+     PARI/GP instead of relying on hand-crafted files.
+
 Version 2.11.3.1.7 (April 2020):
   Compilation with version 2.11.3 of Pari/GP.
   Create an .apk file with specific code for 32 bit (armeabi) and 64 bit
