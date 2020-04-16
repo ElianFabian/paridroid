@@ -40,8 +40,6 @@ CC_X86='$(NDK)/toolchains/$(TARGET_X86)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin
 CC_X86_64='$(NDK)/toolchains/$(TARGET_X86_64)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/$(TARGET_X86_64)-linux-android-gcc --sysroot=$(SYSROOT_X86_64)'
 
 # Settings for the GMP, PARI and Android target CPUs
-GMP_TARGET_ARM=$(TARGET_CPU_ARM)-linux
-GMP_TARGET_AARCH64=$(TARGET_CPU_AARCH64)-linux
 PARI_TARGET_ARM=Olinux-$(TARGET_CPU_ARM)
 PARI_TARGET_AARCH64=Olinux-$(TARGET_CPU_AARCH64)
 PARI_TARGET_X86=Olinux-$(TARGET_CPU_X86)
@@ -96,7 +94,7 @@ apk-fast: ndk
 gmp-build-arm: $(GMP_SRC)
 	- cd $(GMP_SRC) &&  make distclean
 	cd $(GMP_SRC) && \
-	CC=$(CC_ARM) ./configure --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET_ARM)/gmp --host=$(GMP_TARGET_ARM) --with-sysroot=$(SYSROOT_ARM) && \
+	CC=$(CC_ARM) ./configure --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET_ARM)/gmp --host=$(TARGET_ARM) --with-sysroot=$(SYSROOT_ARM) && \
 	make clean && \
 	make -j $(shell getconf _NPROCESSORS_CONF) && \
 	make install
@@ -104,7 +102,7 @@ gmp-build-arm: $(GMP_SRC)
 gmp-build-aarch64: $(GMP_SRC)
 	- cd $(GMP_SRC) &&  make distclean
 	cd $(GMP_SRC) && \
-	CC=$(CC_AARCH64) ./configure --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET_AARCH64)/gmp --host=$(GMP_TARGET_AARCH64) --with-sysroot=$(SYSROOT_AARCH64) && \
+	CC=$(CC_AARCH64) ./configure --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET_AARCH64)/gmp --host=$(TARGET_AARCH64) --with-sysroot=$(SYSROOT_AARCH64) && \
 	make clean && \
 	make -j $(shell getconf _NPROCESSORS_CONF) && \
 	make install
