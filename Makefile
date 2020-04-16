@@ -1,4 +1,4 @@
-.PHONY: all version apk apk-fast ndk pari pari-checkout pari-build pari-build-arm pari-build-aarch64 pari-build-x86 pari-build-x86-64 pari-configure-arm pari-configure-aarch64 pari-configure-x86 pari-configure-x86-64 pari-make-generic pari-make-arm pari-make-aarch64 pari-make-x86 pari-make-x86-64 pari-make-arm pari-make-aarch64 pari-make-x86 pari-make-x86-64 check pari-check pari-check-arm pari-check-aarch64 pari-check-x86 clean distclean
+.PHONY: all version apk apk-fast ndk gmp-build-arm gmp-build-aarch64 pari pari-checkout pari-build pari-build-arm pari-build-aarch64 pari-build-x86 pari-build-x86-64 pari-configure-arm pari-configure-aarch64 pari-configure-x86 pari-configure-x86-64 pari-make-generic pari-make-arm pari-make-aarch64 pari-make-x86 pari-make-x86-64 pari-make-arm pari-make-aarch64 pari-make-x86 pari-make-x86-64 check pari-check pari-check-arm pari-check-aarch64 pari-check-x86 clean distclean
 
 # Specify the GNU triplets for the cross compiler with the notation of
 # https://www.gnu.org/savannah-checkouts/gnu/autoconf/manual/autoconf-2.69/html_node/System-Type.html#System-Type
@@ -39,7 +39,9 @@ CC_AARCH64='$(NDK)/toolchains/$(TARGET_AARCH64)-$(GCC_VERSION)/prebuilt/linux-x8
 CC_X86='$(NDK)/toolchains/$(TARGET_X86)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/i686-linux-android-gcc --sysroot=$(SYSROOT_X86)'
 CC_X86_64='$(NDK)/toolchains/$(TARGET_X86_64)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/$(TARGET_X86_64)-linux-android-gcc --sysroot=$(SYSROOT_X86_64)'
 
-# Settings for the PARI and Android target CPUs
+# Settings for the GMP, PARI and Android target CPUs
+GMP_TARGET_ARM=$(TARGET_CPU_ARM)-linux
+GMP_TARGET_AARCH64=$(TARGET_CPU_AARCH64)-linux
 PARI_TARGET_ARM=Olinux-$(TARGET_CPU_ARM)
 PARI_TARGET_AARCH64=Olinux-$(TARGET_CPU_AARCH64)
 PARI_TARGET_X86=Olinux-$(TARGET_CPU_X86)
@@ -90,6 +92,22 @@ apk-fast: ndk
 	cp $(PARIDROID_SRC)/bin/PariDroid-release-unsigned.apk $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk
 	jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $(HOME)/.android/debug.keystore -storepass android $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk androiddebugkey
 	zipalign -f 4 $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk PariDroid-$(PARIDROID_VERSION).apk
+
+gmp-build-arm: $(GMP_SRC)
+	- cd $(GMP_SRC) &&  make distclean
+	cd $(GMP_SRC) && \
+	CC=$(CC_ARM) ./configure --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET_ARM)/gmp --host=$(GMP_TARGET_ARM) --with-sysroot=$(SYSROOT_ARM) && \
+	make clean && \
+	make -j $(shell getconf _NPROCESSORS_CONF) && \
+	make install
+
+gmp-build-aarch64: $(GMP_SRC)
+	- cd $(GMP_SRC) &&  make distclean
+	cd $(GMP_SRC) && \
+	CC=$(CC_AARCH64) ./configure --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET_AARCH64)/gmp --host=$(GMP_TARGET_AARCH64) --with-sysroot=$(SYSROOT_AARCH64) && \
+	make clean && \
+	make -j $(shell getconf _NPROCESSORS_CONF) && \
+	make install
 
 # Use the pari version specified in AndroidManifest.xml.
 pari: version pari-checkout pari-build
@@ -203,7 +221,7 @@ $(PARI_SRC):
 $(GMP_SRC):
 	mkdir -p $(GMP_SRC)
 	hg clone https://gmplib.org/repo/gmp-6.2/ $(GMP_SRC)
-	cd $(GMP_SRC) && autoreconf -vfi
+	cd $(GMP_SRC) && ./.bootstrap
 
 # The following targets create files that ultimately are supposed to be under
 # version control, but that can be generated automatically.
