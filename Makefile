@@ -34,10 +34,10 @@ SYSROOT_ARM=$(NDK)/platforms/$(NDK_PLATFORM_ARM)/arch-arm
 SYSROOT_AARCH64=$(NDK)/platforms/$(NDK_PLATFORM_AARCH64)/arch-arm64
 SYSROOT_X86=$(NDK)/platforms/$(NDK_PLATFORM_X86)/arch-x86
 SYSROOT_X86_64=$(NDK)/platforms/$(NDK_PLATFORM_X86_64)/arch-x86_64
-CC_ARM='$(NDK)/toolchains/$(TARGET_ARM)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/$(TARGET_ARM)-gcc --sysroot=$(SYSROOT_ARM)'
-CC_AARCH64='$(NDK)/toolchains/$(TARGET_AARCH64)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/$(TARGET_AARCH64)-gcc --sysroot=$(SYSROOT_AARCH64)'
-CC_X86='$(NDK)/toolchains/$(TARGET_X86)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/i686-linux-android-gcc --sysroot=$(SYSROOT_X86)'
-CC_X86_64='$(NDK)/toolchains/$(TARGET_X86_64)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/$(TARGET_X86_64)-linux-android-gcc --sysroot=$(SYSROOT_X86_64)'
+CC_ARM=$(NDK)/toolchains/$(TARGET_ARM)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/$(TARGET_ARM)-gcc
+CC_AARCH64=$(NDK)/toolchains/$(TARGET_AARCH64)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/$(TARGET_AARCH64)-gcc
+CC_X86=$(NDK)/toolchains/$(TARGET_X86)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/i686-linux-android-gcc
+CC_X86_64=$(NDK)/toolchains/$(TARGET_X86_64)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/$(TARGET_X86_64)-linux-android-gcc
 
 # Settings for the GMP, PARI and Android target CPUs
 PARI_TARGET_ARM=Olinux-$(TARGET_CPU_ARM)
@@ -94,7 +94,7 @@ apk-fast: ndk
 gmp-build-arm: $(GMP_SRC)
 	- cd $(GMP_SRC) &&  make distclean
 	cd $(GMP_SRC) && \
-	CC=$(CC_ARM) ./configure --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET_ARM)/gmp --host=$(TARGET_ARM) --with-sysroot=$(SYSROOT_ARM) && \
+	CC=$(CC_ARM) CFLAGS=--sysroot=$(SYSROOT_ARM) ./configure --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET_ARM)/gmp --host=$(TARGET_ARM) --with-sysroot=$(SYSROOT_ARM) && \
 	make clean && \
 	make -j $(shell getconf _NPROCESSORS_CONF) && \
 	make install
@@ -102,7 +102,7 @@ gmp-build-arm: $(GMP_SRC)
 gmp-build-aarch64: $(GMP_SRC)
 	- cd $(GMP_SRC) &&  make distclean
 	cd $(GMP_SRC) && \
-	CC=$(CC_AARCH64) ./configure --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET_AARCH64)/gmp --host=$(TARGET_AARCH64) --with-sysroot=$(SYSROOT_AARCH64) && \
+	CC=$(CC_AARCH64) CFLAGS=--sysroot=$(SYSROOT_AARCH64) ./configure --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET_AARCH64)/gmp --host=$(TARGET_AARCH64) --with-sysroot=$(SYSROOT_AARCH64) && \
 	make clean && \
 	make -j $(shell getconf _NPROCESSORS_CONF) && \
 	make install
@@ -130,7 +130,7 @@ pari-configure-arm:
 	# any compiled code in a cross-compilation context.
 	rm -rf $(PARI_SRC)/$(PARI_TARGET_ARM)
 	cd $(PARI_SRC) && \
-	CC=$(CC_ARM) RUNTEST=true ./Configure --prefix=$(JNI)/$(ANDROID_TARGET_ARM)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --without-gmp --host=$(TARGET_CPU_ARM)-linux
+	CC=$(CC_ARM) CFLAGS=--sysroot=$(SYSROOT_ARM) RUNTEST=true ./Configure --prefix=$(JNI)/$(ANDROID_TARGET_ARM)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --without-gmp --host=$(TARGET_CPU_ARM)-linux
 	# Correct the resulting pari.cfg.
 	cd $(PARI_SRC)/$(PARI_TARGET_ARM) && \
 	sed -i "s/^doubleformat=''/doubleformat='1'/" pari.cfg
@@ -142,7 +142,7 @@ pari-configure-arm:
 pari-configure-aarch64:
 	rm -rf $(PARI_SRC)/$(PARI_TARGET_AARCH64)
 	cd $(PARI_SRC) && \
-	CC=$(CC_AARCH64) RUNTEST=true ./Configure --prefix=$(JNI)/$(ANDROID_TARGET_AARCH64)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --without-gmp --host=$(TARGET_CPU_AARCH64)-linux
+	CC=$(CC_AARCH64) CFLAGS=--sysroot=$(SYSROOT_AARCH64) RUNTEST=true ./Configure --prefix=$(JNI)/$(ANDROID_TARGET_AARCH64)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --without-gmp --host=$(TARGET_CPU_AARCH64)-linux
 	cd $(PARI_SRC)/$(PARI_TARGET_AARCH64) && \
 	sed -i "s/^asmarch='none'/asmarch='aarch64'/" pari.cfg && \
 	sed -i "s/^kernlvl0='none'/kernlvl0='aarch64'/" pari.cfg && \
@@ -155,7 +155,7 @@ pari-configure-aarch64:
 pari-configure-x86:
 	rm -rf $(PARI_SRC)/$(PARI_TARGET_X86)
 	cd $(PARI_SRC) && \
-	CC=$(CC_X86) RUNTEST=true ./Configure --prefix=$(JNI)/$(ANDROID_TARGET_X86)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --without-gmp --host=$(TARGET_CPU_X86)-linux
+	CC=$(CC_X86) CFLAGS=--sysroot=$(SYSROOT_X86) RUNTEST=true ./Configure --prefix=$(JNI)/$(ANDROID_TARGET_X86)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --without-gmp --host=$(TARGET_CPU_X86)-linux
 	cd $(PARI_SRC)/$(PARI_TARGET_X86) && \
 	sed -i "s/^asmarch='none'/asmarch='ix86'/" pari.cfg && \
 	sed -i "s/^kernlvl0='none'/kernlvl0='ix86'/" pari.cfg && \
@@ -167,7 +167,7 @@ pari-configure-x86:
 pari-configure-x86-64:
 	rm -rf $(PARI_SRC)/$(PARI_TARGET_X86_64)
 	cd $(PARI_SRC) && \
-	CC=$(CC_X86_64) RUNTEST=true ./Configure --prefix=$(JNI)/$(ANDROID_TARGET_X86_64)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --without-gmp --host=$(TARGET_CPU_X86_64)-linux
+	CC=$(CC_X86_64) CFLAGS=--sysroot=$(SYSROOT_X86_64) RUNTEST=true ./Configure --prefix=$(JNI)/$(ANDROID_TARGET_X86_64)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --without-gmp --host=$(TARGET_CPU_X86_64)-linux
 	cd $(PARI_SRC)/$(PARI_TARGET_X86_64) && \
 	sed -i "s/^asmarch='ix86'/asmarch='x86_64'/" pari.cfg && \
 	sed -i "s/^kernlvl0='ix86'/kernlvl0='x86_64'/" pari.cfg && \
