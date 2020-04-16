@@ -66,6 +66,7 @@ endif
 TOP=$(CURDIR)
 PARIDROID_SRC=$(TOP)/PariDroid
 PARI_SRC=$(TOP)/../srclib/pari
+GMP_SRC=$(TOP)/../srclib/gmp
 JNI=$(PARIDROID_SRC)/jni
 
 all: apk
@@ -194,13 +195,15 @@ pari-check-x86:
 	make statest-all RUNTEST=$(TOP)/runtest.bench && \
 	adb shell rm /data/gp-sta /data/pari-ret /data/pari-stdin
 
-# This is supposed to be executed only once; subsequent updates need to be
-# executed via "git pull" by hand, so that the Makefile remains usable
-# offline.
+# These are supposed to be executed only once to set up the repositories.
 $(PARI_SRC):
 	mkdir -p $(PARI_SRC)
 	git clone http://pari.math.u-bordeaux.fr/git/pari.git $(PARI_SRC)
 
+$(GMP_SRC):
+	mkdir -p $(GMP_SRC)
+	hg clone https://gmplib.org/repo/gmp-6.2/ $(GMP_SRC)
+	cd $(GMP_SRC) && autoreconf -vfi
 
 # The following targets create files that ultimately are supposed to be under
 # version control, but that can be generated automatically.
