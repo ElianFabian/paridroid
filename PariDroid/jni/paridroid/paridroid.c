@@ -148,7 +148,10 @@ paridroid_eval(const char *in, char **out, int *returnsgnil)
       timer_start (&T);
       walltimer_start (&Tw);
 #endif
-      z = gp_read_str(in);
+
+      char cc;
+      z = gp_read_str_multiline(in, &cc);
+
 #if PARI_VERSION_CODE < 134144
       time = timer_delay (&T);
 #else

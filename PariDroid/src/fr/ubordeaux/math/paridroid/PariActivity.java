@@ -237,6 +237,37 @@ public class PariActivity extends Activity implements View.OnClickListener {
       return true;
    }
 
+   static final int OPEN_FILE_REQUEST = 10;
+
+   protected void onActivityResult(int requestCode, int resultCode,
+                                   Intent data) {
+      if (requestCode == OPEN_FILE_REQUEST) {
+         if (resultCode == RESULT_OK) {
+            Uri uri = data.getData();
+            Log.d(MSG_TAG, "open_file " + uri.toString());
+            Log.d(MSG_TAG, "file auth is " + uri.getAuthority());
+
+            try {
+               InputStream is = getContentResolver().openInputStream(uri);
+               InputStreamReader ir = new InputStreamReader(is);
+               BufferedReader bu = new BufferedReader(ir);
+               String s;
+               String ss = "";
+               while ((s = bu.readLine()) != null) {
+                  ss = ss + "\n" + s;
+               }
+               bu.close();
+               Log.d("content", ss);
+               evaluate(ss);
+            } catch (FileNotFoundException e) {
+               e.printStackTrace();
+            } catch (IOException e) {
+               e.printStackTrace();
+            }
+         }
+      }
+   }
+
    public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId()) {
       case R.id.settings:
@@ -254,6 +285,12 @@ public class PariActivity extends Activity implements View.OnClickListener {
          alert.setMessage (msg);
          alert.setPositiveButton ("OK", null);
          alert.show ();
+         return true;
+       case R.id.open:
+         Intent openFile = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+         openFile.setType("*/*");
+         openFile.addCategory(Intent.CATEGORY_OPENABLE);
+         startActivityForResult(openFile,OPEN_FILE_REQUEST);
          return true;
       default:
          return super.onOptionsItemSelected(item);
