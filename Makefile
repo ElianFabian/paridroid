@@ -87,7 +87,7 @@ apk-fast: ndk
 gmp-build-generic: $(GMP_SRC)
 	- cd $(GMP_SRC) &&  make distclean
 	cd $(GMP_SRC) && \
-	CC=$(CC) CFLAGS="--sysroot=$(SYSROOT) --std=c99 -pie" CPPFLAGS=--sysroot=$(SYSROOT) LDFLAGS=--sysroot=$(SYSROOT) ./configure --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET)/gmp --host=$(TARGET) --with-sysroot=$(SYSROOT) && \
+	CC=$(CC) CFLAGS="--sysroot=$(SYSROOT) --std=c99" CPPFLAGS=--sysroot=$(SYSROOT) LDFLAGS=--sysroot=$(SYSROOT) ./configure --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET)/gmp --host=$(TARGET) --with-sysroot=$(SYSROOT) && \
 	make clean && \
 	make -j $(shell getconf _NPROCESSORS_CONF) && \
 	make install
