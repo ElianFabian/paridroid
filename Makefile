@@ -1,4 +1,4 @@
-.PHONY: all version apk apk-fast ndk gmp-build-arm gmp-build-aarch64 pari pari-checkout pari-build pari-build-arm pari-build-aarch64 pari-build-x86 pari-build-x86-64 pari-configure-arm pari-configure-aarch64 pari-configure-x86 pari-configure-x86-64 pari-make-generic pari-make-arm pari-make-aarch64 pari-make-x86 pari-make-x86-64 pari-make-arm pari-make-aarch64 pari-make-x86 pari-make-x86-64 check pari-check pari-check-arm pari-check-aarch64 pari-check-x86 clean distclean
+.PHONY: all version apk apk-fast ndk gmp-build-generic gmp-build-arm gmp-build-aarch64 pari pari-checkout pari-build pari-build-arm pari-build-aarch64 pari-build-x86 pari-build-x86-64 pari-configure-arm pari-configure-aarch64 pari-configure-x86 pari-configure-x86-64 pari-make-generic pari-make-arm pari-make-aarch64 pari-make-x86 pari-make-x86-64 pari-make-arm pari-make-aarch64 pari-make-x86 pari-make-x86-64 check pari-check pari-check-arm pari-check-aarch64 pari-check-x86 clean distclean
 
 # Specify the GNU triplets for the cross compiler with the notation of
 # https://www.gnu.org/savannah-checkouts/gnu/autoconf/manual/autoconf-2.69/html_node/System-Type.html#System-Type
@@ -91,21 +91,19 @@ apk-fast: ndk
 	jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $(HOME)/.android/debug.keystore -storepass android $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk androiddebugkey
 	zipalign -f 4 $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk PariDroid-$(PARIDROID_VERSION).apk
 
-gmp-build-arm: $(GMP_SRC)
+gmp-build-generic: $(GMP_SRC)
 	- cd $(GMP_SRC) &&  make distclean
 	cd $(GMP_SRC) && \
-	CC=$(CC_ARM) CFLAGS=--sysroot=$(SYSROOT_ARM) ./configure --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET_ARM)/gmp --host=$(TARGET_ARM) --with-sysroot=$(SYSROOT_ARM) && \
+	CC=$(CC) CFLAGS="--sysroot=$(SYSROOT) --std=c99" CPPFLAGS=--sysroot=$(SYSROOT) LDFLAGS=--sysroot=$(SYSROOT) ./configure --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET)/gmp --host=$(TARGET) --with-sysroot=$(SYSROOT) && \
 	make clean && \
 	make -j $(shell getconf _NPROCESSORS_CONF) && \
 	make install
 
-gmp-build-aarch64: $(GMP_SRC)
-	- cd $(GMP_SRC) &&  make distclean
-	cd $(GMP_SRC) && \
-	CC=$(CC_AARCH64) CFLAGS=--sysroot=$(SYSROOT_AARCH64) ./configure --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET_AARCH64)/gmp --host=$(TARGET_AARCH64) --with-sysroot=$(SYSROOT_AARCH64) && \
-	make clean && \
-	make -j $(shell getconf _NPROCESSORS_CONF) && \
-	make install
+gmp-build-arm:
+	make CC=$(CC_ARM) SYSROOT=$(SYSROOT_ARM) ANDROID_TARGET=$(ANDROID_TARGET_ARM) TARGET=$(TARGET_ARM) gmp-build-generic
+
+gmp-build-aarch64:
+	make CC=$(CC_AARCH64) SYSROOT=$(SYSROOT_AARCH64) ANDROID_TARGET=$(ANDROID_TARGET_AARCH64) TARGET=$(TARGET_AARCH64) gmp-build-generic
 
 # Use the pari version specified in AndroidManifest.xml.
 pari: version pari-checkout pari-build
