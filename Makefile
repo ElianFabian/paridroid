@@ -2,23 +2,17 @@
 
 # Specify the GNU triplets for the cross compiler with the notation of
 # https://www.gnu.org/savannah-checkouts/gnu/autoconf/manual/autoconf-2.69/html_node/System-Type.html#System-Type
-TARGET_CPU_X86=x86
-TARGET_CPU_X86_64=x86_64
 TARGET_CPU_ARM=arm
 TARGET_CPU_AARCH64=aarch64
+TARGET_CPU_X86=x86
+TARGET_CPU_X86_64=x86_64
 TARGET_KERNEL=linux
-TARGET_OS_X86=x86
-TARGET_OS_X86_64=x86_64
-TARGET_OS_ARM=androideabi
-TARGET_OS_AARCH64=android
-TARGET_SYSTEM_X86=$(TARGET_KERNEL)-$(TARGET_OS_X86)
-TARGET_SYSTEM_X86_64=$(TARGET_KERNEL)-$(TARGET_OS_X86_64)
-TARGET_SYSTEM_ARM=$(TARGET_KERNEL)-$(TARGET_OS_ARM)
-TARGET_SYSTEM_AARCH64=$(TARGET_KERNEL)-$(TARGET_OS_AARCH64)
-TARGET_X86=$(TARGET_CPU_X86)
-TARGET_X86_64=$(TARGET_CPU_X86_64)
-TARGET_ARM=$(TARGET_CPU_ARM)-$(TARGET_SYSTEM_ARM)
-TARGET_AARCH64=$(TARGET_CPU_AARCH64)-$(TARGET_SYSTEM_AARCH64)
+TARGET_OS=android
+TARGET_SYSTEM=$(TARGET_KERNEL)-$(TARGET_OS)
+TARGET_ARM=$(TARGET_CPU_ARM)-$(TARGET_SYSTEM)
+TARGET_AARCH64=$(TARGET_CPU_AARCH64)-$(TARGET_SYSTEM)
+TARGET_X86=$(TARGET_CPU_X86)-$(TARGET_SYSTEM)
+TARGET_X86_64=$(TARGET_CPU_X86_64)-$(TARGET_SYSTEM)
 
 # Settings for the cross compiler.
 NDK?=/usr/local/android-ndk-r13b
@@ -29,15 +23,14 @@ NDK_PLATFORM_ARM=android-9
 NDK_PLATFORM_AARCH64=android-21
 NDK_PLATFORM_X86=android-9
 NDK_PLATFORM_X86_64=android-21
-GCC_VERSION=4.9
 SYSROOT_ARM=$(NDK)/platforms/$(NDK_PLATFORM_ARM)/arch-arm
 SYSROOT_AARCH64=$(NDK)/platforms/$(NDK_PLATFORM_AARCH64)/arch-arm64
 SYSROOT_X86=$(NDK)/platforms/$(NDK_PLATFORM_X86)/arch-x86
 SYSROOT_X86_64=$(NDK)/platforms/$(NDK_PLATFORM_X86_64)/arch-x86_64
-CC_ARM=$(NDK)/toolchains/$(TARGET_ARM)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/$(TARGET_ARM)-gcc
-CC_AARCH64=$(NDK)/toolchains/$(TARGET_AARCH64)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/$(TARGET_AARCH64)-gcc
-CC_X86=$(NDK)/toolchains/$(TARGET_X86)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/i686-linux-android-gcc
-CC_X86_64=$(NDK)/toolchains/$(TARGET_X86_64)-$(GCC_VERSION)/prebuilt/linux-x86_64/bin/$(TARGET_X86_64)-linux-android-gcc
+CC_ARM=$(NDK)/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin/arm-linux-androideabi-gcc
+CC_AARCH64=$(NDK)/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin/aarch64-linux-android-gcc
+CC_X86=$(NDK)/toolchains/x86-4.9/prebuilt/linux-x86_64/bin/i686-linux-android-gcc
+CC_X86_64=$(NDK)/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc
 
 # Settings for the GMP, PARI and Android target CPUs
 PARI_TARGET_ARM=Olinux-$(TARGET_CPU_ARM)
@@ -94,7 +87,7 @@ apk-fast: ndk
 gmp-build-generic: $(GMP_SRC)
 	- cd $(GMP_SRC) &&  make distclean
 	cd $(GMP_SRC) && \
-	CC=$(CC) CFLAGS="--sysroot=$(SYSROOT) --std=c99" CPPFLAGS=--sysroot=$(SYSROOT) LDFLAGS=--sysroot=$(SYSROOT) ./configure --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET)/gmp --host=$(TARGET) --with-sysroot=$(SYSROOT) && \
+	CC=$(CC) CFLAGS="--sysroot=$(SYSROOT) --std=c99 -pie" CPPFLAGS=--sysroot=$(SYSROOT) LDFLAGS=--sysroot=$(SYSROOT) ./configure --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET)/gmp --host=$(TARGET) --with-sysroot=$(SYSROOT) && \
 	make clean && \
 	make -j $(shell getconf _NPROCESSORS_CONF) && \
 	make install
