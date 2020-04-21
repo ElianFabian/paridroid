@@ -1,4 +1,4 @@
-.PHONY: all version apk apk-fast ndk gmp-build-generic gmp-build-arm gmp-build-aarch64 pari pari-checkout pari-build pari-build-arm pari-build-aarch64 pari-build-x86 pari-build-x86-64 pari-configure-arm pari-configure-aarch64 pari-configure-x86 pari-configure-x86-64 pari-make-generic pari-make-arm pari-make-aarch64 pari-make-x86 pari-make-x86-64 pari-make-arm pari-make-aarch64 pari-make-x86 pari-make-x86-64 check pari-check pari-check-arm pari-check-aarch64 pari-check-x86 clean distclean
+.PHONY: all version apk apk-fast ndk gmp-build-generic gmp-build-arm gmp-build-aarch64 gmp-build-x86 gmp-build-x86-64 pari pari-checkout pari-build pari-build-arm pari-build-aarch64 pari-build-x86 pari-build-x86-64 pari-configure-arm pari-configure-aarch64 pari-configure-x86 pari-configure-x86-64 pari-make-generic pari-make-arm pari-make-aarch64 pari-make-x86 pari-make-x86-64 pari-make-arm pari-make-aarch64 pari-make-x86 pari-make-x86-64 check pari-check pari-check-arm pari-check-aarch64 pari-check-x86 clean distclean
 
 # Specify the GNU triplets for the cross compiler with the notation of
 # https://www.gnu.org/savannah-checkouts/gnu/autoconf/manual/autoconf-2.69/html_node/System-Type.html#System-Type
@@ -97,6 +97,12 @@ gmp-build-arm:
 
 gmp-build-aarch64:
 	make CC=$(CC_AARCH64) SYSROOT=$(SYSROOT_AARCH64) ANDROID_TARGET=$(ANDROID_TARGET_AARCH64) TARGET=$(TARGET_AARCH64) gmp-build-generic
+
+gmp-build-x86:
+	make CC=$(CC_X86) SYSROOT=$(SYSROOT_X86) ANDROID_TARGET=$(ANDROID_TARGET_X86) TARGET=$(TARGET_X86) gmp-build-generic
+
+gmp-build-x86-64:
+	make CC=$(CC_X86_64) SYSROOT=$(SYSROOT_X86_64) ANDROID_TARGET=$(ANDROID_TARGET_X86_64) TARGET=$(TARGET_X86_64) gmp-build-generic
 
 # Use the pari version specified in AndroidManifest.xml.
 pari: version pari-checkout pari-build
