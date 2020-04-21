@@ -55,6 +55,7 @@ ifeq "$(PARI_VERSION)" "2.12.0"
 else
    PARI_GIT=pari-$(PARI_VERSION)
 endif
+GMP_VERSION=6.2.0
 
 TOP=$(CURDIR)
 PARIDROID_SRC=$(TOP)/PariDroid
@@ -114,23 +115,23 @@ pari-checkout: $(PARI_SRC)
 
 pari-build: pari-build-arm pari-build-aarch64 pari-build-x86 pari-build-x86-64
 
-pari-build-arm: pari-configure-arm pari-make-arm
+pari-build-arm: gmp-build-arm pari-configure-arm pari-make-arm
 
-pari-build-aarch64: pari-configure-aarch64 pari-make-aarch64
+pari-build-aarch64: gmp-build-aarch64 pari-configure-aarch64 pari-make-aarch64
 
-pari-build-x86: pari-configure-x86 pari-make-x86
+pari-build-x86: gmp-build-x86 pari-configure-x86 pari-make-x86
 
-pari-build-x86-64: pari-configure-x86-64 pari-make-x86-64
+pari-build-x86-64: gmp-build-x86-64 pari-configure-x86-64 pari-make-x86-64
 
 pari-configure-arm:
 	# First use the PARI mechanism for configuration, but not executing
 	# any compiled code in a cross-compilation context.
 	rm -rf $(PARI_SRC)/$(PARI_TARGET_ARM)
 	cd $(PARI_SRC) && \
-	CC=$(CC_ARM) CFLAGS=--sysroot=$(SYSROOT_ARM) RUNTEST=true ./Configure --prefix=$(JNI)/$(ANDROID_TARGET_ARM)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --without-gmp --host=$(TARGET_CPU_ARM)-linux
+	CC=$(CC_ARM) CFLAGS=--sysroot=$(SYSROOT_ARM) RUNTEST="echo $(GMP_VERSION)" ./Configure --prefix=$(JNI)/$(ANDROID_TARGET_ARM)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --with-gmp=$(JNI)/$(ANDROID_TARGET_ARM)/gmp --host=$(TARGET_CPU_ARM)-linux
 	# Correct the resulting pari.cfg.
 	cd $(PARI_SRC)/$(PARI_TARGET_ARM) && \
-	sed -i "s/^doubleformat=''/doubleformat='1'/" pari.cfg
+	sed -i -E "s/^doubleformat='(.*)'/doubleformat='1'/" pari.cfg
 	# Finally run Configure again with the new pari.cfg to create other
 	# output files such as paricfg.h.
 	cd $(PARI_SRC) && \
@@ -139,44 +140,49 @@ pari-configure-arm:
 pari-configure-aarch64:
 	rm -rf $(PARI_SRC)/$(PARI_TARGET_AARCH64)
 	cd $(PARI_SRC) && \
-	CC=$(CC_AARCH64) CFLAGS=--sysroot=$(SYSROOT_AARCH64) RUNTEST=true ./Configure --prefix=$(JNI)/$(ANDROID_TARGET_AARCH64)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --without-gmp --host=$(TARGET_CPU_AARCH64)-linux
+	CC=$(CC_AARCH64) CFLAGS=--sysroot=$(SYSROOT_AARCH64) RUNTEST="echo $(GMP_VERSION)" ./Configure --prefix=$(JNI)/$(ANDROID_TARGET_AARCH64)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --with-gmp=$(JNI)/$(ANDROID_TARGET_AARCH)/gmp --host=$(TARGET_CPU_AARCH64)-linux
 	cd $(PARI_SRC)/$(PARI_TARGET_AARCH64) && \
-	sed -i "s/^asmarch='none'/asmarch='aarch64'/" pari.cfg && \
-	sed -i "s/^kernlvl0='none'/kernlvl0='aarch64'/" pari.cfg && \
-	sed -i "s/(portable C kernel) 32-bit/(aarch64 kernel) 64-bit/" pari.cfg && \
-	sed -i "s/^doubleformat=''/doubleformat='-'/" pari.cfg && \
-	sed -i "s/^sizeof_long='4'/sizeof_long='8'/" pari.cfg
+	sed -i "s!^asmarch='none'!asmarch='aarch64'!" pari.cfg && \
+	sed -i "s!^kernlvl0='none'!kernlvl0='aarch64'!" pari.cfg && \
+	sed -i "s!^doubleformat=''!doubleformat='-'!" pari.cfg && \
+	sed -i "s!^sizeof_long='4'!sizeof_long='8'!" pari.cfg && \
+	sed -i "s!^kernlvl1='none'!kernlvl1='gmp'!" pari.cfg && \
+	sed -i "s!(portable C kernel) 32-bit!(aarch64/GMP-$(GMP_VERSION) kernel) 64-bit!" pari.cfg && \
+	sed -i "s!^libpari_base='pari'!libpari_base='pari-gmp'!" pari.cfg && \
+	sed -i "s!^gmp=''!gmp='$(JNI)/$(ANDROID_TARGET_AARCH)/gmp/lib'!" pari.cfg && \
+	sed -i "s!^GMPLIBS=''!GMPLIBS='-L$(JNI)/$(ANDROID_TARGET_AARCH64)/gmp/lib -lgmp'!" pari.cfg && \
+	sed -i "s!^GMPINCLUDE=''!GMPINCLUDE='-I$(JNI)/$(ANDROID_TARGET_AARCH64)/gmp/include'!" pari.cfg
 	cd $(PARI_SRC) && \
 	./Configure -l $(PARI_TARGET_AARCH64)/pari.cfg
 
 pari-configure-x86:
 	rm -rf $(PARI_SRC)/$(PARI_TARGET_X86)
 	cd $(PARI_SRC) && \
-	CC=$(CC_X86) CFLAGS=--sysroot=$(SYSROOT_X86) RUNTEST=true ./Configure --prefix=$(JNI)/$(ANDROID_TARGET_X86)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --without-gmp --host=$(TARGET_CPU_X86)-linux
+	CC=$(CC_X86) CFLAGS=--sysroot=$(SYSROOT_X86) RUNTEST="echo $(GMP_VERSION)" ./Configure --prefix=$(JNI)/$(ANDROID_TARGET_X86)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --with-gmp=$(JNI)/$(ANDROID_TARGET_X86)/gmp --host=$(TARGET_CPU_X86)-linux
 	cd $(PARI_SRC)/$(PARI_TARGET_X86) && \
-	sed -i "s/^asmarch='none'/asmarch='ix86'/" pari.cfg && \
-	sed -i "s/^kernlvl0='none'/kernlvl0='ix86'/" pari.cfg && \
-	sed -i "s/(portable C kernel) 32-bit/(x86 kernel) 32-bit/" pari.cfg && \
-	sed -i "s/^doubleformat=''/doubleformat='1'/" pari.cfg
+	sed -i "s!^asmarch='none'!asmarch='ix86'!" pari.cfg && \
+	sed -i "s!^kernlvl0='none'!kernlvl0='ix86'!" pari.cfg && \
+	sed -i -E "s!portable C/(.*) kernel!x86/GMP-$(GMP_VERSION) kernel!" pari.cfg && \
+	sed -i -E "s!^doubleformat='(.*)'!doubleformat='1'!" pari.cfg
 	cd $(PARI_SRC) && \
 	./Configure -l $(PARI_TARGET_X86)/pari.cfg
 
 pari-configure-x86-64:
 	rm -rf $(PARI_SRC)/$(PARI_TARGET_X86_64)
 	cd $(PARI_SRC) && \
-	CC=$(CC_X86_64) CFLAGS=--sysroot=$(SYSROOT_X86_64) RUNTEST=true ./Configure --prefix=$(JNI)/$(ANDROID_TARGET_X86_64)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --without-gmp --host=$(TARGET_CPU_X86_64)-linux
+	CC=$(CC_X86_64) CFLAGS=--sysroot=$(SYSROOT_X86_64) RUNTEST="echo $(GMP_VERSION)" ./Configure --prefix=$(JNI)/$(ANDROID_TARGET_X86_64)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --with-gmp=$(JNI)/$(ANDROID_TARGET_X86_64)/gmp --host=$(TARGET_CPU_X86_64)-linux
 	cd $(PARI_SRC)/$(PARI_TARGET_X86_64) && \
-	sed -i "s/^asmarch='ix86'/asmarch='x86_64'/" pari.cfg && \
-	sed -i "s/^kernlvl0='ix86'/kernlvl0='x86_64'/" pari.cfg && \
-	sed -i "s/(ix86 kernel) 32-bit/(x86-64 kernel) 64-bit/" pari.cfg && \
-	sed -i "s/^doubleformat=''/doubleformat='-'/" pari.cfg && \
-	sed -i "s/^sizeof_long='4'/sizeof_long='8'/" pari.cfg
+	sed -i "s!^asmarch='ix86'!asmarch='x86_64'!" pari.cfg && \
+	sed -i "s!^kernlvl0='ix86'!kernlvl0='x86_64'!" pari.cfg && \
+	sed -i -E "s!\(ix86/(.*) kernel\) 32-bit!(x86-64/GMP-$(GMP_VERSION)) kernel) 64-bit!" pari.cfg && \
+	sed -i -E "s!^doubleformat='(.*)'!doubleformat='-'!" pari.cfg && \
+	sed -i "s!^sizeof_long='4'!sizeof_long='8'!" pari.cfg
 	cd $(PARI_SRC) && \
 	./Configure -l $(PARI_TARGET_X86_64)/pari.cfg
 
 pari-make-generic:
 	cd $(PARI_SRC)/$(PARI_TARGET) && \
-	make -j $(shell getconf _NPROCESSORS_CONF) all && \
+	make -j $(shell getconf _NPROCESSORS_CONF) lib-dyn && \
 	make install-include install-lib-dyn
 
 pari-make-arm:

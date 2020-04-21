@@ -1,6 +1,20 @@
 LOCAL_PATH := $(call my-dir)
 
 ############################
+# libgmp.so
+############################
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := gmp
+
+LOCAL_SRC_FILES := $(TARGET_ARCH_ABI)/gmp/lib/libgmp.so
+
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/$(TARGET_ARCH_ABI)/gmp/include
+
+include $(PREBUILT_SHARED_LIBRARY)
+
+############################
 # libpari.so
 ############################
 
