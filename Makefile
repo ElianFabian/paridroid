@@ -182,7 +182,7 @@ pari-configure-x86-64:
 pari-make-generic:
 	cd $(PARI_SRC)/$(PARI_TARGET) && \
 	make -j $(shell getconf _NPROCESSORS_CONF) lib-dyn && \
-	make install-include install-lib-dyn
+	make LIBPARI_SONAME=libpari.so install-include install-lib-dyn
 
 pari-make-arm:
 	make PARI_TARGET=$(PARI_TARGET_ARM) pari-make-generic
