@@ -1,11 +1,18 @@
 -*- mode: org -*-
 
-[[http://paridroid.multiprecision.org/][PariDroid]] provides [[http://pari.math.u-bordeaux.fr/][Pari/GP]] for the Android system.
+PariDroid provides [[http://pari.math.u-bordeaux.fr/][Pari/GP]] for the Android system.
 
 
 * Building and installing PariDroid
 
-See the [[http://paridroid.multiprecision.org/][build instructions online]].
+Prebuilt binaries are available through the
+[[https://f-droid.org/][F-Droid]] and Google Play app stores,
+as well as on the
+[[https://pari.math.u-bordeaux.fr/download.html#paridroid][PARI/GP web site]].
+
+The process by which the binaries are built, including installation
+instructions for the build environment, is also
+[[https://pari.math.u-bordeaux.fr/paridroid/index.html][available online]].
 
 * License
 
