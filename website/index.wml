@@ -1,0 +1,562 @@
+#include 'top.wml'
+<div id="content">
+<h1 class="head">PariDroid</h1>
+
+<div typeof="http://purl.org/adms/sw/SoftwareProject">
+<p property="doap:description">
+PariDroid is a port of PARI/GP to Android, started by Charles Boyd and
+currently maintained by
+<a href="https://www.math.u-bordeaux.fr/~aenge/">Andreas
+Enge</a> and
+<a href="https://www.math.u-bordeaux.fr/~lfacq/">Laurent Facq</a>.
+It is distributed under the
+<a href="http://www.gnu.org/licenses/gpl.html">
+GNU General Public License</a>,
+either version 3 of the licence, or (at your option) any later version
+(<span typeof="http://purl.org/adms/sw/SoftwarePackage" property="dcterms:license">GPLv3+</span>).
+</p>
+
+<h2>Installing PariDroid</h2>
+<p>
+Ready to use packages in the <code>.apk</code> format can be found
+in the
+<a href="../download.html#paridroid">download section</a>.
+They are also available via the
+<a href="https://f-droid.org/">F-Droid</a>
+and the Google Play stores. The remainder of this page describes how to
+compile the source code for yourself; there is no need to do so if you are
+happy with the provided binaries. </p>
+
+<a href="./privacy.html">Privacy Policy</a>.
+
+<h2 class="head">Installing the Android SDK 26.1.1</h2>
+
+<p>
+The following describes our attempts at installing the latest development
+environment for Android from the command line. Unfortunately, backwards
+compatibility does not seem to be a concern for the Android SDK developers:
+We did not manage to run a recent emulator with Android 3 (API 11) images,
+which is the earliest version for which PariDroid can still be compiled.
+Also starting the more modern emulator seems to be incredibly slow.
+So the next chapter, describing how to install the SDK 24.4.1, is still
+of interest; this is how we currently develop and test PariDroid.
+</p>
+
+<h3>1. SDK</h3>
+
+<p>
+Download the
+<a href="https://developer.android.com/studio/index.html#downloads">Android
+SDK tools</a>,
+for instance the Linux build 4333796, and unpack it into
+<code>/usr/local/android-sdk-r26.1.1</code></a>
+(the version 26.1.1 appears in the file <code>package.xml</code>):
+</p>
+
+<pre class="code">
+cd /tmp
+wget http://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
+mkdir android-sdk-r26.1.1
+cd android-sdk-r26.1.1
+unzip ../sdk-tools-linux-4333796.zip
+cd ..
+su
+mv android-sdk-r26.1.1 /usr/local
+</pre>
+
+<p>
+Add the <code>avdmanager</code></a> binary to your path,
+for instance as symbolic link:
+</p>
+<pre class="code">
+export SDK=/usr/local/android-sdk-r26.1.1
+su
+cd /usr/local/bin
+ln -s $SDK/tools/bin/avdmanager
+</pre>
+
+<p>
+Install Android platform tools by downloading and unpacking
+a software archive as follows:
+</p>
+<pre class="code">
+cd /tmp
+wget http://dl.google.com/android/repository/platform-tools_r29.0.1-linux.zip
+unzip platform-tools_r29.0.1-linux.zip
+mv platform-tools $SDK/
+</pre>
+
+<p>
+Add <code>adb</code> to your execution path:
+</p>
+<pre class="code">
+su
+cd /usr/local/bin
+ln -s $SDK/platform-tools/adb
+</pre>
+
+<p>
+Install Android build tools by downloading and unpacking
+a software archive as follows:
+</p>
+<pre class="code">
+cd /tmp
+wget http://dl.google.com/android/repository/build-tools_r29.0.1-linux.zip
+unzip build-tools_r29.0.1-linux.zip
+mkdir $SDK/build-tools
+mv android-10 $SDK/build-tools/29.0.1
+</pre>
+
+<p>
+Add <code>zipalign</code> to your execution path:
+</p>
+<pre class="code">
+su
+cd /usr/local/bin
+ln -s $SDK/build-tools/29.0.1/zipalign
+</pre>
+
+<p>
+Install an Android platform by downloading and unpacking
+a software archive as follows; Android API 11 (Android 3.0)
+is currently the minimal version required by PariDroid:
+</p>
+<pre class="code">
+cd /tmp
+wget http://dl.google.com/android/repository/android-3.0_r02.zip
+unzip android-3.0_r02.zip
+mkdir $SDK/platforms/
+mv android-3.0_r02-linux $SDK/platforms/android-11
+</pre>
+
+<p>
+The aarch64 architecture appeared for the first time in
+Android API 21 (Android 5.0);
+also install this version:
+</p>
+<pre class="code">
+cd /tmp
+wget http://dl.google.com/android/repository/android-21_r02.zip
+unzip android-21_r02.zip
+mv android-5.0.1 $SDK/platforms/android-21
+</pre>
+
+<p>
+Now we need to download system images for the emulator and
+install them into the right places; there is one image per Android API
+and architecture.
+</p>
+<p>
+For android-11, the system image is already installed
+in <code>$SDK/platforms/android-11/images</code>;
+using it to create an avd unfortunately fails.
+The only image for aarch64 is android-24; this is also the last one
+for arm. From then on, only images for x86 and x86_64 are available.
+So android-24 seems like a good choice.
+</p>
+<pre class="code">
+cd /tmp
+wget http://dl.google.com/android/repository/sys-img/android/armeabi-v7a-24_r07.zip
+unzip armeabi-v7a-24_r07.zip
+mkdir -p $SDK/system-images/android-24/default
+mv armeabi-v7a $SDK/system-images/android-24/default/
+wget http://dl.google.com/android/repository/sys-img/android/arm64-v8a-24_r07.zip
+unzip arm64-v8a-24_r07.zip
+mv arm64-v8a $SDK/system-images/android-24/default/
+wget http://dl.google.com/android/repository/sys-img/android/x86_64-24_r08.zip
+unzip x86_64-24_r08.zip
+mv x86_64 $SDK/system-images/android-24/default/
+</pre>
+
+
+<h3>2. Emulator</h3>
+
+<p>
+Download and install the emulator as follows:
+</p>
+<pre class="code">
+cd /tmp
+wget http://dl.google.com/android/repository/emulator-linux-5839083.zip
+unzip emulator-linux-5839083.zip
+mv emulator $SDK/
+</pre>
+
+<p>
+Add <code>emulator</code> to your execution path (there are two potential
+binaries, one in <code>$SDK/tools</code> and one in
+<code>$SDK/emulator</code>; the former does not seem to work):
+</p>
+<pre class="code">
+su
+cd /usr/local/bin
+ln -s $SDK/emulator/emulator
+</pre>
+
+<p>
+For the emulator to work, we need to create virtual Android devices (avd),
+one for each combination of Android API and architecture:
+</p>
+<pre class="code">
+avdmanager create avd -k 'system-images;android-24;default;armeabi-v7a' -n android24-arm
+avdmanager create avd -k 'system-images;android-24;default;arm64-v8a' -n android24-aarch64
+avdmanager create avd -k 'system-images;android-24;default;x86_64' -n android24-x86_64
+</pre>
+<p>
+creates virtual devices for the Android ABI 24 and three different
+architectures under the names given after the <code>-n</code> parameter,
+which should be listed when executing
+</p>
+<pre class="code">
+avdmanager list avd
+</pre>
+
+<p>
+To enable input from the computer keyboard as if it were typed on the
+telephone, add to the files
+<code>~/.android/avd/android24-arm.avd/config.ini</code>
+(and similarly for the other architectures)
+the line
+<code>hw.keyboard=yes</code> .
+</p>
+
+<p>
+Start the Android emulator with
+</p>
+</p>
+<pre class="code">
+emulator -avd android24-arm &amp;
+</pre>
+<p>
+A window opens in which (after a few minutes) a telephone screen is simulated.
+If for simpler testing purposes you can make do without a window, the
+command
+</p>
+<pre class="code">
+emulator -avd android24-aarch64 -no-audio -no-window &amp;
+</pre>
+<p>
+starts the emulator faster in command line mode. To see whether the emulator
+is ready, call
+</p>
+<pre class="code">
+adb logcat
+</pre>
+to see tons of start-up messages.
+The emulator may be stopped with
+</p>
+<pre class="code">
+adb -s emulator-5554 emu kill
+</pre>
+
+<p>
+The emulators for the arm or aarch64 architectures recommend to install
+one for x86, which is supposedly 10 times faster.
+Unfortunately, the latter refuses to start for lacking hardware acceleration
+with kvm.
+The aarch64 emulator loops with error messages.
+</p>
+<p>
+All in all, there does not seem to be any advantage in switching to the more
+modern SDK.
+</p>
+
+
+<h2 class="head">Installing the Android SDK 24.4.1</h2>
+<h3>1. SDK</h3>
+
+<p>
+Download the
+<a href="https://developer.android.com/sdk/index.html#Other">Android SDK</a>,
+for instance the
+<a href="http://dl.google.com/android/android-sdk_r24.4.1-linux.tgz">Linux
+build r24.4.1</a> (which appears to be the last version containing the
+tools/ subdirectory and to be independent of Android Studio), and unpack it
+into
+<code>/usr/local/android-sdk-r24.4.1</code></a>:
+</p>
+
+<pre class="code">
+cd /tmp
+wget http://dl.google.com/android/android-sdk_r24.4.1-linux.tgz
+tar xvf android-sdk_r24.4.1-linux.tgz
+su
+mv android-sdk-linux /usr/local/android-sdk-r24.4.1
+</pre>
+
+<p>
+Add the <code>android</code></a> and <code>emulator64-arm</code> binaries
+to your path, for instance as symbolic links:
+</p>
+<pre class="code">
+export SDK=/usr/local/android-sdk-r24.4.1
+su
+cd /usr/local/bin
+ln -s $SDK/tools/android
+ln -s $SDK/tools/emulator64-arm
+</pre>
+
+<p>
+Install Android platform tools by downloading and unpacking
+a software archive as follows:
+</p>
+<pre class="code">
+cd /tmp
+wget http://dl.google.com/android/repository/platform-tools_r29.0.1-linux.zip
+unzip platform-tools_r29.0.1-linux.zip
+mv platform-tools $SDK/
+</pre>
+
+<p>
+Install Android build tools by downloading and unpacking
+a software archive as follows:
+</p>
+<pre class="code">
+cd /tmp
+wget http://dl.google.com/android/repository/build-tools_r29.0.1-linux.zip
+unzip build-tools_r29.0.1-linux.zip
+mkdir $SDK/build-tools
+mv android-10 $SDK/build-tools/
+</pre>
+
+<p>
+The previous steps have populated
+<code>$SDK/platform-tools</code>
+and
+<code>$SDK/build-tools</code>.
+Add <code>adb</code> and <code>zipalign</code>
+to your execution path:
+</p>
+<pre class="code">
+su
+cd /usr/local/bin
+ln -s $SDK/platform-tools/adb
+ln -s $SDK/build-tools/android-10/zipalign
+</pre>
+
+<p>
+Install an Android platform by downloading and unpacking
+a software archive as follows:
+</p>
+<pre class="code">
+cd /tmp
+wget http://dl.google.com/android/repository/android-21_r02.zip
+unzip android-21_r02.zip
+mv android-5.0.1 $SDK/platforms/
+</pre>
+
+<p>
+Now we need to download a system image for the emulator and
+install it into the right place:
+</p>
+<pre class="code">
+cd /tmp
+wget http://dl.google.com/android/repository/sys-img/android/armeabi-v7a-21_r04.zip
+unzip armeabi-v7a-21_r04.zip
+mkdir $SDK/platforms/android-5.0.1/images
+mv armeabi-v7a $SDK/platforms/android-5.0.1/images/
+</pre>
+
+
+<h3>2. Emulator</h3>
+
+<p>
+For the emulator to work, we need to create a
+virtual Android device (avd). First,
+</p>
+<pre class="code">
+android list target
+</pre>
+<p>
+shows one possible target, <i>android-21</i>,
+which we have installed previously into
+<code>$SDK/platforms</code>.
+</p>
+
+<pre class="code">
+android create avd -t android-21 -n android21
+</pre>
+<p>
+now creates a new virtual device with the name <i>android21</i>,
+which should be listed when executing
+</p>
+<pre class="code">
+android list avd
+</pre>
+
+<p>
+To enable input from the computer keyboard as if it were typed on the
+telephone, add to the file
+<code>~/.android/avd/android21.avd/config.ini</code>
+the line
+<code>hw.keyboard=yes</code> .
+</p>
+
+<p>
+Start the Android emulator with
+</p>
+</p>
+<pre class="code">
+emulator64-arm -avd android21 &amp;
+</pre>
+<p>
+A window opens in which (after a few minutes) a telephone screen is simulated.
+If for simpler testing purposes you can make do without a window, the
+command
+</p>
+<pre class="code">
+emulator64-arm -avd android21 -no-audio -no-window &amp;
+</pre>
+<p>
+starts the emulator faster in command line mode. To see whether the emulator
+is ready, call
+</p>
+<pre class="code">
+adb get-state
+</pre>
+<p>
+which returns <code>device</code> when the emulator is ready
+(and <code>unknown</code> before). Or wait until
+</p>
+<pre class="code">
+adb wait-for-device
+</pre>
+<p>
+returns. The emulator may be stopped with
+</p>
+<pre class="code">
+adb -s emulator-5554 emu kill
+</pre>
+
+
+<h2 class="head">Installing the Android NDK</h2>
+
+<p>
+To later compile and integrate the PARI C library
+into the project, download the
+<a href="https://developer.android.com/tools/sdk/ndk/index.html">Android
+NDK</a>; for instance,
+<a href="https://dl.google.com/android/repository/android-ndk-r13b-linux-x86_64.zip">Linux
+64bit r13b</a>.
+(This is the last version where the include files are still contained in
+the <code>platforms/</code> subdirectory, instead of in <code>sysroot/</code>.
+Version r17c is the last version that ships the GCC cross compiler.
+Version r18b contains a compiler named gcc, but which in reality is clang.)
+Unpack it and move it, for instance, to
+<code>/usr/local/android-ndk-r13b</code>.
+</p>
+
+<p>
+Set the environment variable <code>NDK</code> to contain the path
+to the Android NDK, which is used by our <code>Makefile</code>:
+</p>
+<pre class="code">
+export NDK=/usr/local/android-ndk-r13b
+</pre>
+
+<h2 class="head">Setting up the PariDroid project</h2>
+
+<p>
+The following steps need to be executed only once.
+Download PariDroid from its git repository:
+</p>
+<pre class="code">
+git clone http://pari.math.u-bordeaux.fr/git/paridroid.git
+cd paridroid/PariDroid
+</pre>
+
+<p>
+Prepare the Android project:
+</p>
+<pre class="code">
+android update project --target android-21 -s -p .
+cd ..
+</pre>
+
+<p>
+The PARI source code will be fetched automatically
+from the git server and placed into the
+<code>../srclib/pari</code> directory, next to the PariDroid sources,
+when invoking <code>make</code> for the first time.
+The <code>Makefile</code> also contains the logic to check out the
+correct PARI version depending on the PariDroid version number:
+its first three fields specify the PARI version.
+If it corresponds to a released version, the corresponding git tag
+is checked out. Otherwise, the latest git master is fetched.
+</p>
+
+<p>
+The <code>Makefile</code> is set up to create an apk in release mode,
+which is then signed with a debug key. On the first run, this key needs
+to be created by doing a debug build:
+</p>
+<pre class="code">
+cd PariDroid
+ant debug
+cd ..
+</pre>
+
+
+<h2 class="head">Building PariDroid</h2>
+
+<p>
+A call to
+</p>
+<pre class="code">
+make
+</pre>
+<p>
+configures and compiles the PARI library
+and compiles the PariDroid project into
+the package <code>PariDroid-VERSION.apk</code>,
+signed with a debug key and aligned.
+</p>
+<p>
+The unsigned and unaligned package resides in
+<code>PariDroid/bin/PariDroid-release-unsigned.apk</code>,
+the signed and unaligned package in
+<code>PariDroid/bin/PariDroid-release-unaligned.apk</code>.
+</p>
+
+<pre class="code">
+make distclean
+</pre>
+<p>
+removes the generated files.
+The final package can be tested by installing it in the emulator:
+</p>
+<pre class="code">
+adb install PariDroid-VERSION.apk
+</pre>
+<p>
+After clicking on the application icon on the telephone screen,
+a click on the PariDroid icon should open the
+program. To simplify further tests, the icon can be dragged onto
+the home screen (it will always refer to the latest installed
+PariDroid instance).
+</p>
+
+<p>
+The package can be uninstalled using
+</p>
+<pre class="code">
+adb uninstall fr.ubordeaux.math.paridroid
+</pre>
+<p>
+or, more easily, an installed package can be overwritten with
+<pre class="code">
+adb install -r PariDroid-VERSION.apk
+</pre>
+
+<p>
+For debugging purposes, it may be useful to launch the command
+</p>
+<pre class="code">
+adb logcat
+</pre>
+<p>
+in a separate terminal window.
+</p>
+
+</div>
+
+#include 'bot.wml'
