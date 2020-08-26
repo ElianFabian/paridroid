@@ -278,11 +278,9 @@ public class PariActivity extends Activity implements View.OnClickListener {
              // Returns the start of the token that ends at offset cursor
              // within text.
              int i = cursor;
-             if(i>0)
-                Log.d("textchar ",""+text.charAt(i - 1));
              while (i > 0 && Character.isLetter(text.charAt(i - 1)))
                 i--;
-            return i;
+             return i;
           }
 
           public int findTokenEnd(CharSequence text, int cursor) {
