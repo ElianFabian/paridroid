@@ -3,7 +3,7 @@
  * PariNative.c - JNI Callbacks from libparidroid.
  *------------------------------------------------------
  * Copyright (C) 2011 Charles Boyd
- * Copyright (C) 2014, 2019 Andreas Enge <andreas.enge@inria.fr>
+ * Copyright (C) 2014, 2019, 2020 Andreas Enge <andreas.enge@inria.fr>
  *
  * This file is part of PariDroid.
  *
@@ -97,4 +97,19 @@ Java_fr_ubordeaux_math_paridroid_PariNative_getCommands(JNIEnv *env, jclass cls)
    free (commands);
 
    return res;
+}
+
+jstring
+Java_fr_ubordeaux_math_paridroid_PariNative_read (JNIEnv *env, jclass cls, jint file)
+{
+   int fd;
+   char *line;
+
+   fd = (int) file;
+
+   paridroid_read (fd, &line);
+
+   jstring s = (*env)->NewStringUTF (env, line);
+
+   return s;
 }

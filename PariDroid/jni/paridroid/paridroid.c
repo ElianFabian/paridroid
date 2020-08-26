@@ -4,7 +4,7 @@
  *-----------------------------------------------
  *
  * Copyright (C) 2011 Charles Boyd
- *               2014, 2015, 2019 Andreas Enge <andreas.enge@inria.fr>
+ *               2014, 2015, 2019, 2020 Andreas Enge <andreas.enge@inria.fr>
  *               2015 Bill Allombert <bill.allombert@math.u-bordeaux.fr>
  *
  * This file is part of PariDroid.
@@ -197,6 +197,85 @@ paridroid_eval(const char *in, char **out, int *returnsgnil)
    }
 
    avma = pari_mainstack->top;
+}
+
+
+/* copied from paripriv.h inside the pari project */
+typedef struct Buffer {
+  char *buf;
+  ulong len;
+  jmp_buf env;
+} Buffer;
+Buffer *new_buffer(void);
+void delete_buffer(Buffer *b);
+typedef struct {
+  const char *s; /* source */
+  char *t, *end; /* target, last char read */
+  int in_string, in_comment, more_input, wait_for_brace;
+  Buffer *buf;
+} filtre_t;
+typedef char *(*fgets_t)(char *, int, void*);
+typedef struct input_method {
+/* optional */
+  fgets_t myfgets;  /* like libc fgets() but last argument is (void*) */
+/* mandatory */
+  char * (*getline)(char**, int f, struct input_method*, filtre_t *F);
+  int free; /* boolean: must we free the output of getline() ? */
+/* optional */
+  const char *prompt, *prompt_cont;
+  void *file;  /* can be used as last argument for fgets() */
+} input_method;
+char *file_input(char **s0, int junk, input_method *IM, filtre_t *F);
+
+/* copied from kernel/none/level1.h inside the pari project */
+INLINE void
+set_avma(ulong av) { avma = av; }
+
+/* copied from language/es.c inside the pari project */
+static int
+gp_read_stream_buf(FILE *fi, Buffer *b)
+{
+  input_method IM;
+  filtre_t F;
+
+  init_filtre(&F, b);
+
+  IM.file = (void*)fi;
+  IM.myfgets = (fgets_t)&fgets;
+  IM.getline = &file_input;
+  IM.free = 0;
+  return input_loop(&F,&IM);
+}
+
+/* copied from language/es.c inside the pari project; the argument has been
+   changed from "const char *s" (file name) to a file pointer, and the case
+   of a binary file has been dropped */
+static GEN
+gp_read_filepointer(FILE *f)
+{
+  GEN x = gnil;
+  pari_sp av = avma;
+  Buffer *b = new_buffer();
+  x = gnil;
+  for (;;) {
+    if (!gp_read_stream_buf(f, b)) break;
+    if (*(b->buf)) { set_avma(av); x = readseq(b->buf); }
+  }
+  delete_buffer(b);
+  return x;
+}
+
+void
+paridroid_read (const int file, char **out)
+{
+   FILE *f;
+   volatile GEN z = gnil;
+
+   f = fdopen (file, "r");
+   z = gp_read_filepointer (f);
+   fclose (f);
+
+   *out = GENtostr (z);
 }
 
 

@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2012, 2013 Charles Boyd
- * Copyright (C) 2014, 2019 Andreas Enge <andreas.enge@inria.fr>
+ * Copyright (C) 2014, 2019, 2020 Andreas Enge <andreas.enge@inria.fr>
  *
  * This file is part of PariDroid.
  *
@@ -60,5 +60,7 @@ class PariNative {
    public static native String [] paridroidEval(String cmd);
 
    public static native String[] getCommands ();
+
+   public static native String read (int file);
 }
 

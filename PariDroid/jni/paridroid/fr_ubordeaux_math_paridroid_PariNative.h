@@ -31,6 +31,14 @@ JNIEXPORT jobjectArray JNICALL Java_fr_ubordeaux_math_paridroid_PariNative_parid
 JNIEXPORT jobjectArray JNICALL Java_fr_ubordeaux_math_paridroid_PariNative_getCommands
   (JNIEnv *, jclass);
 
+/*
+ * Class:     fr_ubordeaux_math_paridroid_PariNative
+ * Method:    read
+ * Signature: (I)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_fr_ubordeaux_math_paridroid_PariNative_read
+  (JNIEnv *, jclass, jint);
+
 #ifdef __cplusplus
 }
 #endif

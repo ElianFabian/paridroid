@@ -248,20 +248,11 @@ public class PariActivity extends Activity implements View.OnClickListener {
             Log.d(MSG_TAG, "file auth is " + uri.getAuthority());
 
             try {
-               InputStream is = getContentResolver().openInputStream(uri);
-               InputStreamReader ir = new InputStreamReader(is);
-               BufferedReader bu = new BufferedReader(ir);
-               String s;
-               String ss = "";
-               while ((s = bu.readLine()) != null) {
-                  ss = ss + "\n" + s;
-               }
-               bu.close();
-               Log.d("content", ss);
-               evaluate(ss);
+	       int file = getContentResolver().openFileDescriptor(uri, "r").getFd();
+	       Log.d(MSG_TAG, "file descriptor: " + file);
+	       String s = PariNative.read (file);
+	       Log.d(MSG_TAG, "file line: " + s);
             } catch (FileNotFoundException e) {
-               e.printStackTrace();
-            } catch (IOException e) {
                e.printStackTrace();
             }
          }
