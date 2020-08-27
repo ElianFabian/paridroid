@@ -1,4 +1,4 @@
-Version 2.11.4.1.8 (? 2020):
+Version 2.11.4.1.8 (August 2020):
   Compilation with version 2.11.4 of Pari/GP.
   Include and use gmp for the multiprecision kernel.
   Updates to the build system, which now calls the configuration step of
