@@ -82,7 +82,7 @@ apk-fast: ndk
 	zipalign -f 4 $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk PariDroid-$(PARIDROID_VERSION).apk
 
 gmp-build-generic: $(GMP_SRC)
-	- cd $(GMP_SRC) &&  make distclean
+	- cd $(GMP_SRC) &&  autoreconf -vfi && make distclean
 	cd $(GMP_SRC) && \
 	CC="$(CC) $(STATIC)" CFLAGS="--sysroot=$(SYSROOT) --std=c99" CPPFLAGS=--sysroot=$(SYSROOT) LDFLAGS=--sysroot=$(SYSROOT) ./configure $(DISABLE_SHARED) --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET)/gmp --host=$(TARGET) --with-sysroot=$(SYSROOT) && \
 	make VERBOSE=1 -j $(shell getconf _NPROCESSORS_CONF) && \
