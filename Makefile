@@ -274,9 +274,6 @@ $(GMP_SRC):
 	hg clone https://gmplib.org/repo/gmp-6.2/ $(GMP_SRC)
 	cd $(GMP_SRC) && ./.bootstrap
 
-# The following targets create files that ultimately are supposed to be under
-# version control, but that can be generated automatically.
-
 # Create a C header file from the java class interfacing with the pari
 # library; this gives the prototypes of functions to be written by hand in
 # the corresponding C source file. The result is under version control.
