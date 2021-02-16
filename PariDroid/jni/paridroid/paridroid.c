@@ -135,8 +135,7 @@ paridroid_eval(const char *in, char **out, int *returnsgnil)
       timer_start (&T);
       walltimer_start (&Tw);
 
-      char cc;
-      z = gp_read_str_multiline(in, &cc);
+      z = gp_read_str (in);
 
       time = timer_delay (&T);
       rtime = walltimer_delay (&Tw);
