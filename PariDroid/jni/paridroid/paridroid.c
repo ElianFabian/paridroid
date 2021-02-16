@@ -255,15 +255,18 @@ paridroid_read (const int file, char **out)
    rtime = walltimer_delay (&Tw);
    fclose (f);
 
-   pari_add_hist(z, time, rtime);
-   pari_printf ("%%%lu = ", pari_nb_hist ());
-   char *s;
-   s = GENtostr(z);
-   if (GP_DATA->lim_lines)
-     lim_lines_output(s, 0, GP_DATA->lim_lines);
-   else
-     pari_puts(s);
-   pari_free(s);
+   if (z != gnil) {
+      pari_add_hist(z, time, rtime);
+      pari_printf ("%%%lu = ", pari_nb_hist ());
+      char *s;
+      s = GENtostr(z);
+      if (GP_DATA->lim_lines)
+        lim_lines_output(s, 0, GP_DATA->lim_lines);
+      else
+        pari_puts(s);
+      pari_free(s);
+   }
+
    droidOutC(0);
    *out = droidStr;
 

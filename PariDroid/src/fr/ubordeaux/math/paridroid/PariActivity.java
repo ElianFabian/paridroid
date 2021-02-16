@@ -248,8 +248,10 @@ public class PariActivity extends Activity implements View.OnClickListener {
             try {
 	       int file = getContentResolver().openFileDescriptor(uri, "r").getFd();
 	       String output = PariNative.read (file);
-	       outputArrayList.add(0, output);
-               outputArrayAdapter.notifyDataSetChanged();
+	       if (output.length () != 0) {
+	          outputArrayList.add(0, output);
+                  outputArrayAdapter.notifyDataSetChanged();
+	       }
             } catch (FileNotFoundException e) {
                e.printStackTrace();
             }
