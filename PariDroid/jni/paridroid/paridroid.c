@@ -200,6 +200,11 @@ typedef struct input_method {
 } input_method;
 char *file_input(char **s0, int junk, input_method *IM, filtre_t *F);
 
+/* Work around a bug in gp_read_stream, which does not distinguish between
+   a failed read (because there is only whitespace left at the end of the
+   file) and an expression returning gnil (because it ends with ";", for
+   instance), but always returns gnil.
+   TODO: Remove after a new release of PARI/GP. */
 /* copied from language/es.c inside the pari project */
 static int
 gp_read_stream_buf(FILE *fi, Buffer *b)
@@ -216,29 +221,24 @@ gp_read_stream_buf(FILE *fi, Buffer *b)
   return input_loop(&F,&IM);
 }
 
-/* copied from language/es.c inside the pari project; the argument has been
-   changed from "const char *s" (file name) to a file pointer, and the case
-   of a binary file has been dropped */
 static GEN
-gp_read_filepointer(FILE *f)
+gp_read_stream_null(FILE *fi)
 {
-  GEN x = gnil;
-  pari_sp av = avma;
-  Buffer *b = new_buffer();
-  x = gnil;
-  for (;;) {
-    if (!gp_read_stream_buf(f, b)) break;
-    if (*(b->buf)) { set_avma(av); x = readseq(b->buf); }
-  }
-  delete_buffer(b);
-  return x;
+   Buffer *b = new_buffer ();
+   GEN x = NULL;
+   while (gp_read_stream_buf(fi, b))
+   {
+     if (*(b->buf)) { x = readseq(b->buf); break; }
+   }
+   delete_buffer (b);
+   return x;
 }
 
 void
 paridroid_read (const int file, char **out)
 {
    FILE *f;
-   volatile GEN z = gnil;
+   volatile GEN z_next = gnil, z;
    pari_timer T, Tw;
    long time, rtime;
 
@@ -247,12 +247,15 @@ paridroid_read (const int file, char **out)
    f = fdopen (file, "r");
    timer_start (&T);
    walltimer_start (&Tw);
-   z = gp_read_filepointer (f);
+   do {
+      z = z_next;
+      z_next = gp_read_stream_null (f);
+   } while (z_next != NULL);
    time = timer_delay (&T);
    rtime = walltimer_delay (&Tw);
    fclose (f);
-   pari_add_hist(z, time, rtime);
 
+   pari_add_hist(z, time, rtime);
    pari_printf ("%%%lu = ", pari_nb_hist ());
    char *s;
    s = GENtostr(z);
