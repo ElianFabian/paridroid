@@ -227,10 +227,6 @@ typedef struct input_method {
 } input_method;
 char *file_input(char **s0, int junk, input_method *IM, filtre_t *F);
 
-/* copied from kernel/none/level1.h inside the pari project */
-INLINE void
-set_avma(ulong av) { avma = av; }
-
 /* copied from language/es.c inside the pari project */
 static int
 gp_read_stream_buf(FILE *fi, Buffer *b)
