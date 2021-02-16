@@ -180,14 +180,13 @@ paridroid_eval(const char *in, char **out, int *returnsgnil)
 #endif
          if (in[strlen(in)-1]!=';') {
             pari_printf ("%%%lu = ", pari_nb_hist ());
-  char *s;
-  s = GENtostr(z);
-  if (GP_DATA->lim_lines)
-    lim_lines_output(s, 0, GP_DATA->lim_lines);
-  else
-    pari_puts(s);
-  pari_free(s);
-
+            char *s;
+            s = GENtostr(z);
+            if (GP_DATA->lim_lines)
+              lim_lines_output(s, 0, GP_DATA->lim_lines);
+            else
+              pari_puts(s);
+            pari_free(s);
          }
       }
       else
