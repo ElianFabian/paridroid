@@ -1,7 +1,7 @@
 /**
  * Copyright (C) 2012, 2013 Charles Boyd
- * Copyright (C) 2014, 2015, 2018, 2019 Andreas Enge <andreas.enge@inria.fr>
- * Copyright (C) 2016, 2017, 2018, 2019 Laurent Facq <laurent.facq@math.u-bordeaux.fr>
+ * Copyright (C) 2014, 2015, 2018, 2019, 2020, 2021 Andreas Enge <andreas.enge@inria.fr>
+ * Copyright (C) 2016, 2017, 2018, 2019, 2020 Laurent Facq <laurent.facq@math.u-bordeaux.fr>
  *
  * This file is part of PariDroid.
  *
@@ -245,13 +245,11 @@ public class PariActivity extends Activity implements View.OnClickListener {
          if (resultCode == RESULT_OK) {
             Uri uri = data.getData();
             Log.d(MSG_TAG, "open_file " + uri.toString());
-            Log.d(MSG_TAG, "file auth is " + uri.getAuthority());
-
             try {
 	       int file = getContentResolver().openFileDescriptor(uri, "r").getFd();
-	       Log.d(MSG_TAG, "file descriptor: " + file);
-	       String s = PariNative.read (file);
-	       Log.d(MSG_TAG, "file line: " + s);
+	       String output = PariNative.read (file);
+	       outputArrayList.add(0, output);
+               outputArrayAdapter.notifyDataSetChanged();
             } catch (FileNotFoundException e) {
                e.printStackTrace();
             }
