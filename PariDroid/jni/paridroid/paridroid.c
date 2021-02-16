@@ -114,6 +114,7 @@ lim_lines_output(char *s, long n, long max_lin)
   }
 }
 
+
 void
 paridroid_eval(const char *in, char **out, int *returnsgnil)
 {
@@ -238,12 +239,32 @@ paridroid_read (const int file, char **out)
 {
    FILE *f;
    volatile GEN z = gnil;
+   pari_timer T, Tw;
+   long time, rtime;
+
+   s_droidStr.n=0;
 
    f = fdopen (file, "r");
+   timer_start (&T);
+   walltimer_start (&Tw);
    z = gp_read_filepointer (f);
+   time = timer_delay (&T);
+   rtime = walltimer_delay (&Tw);
    fclose (f);
+   pari_add_hist(z, time, rtime);
 
-   *out = GENtostr (z);
+   pari_printf ("%%%lu = ", pari_nb_hist ());
+   char *s;
+   s = GENtostr(z);
+   if (GP_DATA->lim_lines)
+     lim_lines_output(s, 0, GP_DATA->lim_lines);
+   else
+     pari_puts(s);
+   pari_free(s);
+   droidOutC(0);
+   *out = droidStr;
+
+   avma = pari_mainstack->top;
 }
 
 
