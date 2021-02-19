@@ -3,7 +3,7 @@
  * PariNative.c - JNI Callbacks from libparidroid.
  *------------------------------------------------------
  * Copyright (C) 2011 Charles Boyd
- * Copyright (C) 2014, 2019, 2020 Andreas Enge <andreas.enge@inria.fr>
+ * Copyright (C) 2014, 2019, 2020, 2021 Andreas Enge <andreas.enge@inria.fr>
  *
  * This file is part of PariDroid.
  *
@@ -32,13 +32,12 @@ Java_fr_ubordeaux_math_paridroid_PariNative_paridroidInit(JNIEnv *env, jclass cl
   paridroid_init(parisize, primelimit);
 }
 
-jobjectArray
+jstring
 Java_fr_ubordeaux_math_paridroid_PariNative_paridroidEval(JNIEnv *env, jclass cls, jstring input)
 {
   const jbyte *cmd;
   char *output;
-  int returnsgnil;
-  jobjectArray res;
+  jstring res;
 
   // Turn the jstring into a C string.
   cmd = (*env)->GetStringUTFChars(env, input, NULL);
@@ -51,26 +50,13 @@ Java_fr_ubordeaux_math_paridroid_PariNative_paridroidEval(JNIEnv *env, jclass cl
   
   // Evaluate the command; returnsgnil is 1 or 0 depending on whether or not
   // the return value of the command was gnil.
-  paridroid_eval(cmd, &output, &returnsgnil);
+  paridroid_eval(cmd, &output);
 
   // Free the Java objects we no longer need.
   (*env)->ReleaseStringUTFChars(env, input, cmd);
 
-  // We encode the native string into a first jstring object and gnil
-  // into a second jstring object and return both in a jobjectArray.
-  res = (*env)->NewObjectArray (env, (jsize) 2,
-                                (*env)->FindClass (env, "java/lang/String"),
-                                NULL);
-  jstring s = (*env)->NewStringUTF (env, output);
-  (*env)->SetObjectArrayElement (env, res, 0, s);
-  (*env)->DeleteLocalRef (env, s);
-  if (returnsgnil)
-    s = (*env)->NewStringUTF (env, "1");
-  else
-    s = (*env)->NewStringUTF (env, "0");
-  (*env)->SetObjectArrayElement (env, res, 1, s);
-  (*env)->DeleteLocalRef (env, s);
-  
+  // Encode the native string into a jstring object.
+  res = (*env)->NewStringUTF (env, output);
   
   return res;
 }

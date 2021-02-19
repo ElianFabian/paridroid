@@ -116,17 +116,13 @@ lim_lines_output(char *s, long n, long max_lin)
 
 
 void
-paridroid_eval(const char *in, char **out, int *returnsgnil)
+paridroid_eval(const char *in, char **out)
 {
    s_droidStr.n=0;
 
    if(setjmp(env) != 0) {
       LOGE("setjmp different from zero");
       pari_add_hist(gnil, 0, 0);
-
-      droidOutC(0);
-      *out = droidStr;
-      *returnsgnil = 1;
    }
    else {
       volatile GEN z = gnil;
@@ -142,7 +138,6 @@ paridroid_eval(const char *in, char **out, int *returnsgnil)
       rtime = walltimer_delay (&Tw);
 
       if (z != gnil) {
-         *returnsgnil = 0;
          pari_add_hist(z, time, rtime);
          if (GP_DATA->chrono && time > 0)
             if (pari_mt_nbthreads == 1)
@@ -163,12 +158,10 @@ paridroid_eval(const char *in, char **out, int *returnsgnil)
             pari_free(s);
          }
       }
-      else
-         *returnsgnil = 1;
-      droidOutC(0);
-      *out = droidStr;
    }
 
+   droidOutC(0);
+   *out = droidStr;
    avma = pari_mainstack->top;
 }
 

@@ -4,7 +4,7 @@
  *-----------------------------------------------
  *
  * Copyright (C) 2011 Charles Boyd
- *               2014, 2015, 2019, 2020 Andreas Enge <andreas.enge@inria.fr>
+ *               2014, 2015, 2019, 2020, 2021 Andreas Enge <andreas.enge@inria.fr>
  *
  * This file is part of PariDroid.
  *
@@ -42,7 +42,7 @@
 
 void paridroid_init(long parisize, long primelimit);
 
-void paridroid_eval(const char *in, char **out, int *returnsgnil);
+void paridroid_eval(const char *in, char **out);
 
 void paridroid_close(void);
 

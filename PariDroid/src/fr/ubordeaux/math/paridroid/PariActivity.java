@@ -155,7 +155,7 @@ public class PariActivity extends Activity implements View.OnClickListener {
 
    private void evaluate(String cmd) {
       String executeCmd;
-      String [] result;
+      String result;
       String output;
 
       /* check for empty command */
@@ -178,7 +178,7 @@ public class PariActivity extends Activity implements View.OnClickListener {
          result = PariNative.paridroidEval(executeCmd);
 
          /* remove extraneous line breaks to save screen space */
-         output = result [0].replaceAll("\n\n", "\n").replaceAll("\n$", "");
+         output = result.replaceAll("\n\n", "\n").replaceAll("\n$", "");
 
          if (output.length () != 0)
             outputArrayList.add(0, "? " + cmd + "\n" + output);

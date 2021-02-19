@@ -18,9 +18,9 @@ JNIEXPORT void JNICALL Java_fr_ubordeaux_math_paridroid_PariNative_paridroidInit
 /*
  * Class:     fr_ubordeaux_math_paridroid_PariNative
  * Method:    paridroidEval
- * Signature: (Ljava/lang/String;)[Ljava/lang/String;
+ * Signature: (Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jobjectArray JNICALL Java_fr_ubordeaux_math_paridroid_PariNative_paridroidEval
+JNIEXPORT jstring JNICALL Java_fr_ubordeaux_math_paridroid_PariNative_paridroidEval
   (JNIEnv *, jclass, jstring);
 
 /*
