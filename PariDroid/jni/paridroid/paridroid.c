@@ -90,10 +90,62 @@ paridroid_init(long parisize, long primelimit)
 }
 
 
+static void
+command_prepare (pari_timer *T, pari_timer *Tw)
+   /* Common code to run before executing a command from paridroid_eval
+      or paridroid_read. Prepares the global output variable and sets
+      the timer T and the wallclock timer Tw, unless they are NULL. */
+{
+   s_droidStr.n=0;
+   timer_start (T);
+   walltimer_start (Tw);
+}
+
+
+static void
+command_postpare (char **out, GEN z, int print, pari_timer T, pari_timer Tw)
+   /* Common code to run after executing a command from paridroid_eval
+      or paridroid_read. Creates the output from z to out depending on
+      the boolean value of print.
+      T and Tw must be the same as passed to command_prepare. */
+{
+   long time, rtime;
+
+   time = timer_delay (&T);
+   rtime = walltimer_delay (&Tw);
+
+   if (z != gnil) {
+      pari_add_hist(z, time, rtime);
+      if (GP_DATA->chrono && time > 0)
+         if (pari_mt_nbthreads == 1)
+            pari_printf ("time = %s.\n",
+               gp_format_time (time));
+         else
+            pari_printf ("cpu time = %s, real time = %s.\n",
+               gp_format_time (time),
+               gp_format_time (rtime));
+      if (print) {
+         char *s = GENtostr (z);
+         pari_printf ("%%%lu = ", pari_nb_hist ());
+         if (GP_DATA->lim_lines)
+           lim_lines_output(s, 0, GP_DATA->lim_lines);
+         else
+           pari_puts(s);
+         pari_free(s);
+      }
+   }
+
+   droidOutC(0);
+   *out = droidStr;
+   avma = pari_mainstack->top;
+}
+
+
 void
 paridroid_eval(const char *in, char **out)
 {
-   s_droidStr.n=0;
+   pari_timer T, Tw;
+   command_prepare (&T, &Tw);
 
    if(setjmp(env) != 0) {
       LOGE("setjmp different from zero");
@@ -101,43 +153,11 @@ paridroid_eval(const char *in, char **out)
    }
    else {
       volatile GEN z = gnil;
-      pari_timer T, Tw;
-      long time, rtime;
-
-      timer_start (&T);
-      walltimer_start (&Tw);
 
       z = gp_read_str (in);
 
-      time = timer_delay (&T);
-      rtime = walltimer_delay (&Tw);
-
-      if (z != gnil) {
-         pari_add_hist(z, time, rtime);
-         if (GP_DATA->chrono && time > 0)
-            if (pari_mt_nbthreads == 1)
-               pari_printf ("time = %s.\n",
-                  gp_format_time (time));
-            else
-               pari_printf ("cpu time = %s, real time = %s.\n",
-                  gp_format_time (time),
-                  gp_format_time (rtime));
-         if (in[strlen(in)-1]!=';') {
-            pari_printf ("%%%lu = ", pari_nb_hist ());
-            char *s;
-            s = GENtostr(z);
-            if (GP_DATA->lim_lines)
-              lim_lines_output(s, 0, GP_DATA->lim_lines);
-            else
-              pari_puts(s);
-            pari_free(s);
-         }
-      }
+      command_postpare (out, z, in[strlen(in)-1]!=';', T, Tw);
    }
-
-   droidOutC(0);
-   *out = droidStr;
-   avma = pari_mainstack->top;
 }
 
 
@@ -181,37 +201,19 @@ paridroid_read (const int file, char **out)
    FILE *f;
    volatile GEN z_next = gnil, z;
    pari_timer T, Tw;
-   long time, rtime;
-
-   s_droidStr.n=0;
 
    f = fdopen (file, "r");
-   timer_start (&T);
-   walltimer_start (&Tw);
+
+   command_prepare (&T, &Tw);
+
    do {
       z = z_next;
       z_next = gp_read_stream_null (f);
    } while (z_next != NULL);
-   time = timer_delay (&T);
-   rtime = walltimer_delay (&Tw);
+
    fclose (f);
 
-   if (z != gnil) {
-      pari_add_hist(z, time, rtime);
-      pari_printf ("%%%lu = ", pari_nb_hist ());
-      char *s;
-      s = GENtostr(z);
-      if (GP_DATA->lim_lines)
-        lim_lines_output(s, 0, GP_DATA->lim_lines);
-      else
-        pari_puts(s);
-      pari_free(s);
-   }
-
-   droidOutC(0);
-   *out = droidStr;
-
-   avma = pari_mainstack->top;
+   command_postpare (out, z, 1, T, Tw);
 }
 
 
