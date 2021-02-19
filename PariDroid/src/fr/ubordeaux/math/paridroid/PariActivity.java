@@ -277,7 +277,7 @@ public class PariActivity extends Activity implements View.OnClickListener {
          alert.setPositiveButton ("OK", null);
          alert.show ();
          return true;
-       case R.id.open:
+       case R.id.read:
          Intent openFile = new Intent(Intent.ACTION_OPEN_DOCUMENT);
          openFile.setType("*/*");
          openFile.addCategory(Intent.CATEGORY_OPENABLE);
