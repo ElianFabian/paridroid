@@ -1,3 +1,7 @@
+Version 2.13.1.1.9 (February 2021):
+  Compilation with version 2.13.1 of Pari/GP.
+  Add a menu entry for reading an external file.
+
 Version 2.11.4.1.8 (August 2020):
   Compilation with version 2.11.4 of Pari/GP.
   Include and use gmp for the multiprecision kernel.
