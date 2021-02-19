@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pari/pari.h>
+#include <pari/paripriv.h>
 #include <setjmp.h>
 #include <strings.h>
 
@@ -88,32 +89,6 @@ paridroid_init(long parisize, long primelimit)
   pariErr=&droidOut;
 }
 
-static void
-lim_lines_output(char *s, long n, long max_lin)
-{
-  long lin, col, width;
-  char c;
-  if (!*s) return;
-  width = term_width();
-  lin = 1;
-  col = n;
-
-  if (lin > max_lin) return;
-  while ( (c = *s++) )
-  {
-    if (lin >= max_lin)
-      if (c == '\n' || col >= width-5)
-      {
-        pari_sp av = avma;
-        pari_puts(term_get_color(NULL, c_ERR)); avma=av;
-        pari_puts("[+++]"); return;
-      }
-    if (c == '\n')         { col = -1; lin++; }
-    else if (col == width) { col =  0; lin++; }
-    col++; pari_putc(c);
-  }
-}
-
 
 void
 paridroid_eval(const char *in, char **out)
@@ -165,33 +140,6 @@ paridroid_eval(const char *in, char **out)
    avma = pari_mainstack->top;
 }
 
-
-/* copied from paripriv.h inside the pari project */
-typedef struct Buffer {
-  char *buf;
-  ulong len;
-  jmp_buf env;
-} Buffer;
-Buffer *new_buffer(void);
-void delete_buffer(Buffer *b);
-typedef struct {
-  const char *s; /* source */
-  char *t, *end; /* target, last char read */
-  int in_string, in_comment, more_input, wait_for_brace;
-  Buffer *buf;
-} filtre_t;
-typedef char *(*fgets_t)(char *, int, void*);
-typedef struct input_method {
-/* optional */
-  fgets_t myfgets;  /* like libc fgets() but last argument is (void*) */
-/* mandatory */
-  char * (*getline)(char**, int f, struct input_method*, filtre_t *F);
-  int free; /* boolean: must we free the output of getline() ? */
-/* optional */
-  const char *prompt, *prompt_cont;
-  void *file;  /* can be used as last argument for fgets() */
-} input_method;
-char *file_input(char **s0, int junk, input_method *IM, filtre_t *F);
 
 /* Work around a bug in gp_read_stream, which does not distinguish between
    a failed read (because there is only whitespace left at the end of the
@@ -267,13 +215,7 @@ paridroid_read (const int file, char **out)
 }
 
 
-/* copied from paripriv.h inside the pari project */
-extern const long functions_tblsz;  /* hashcodes table size */
-extern entree **functions_hash;   /* functions hashtable */
-#define EpVALENCE(ep) ((ep)->valence & 0xFF)
-enum { EpNEW = 100, EpALIAS, EpVAR, EpINSTALL };
-
-   void
+void
 paridroid_getcommands (const char *** commands, int size, int *len)
 {
    /* copied from the commands function in gp.c in the pari project */
