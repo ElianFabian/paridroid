@@ -161,8 +161,9 @@ public class PariActivity extends Activity implements View.OnClickListener {
       /* check for empty command */
       if (cmd.replaceAll ("^[:whitespace:]*$", "").length () != 0) {
          inputArrayList.add(cmd);
-         cursor++;
-
+	 cursor = inputArrayList.size();
+	 /* This actually points *beyond* the array, which needs to be
+	    taken into account for the next and prev actions. */
          if (cmd.startsWith ("??", 0)) {
             Intent show_url = new Intent(Intent.ACTION_VIEW);
             show_url.setData(
