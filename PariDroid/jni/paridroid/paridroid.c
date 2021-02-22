@@ -161,12 +161,11 @@ paridroid_eval(const char *in, char **out)
 }
 
 
-/* Work around a bug in gp_read_stream, which does not distinguish between
-   a failed read (because there is only whitespace left at the end of the
-   file) and an expression returning gnil (because it ends with ";", for
-   instance), but always returns gnil.
-   TODO: Remove after a new release of PARI/GP. */
-/* copied from language/es.c inside the pari project */
+/* Work around the behaviour of gp_read_stream for PARI<=2.14.0, which does
+   not distinguish between a failed read (because there is only whitespace
+   left at the end of the file) and an expression returning gnil (because
+   it ends with ";", for instance), but always returns gnil. */
+#if PARI_VERSION_CODE < 134656
 static int
 gp_read_stream_buf(FILE *fi, Buffer *b)
 {
@@ -194,6 +193,7 @@ gp_read_stream_null(FILE *fi)
    delete_buffer (b);
    return x;
 }
+#endif
 
 void
 paridroid_read (const int file, char **out)
@@ -208,7 +208,11 @@ paridroid_read (const int file, char **out)
 
    do {
       z = z_next;
+#if PARI_VERSION_CODE < 134656
       z_next = gp_read_stream_null (f);
+#else
+      z_next = gp_read_stream (f);
+#endif
    } while (z_next != NULL);
 
    fclose (f);
