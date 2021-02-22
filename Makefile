@@ -46,7 +46,7 @@ APP_ABI="$(ANDROID_TARGET_ARM) $(ANDROID_TARGET_AARCH64)"
 
 PARIDROID_VERSION=$(shell grep versionName PariDroid/AndroidManifest.xml | grep -o '".*"' | tr -d '"')
 PARI_VERSION=$(shell echo $(PARIDROID_VERSION) | cut -d. -f1-3)
-ifeq "$(PARI_VERSION)" "2.12.0"
+ifeq "$(PARI_VERSION)" "2.14.0"
    PARI_GIT=origin/master
 else
    PARI_GIT=pari-$(PARI_VERSION)
