@@ -1,0 +1,3 @@
+PariDroid est la version native de PARI/GP pour Android.
+
+PARI/GP est un système de calcul formel très répandu, conçu pour des calculs rapides en arithmétique (factorisations, théorie algébrique des nombres, courbes elliptiques...) mais contient aussi un grand nombre de fonctions pour le calcul matriciel, sur les développements limités, les nombres algébriques, etc. ainsi que de nombreuses fonctions transcendantes.

@@ -1,0 +1,3 @@
+We are pleased to announce the release of PariDroid version 2.11.4.1.8.
+It incorporates the newest PARI/GP version 2.11.4. 
+PariDroid now uses the GMP library.
