@@ -1,1 +1,3 @@
+PariDroid ist eine Portierung von PARI/GP auf Android.
+
 PARI/GP ist ein weit verbreitetes Computeralgebrasystem. Ausgelegt für schnelle Berechnungen aus der Zahlentheorie (Faktorisierungen, Algebraische Zahlentheorie, Elliptische Kurven,...), enthält es auch eine große Anzahl anderer nützlicher Funktionen zur Manipulation mathematischer Objekte wie Matrizen, Polynome, Potenzreihen, algebraische Zahlen usw. sowie eine Reihe transzendenter Funktionen. PARI steht auch als C-Bibliothek zur Implementierung schneller Berechnungen zur Verfügung.
