@@ -1,0 +1,4 @@
+We are pleased to announce the release of PariDroid version 2.13.1.1.9.
+It incorporates the newest PARI/GP version 2.13.1. 
+The minimal required Android version is now 4.4 (API level 19).
+External files can be read and executed with the new "Read" menu entry.
