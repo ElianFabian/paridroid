@@ -1,0 +1,5 @@
+PARI/GP è uno dei più utilizzati sistemi algebrici per computer; progettato
+per rapidi calcoli in teoria dei numeri (fattorizzazioni, teoria algebrica dei
+numeri, curve ellittiche, ... ) contiene inoltre un ampio numero di utili
+funzioni per manipolare vari oggetti matematici (matrici, polinomi, serie
+esponenziali, numeri algebrici, ecc.) e molte funzioni trascendenti.

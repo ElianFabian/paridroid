@@ -1,0 +1,5 @@
+PARI/GP je systém počítačové algebry široce používaný pro rychlé výpočty v
+teorii čísel (prvočíselné rozklady, algebraická teorie čísel, eliptické
+křivky...),  obsahuje ale také velké množství užitečných funkcí pro práci s
+maticemi, polynomy, mocninnými řadami, algebraickými čísly atd.
+V PARI/GP je kromě toho implementováno mnoho transcendentních funkcí.

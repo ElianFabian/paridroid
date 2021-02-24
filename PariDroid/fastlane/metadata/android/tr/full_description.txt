@@ -1,0 +1,7 @@
+PARI/GP sayılar teorisinde hızlı hesaplamalar için (çarpanlara ayırma,
+cebirsel sayılar teorisi, eliptik eğriler, modüler formlar,
+L-fonksiyonları) dizayn edilmiş ve yaygınca kullanılan bir cebir bilgisayar
+sistemidir. Üstelik sistem matrisler, polinomlar, kuvvet serileri, cebirsel
+sayılar ve bir çok transdantal fonksiyonlar gibi bir matematiksel kavram
+ile hesaplama yapabilmek için çok sayıda diğer faydalı fonksiyonları
+içerir.

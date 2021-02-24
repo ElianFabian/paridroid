@@ -1,0 +1,7 @@
+PARI/GP es un sistema de álgebra computacional muy utilizado,
+diseñado para cálculos rápidos en Teoría de Números
+(factorización, Teorí Algebraica de Números, curvas
+elípticas,...) pero que tambien incluye un gran número de
+otras funciones útiles para operar con objetos matemáticos como
+matrices, polinomios, series de potencias, números algebraicos,
+etc., ademas de muchas funciones trascendentes.

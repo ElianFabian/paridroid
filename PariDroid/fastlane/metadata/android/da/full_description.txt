@@ -1,0 +1,5 @@
+PARI/GP er et ofte anvendt system for computeralgebra designet for hurtige
+beregninger i talteori (faktoriseringer, algebraisk talteori, elliptiske kurver
+...), men indeholder også en lang række andre nyttige funktioner til at beregne
+med matematiske enheder såsom matricer, polynomier, potensrækker, algebraiske
+tal osv., og en masse transcendente funktioner.
