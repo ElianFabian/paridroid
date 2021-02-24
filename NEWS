@@ -1,5 +1,5 @@
-Version 2.13.1.1.9 (February 2021):
-  Minimal Android version requirement: 4.4 (API level 19)
+Version 2.13.1.1.9 (March 2021):
+  Minimal Android version requirement: 4.4 "KitKat" (API level 19)
   Compilation with version 2.13.1 of Pari/GP.
   Add a menu entry for reading an external file.
 
