@@ -42,9 +42,9 @@ ANDROID_TARGET_X86_64=x86_64
 # The emulator can use x86 targets.
 # APP_ABI="$(ANDROID_TARGET_ARM) $(ANDROID_TARGET_AARCH64) $(ANDROID_TARGET_X86) $(ANDROID_TARGET_X86_64)"
 # For testing with a phone, AARCH64 is the target of choice
-#APP_ABI="$(ANDROID_TARGET_AARCH64)"
+APP_ABI="$(ANDROID_TARGET_AARCH64)"
 # For the release, ARM architectures are enough.
-APP_ABI="$(ANDROID_TARGET_ARM) $(ANDROID_TARGET_AARCH64)"
+#APP_ABI="$(ANDROID_TARGET_ARM) $(ANDROID_TARGET_AARCH64)"
 
 PARIDROID_VERSION=$(shell grep versionName PariDroid/AndroidManifest.xml | grep -o '".*"' | tr -d '"')
 PARI_VERSION=$(shell echo $(PARIDROID_VERSION) | cut -d. -f1-3)
