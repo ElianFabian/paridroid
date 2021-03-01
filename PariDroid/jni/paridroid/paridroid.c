@@ -150,6 +150,7 @@ paridroid_eval(const char *in, char **out)
    if(setjmp(env) != 0) {
       LOGE("setjmp different from zero");
       pari_add_hist(gnil, 0, 0);
+      command_postpare (out, gnil, 0, T, Tw);
    }
    else {
       volatile GEN z = gnil;
