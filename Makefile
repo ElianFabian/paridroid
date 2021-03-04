@@ -46,7 +46,7 @@ APP_ABI="$(ANDROID_TARGET_AARCH64)"
 # For the release, ARM architectures are enough.
 #APP_ABI="$(ANDROID_TARGET_ARM) $(ANDROID_TARGET_AARCH64)"
 
-PARIDROID_VERSION=$(shell grep versionName PariDroid/AndroidManifest.xml | grep -o '".*"' | tr -d '"')
+PARIDROID_VERSION=$(shell grep versionName PariDroid/app/src/main/AndroidManifest.xml | grep -o '".*"' | tr -d '"')
 PARI_VERSION=$(shell echo $(PARIDROID_VERSION) | cut -d. -f1-3)
 ifeq "$(PARI_VERSION)" "2.14.0"
    PARI_GIT=origin/master
@@ -56,7 +56,7 @@ endif
 GMP_VERSION=6.2.0
 
 TOP=$(CURDIR)
-PARIDROID_SRC=$(TOP)/PariDroid
+PARIDROID_SRC=$(TOP)/PariDroid/app/src/main
 PARI_SRC=$(TOP)/../srclib/pari
 GMP_SRC=$(TOP)/../srclib/gmp
 JNI=$(PARIDROID_SRC)/jni
@@ -286,7 +286,7 @@ $(GMP_SRC):
 # Create a C header file from the java class interfacing with the pari
 # library; this gives the prototypes of functions to be written by hand in
 # the corresponding C source file. The result is under version control.
-$(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h: $(PARIDROID_SRC)/src/fr/ubordeaux/math/paridroid/PariNative.java
+$(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h: $(PARIDROID_SRC)/java/fr/ubordeaux/math/paridroid/PariNative.java
 	cd $(PARIDROID_SRC) && ant debug
 	cd $(PARIDROID_SRC)/bin/classes && javah -jni fr.ubordeaux.math.paridroid.PariNative
 	mv $(PARIDROID_SRC)/bin/classes/fr_ubordeaux_math_paridroid_PariNative.h $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
