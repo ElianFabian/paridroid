@@ -15,7 +15,21 @@ TARGET_X86=$(TARGET_CPU_X86)-$(TARGET_SYSTEM)
 TARGET_X86_64=$(TARGET_CPU_X86_64)-$(TARGET_SYSTEM)
 
 # Settings for the cross compiler.
-NDK?=/usr/local/android-ndk-r13b
+NDK?=/usr/local/android-ndk-r12b
+# The following lines are valid when NDK23 is defined; then we use
+# llvm/clang of NDK version 23.
+ifdef NDK23
+SYSROOT_ARM=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/sysroot/
+SYSROOT_AARCH64=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/sysroot/
+SYSROOT_X86=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/sysroot/
+SYSROOT_X86_64=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/sysroot/
+CC_ARM=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi31-clang
+CC_AARCH64=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android31-clang
+CC_X86=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android31-clang
+CC_X86_64=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android31-clang
+else
+# The following lines are valid when the NDK version is 12b, as for Fdroid,
+# or 13b.
 # Compile the arm and aarch64 targets with different versions of
 # NDK_PLATFORM: aarch64 appears in android-21; to be able to run on older
 # Android versions, we compile the arm target with earlier tools.
@@ -31,6 +45,8 @@ CC_ARM=$(NDK)/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin/arm
 CC_AARCH64=$(NDK)/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin/aarch64-linux-android-gcc
 CC_X86=$(NDK)/toolchains/x86-4.9/prebuilt/linux-x86_64/bin/i686-linux-android-gcc
 CC_X86_64=$(NDK)/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc
+endif
+
 
 # Settings for the GMP, PARI and Android target CPUs
 ANDROID_TARGET_ARM=armeabi-v7a
@@ -44,7 +60,7 @@ TARGET_API_LEVEL=19
 
 # Choose what to put into the apk.
 # The emulator can use x86 targets.
-# APP_ABI="$(ANDROID_TARGET_ARM) $(ANDROID_TARGET_AARCH64) $(ANDROID_TARGET_X86) $(ANDROID_TARGET_X86_64)"
+#APP_ABI="$(ANDROID_TARGET_ARM) $(ANDROID_TARGET_AARCH64) $(ANDROID_TARGET_X86) $(ANDROID_TARGET_X86_64)"
 # For testing with a phone, AARCH64 is the target of choice
 APP_ABI="$(ANDROID_TARGET_AARCH64)"
 # For the release, ARM architectures are enough.
