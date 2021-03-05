@@ -33,7 +33,7 @@ CC_X86=$(NDK)/toolchains/x86-4.9/prebuilt/linux-x86_64/bin/i686-linux-android-gc
 CC_X86_64=$(NDK)/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc
 
 # Settings for the GMP, PARI and Android target CPUs
-ANDROID_TARGET_ARM=armeabi
+ANDROID_TARGET_ARM=armeabi-v7a
 ANDROID_TARGET_AARCH64=arm64-v8a
 ANDROID_TARGET_X86=x86
 ANDROID_TARGET_X86_64=x86_64
