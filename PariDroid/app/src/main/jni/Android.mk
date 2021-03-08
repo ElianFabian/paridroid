@@ -44,7 +44,7 @@ LOCAL_SRC_FILES := \
 	paridroid/paridroid.c \
 	paridroid/fr_ubordeaux_math_paridroid_PariNative.c
 
-LOCAL_SHARED_LIBRARIES := libpari
+LOCAL_SHARED_LIBRARIES := libpari libgmp
 
 include $(BUILD_SHARED_LIBRARY)
 

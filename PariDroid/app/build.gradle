@@ -1,0 +1,32 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+
+    defaultConfig {
+        applicationId "fr.ubordeaux.math.paridroid"
+        minSdkVersion 19
+        targetSdkVersion 29
+
+        ndk {
+            moduleName "gmp"
+            moduleName "pari"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+
+    externalNativeBuild {
+        ndkBuild {
+	    path 'src/main/jni/Android.mk'
+	    }
+    }
+
+    ndkVersion '23.0.7123448 rc1'
+}
