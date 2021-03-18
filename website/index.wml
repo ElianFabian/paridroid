@@ -274,6 +274,197 @@ adb logcat
 in a separate terminal window.
 </p>
 
+
+<h1 class="head">Installing Android Studio on GNU Guix</h2>
+
+<p>
+Installing Android Studio entails a certain loss of reproducibility:
+It consists essentially of running an install script, that directly
+afterwards downloads the actual software and later continuously downloads
+further updates to an ever shifting environment. On the positive side, the
+integrated development environment and emulator ease the Android
+development process. While purportedly being free software, Android
+Studio is delivered as opaque binaries with hard-coded execution paths,
+which makes it difficult to deploy on GNU/Linux distributions that are
+not compliant with the file system hierarchy.
+</p>
+
+
+<h2>Installing Android Studio</h2>
+
+<p>
+I have used the
+<a href="https://lepiller.eu/en/running-android-studio-on-guix.html">following
+approach</a>
+described by
+<a href="https://lepiller.eu/en/">Julien Lepiller</a>
+to install Android Studio on the
+<a href="https://guix/gnu.org/">GNU Guix</a> distribution, with a few
+adaptations and the additional installation of an Android NDK.
+</p>
+
+<p>
+I chose to install everything Android into
+<code>$HOME/Android</code>. Unless told otherwise, Android Studio downloads
+everything related to the SDK and the NDK into
+<code>$HOME/Android/Sdk</code>, and I downloaded and unpacked
+<a href="https://developer.android.com/studio">Android Studio</a>
+into <code>$HOME/Android/Studio</code>; in particular, the launcher script
+is <code>$HOME/Android/Studio/bin/studio.sh</code>.
+</p>
+<p>
+Then I prepared an environment containing the dependencies (that is,
+essentially, the dynamic libraries to which the Android Studio binaries
+expect to link) in the following file
+<code>$HOME/Android/Studio/studio-manifest.scm</code>:
+</p>
+<pre>
+(use-package-modules base bash compression gcc gl glib linux nss pulseaudio
+                     version-control virtualization xml xorg java file)
+(packages->manifest
+  (list bash git which dbus
+        (list gcc "lib")
+        coreutils grep sed findutils xmessage
+        (list openjdk13 "jdk")
+        file glibc
+        ;; for running the android virtual devices (AVD):
+        e2fsprogs qemu-minimal
+        alsa-lib expat libxcomposite libxcursor libxi libxtst
+        mesa nss pulseaudio (list util-linux "lib") libx11 zlib))
+</pre>
+<p>
+Compared to Julien's environment, I added the <code>jdk</code> output
+of the <code>openjdk</code> package at version 13 (just because at the
+time of writing, the most recent version 14 did not compile), which
+automatically provides the environment with the corresponding
+<code>java</code>, <code>javac</code> and other executables.
+I also added <code>file</code> and <code>glibc</code> for debugging
+purposes: In particular <code>ldd</code> of the <code>glibc</code>
+package helps to distinguish binaries for 32-bit architectures (that do
+not run on Guix) from those for 64-bit architectures (which may run).
+(Additionally I had the impression that <code>glibc</code> was needed
+to link with some of the binaries, but later tests seem to imply that
+it is not actually needed.)
+Furthermore, <code>coreutils</code>, <code>grep</code>, <code>sed</code>,
+<code>findutils</code> and <code> xmessage</code> provide binaries that
+the <code>studio.sh</code> looks for in its first few lines.
+</p>
+<p>
+On my machine, I also had to enable virtualisation support in the BIOS
+to be able to run the emulator; otherwise the corresponding kernel module
+would not be loaded and <code>/dev/kvm</code> would be absent from the
+system.
+</p>
+<p>
+The next step is to create the environment and memorise its location,
+to be able to pass some directories it contains to the actual later
+invocation:
+</p>
+<pre>
+cd $HOME
+export PROFILE=$(guix environment -C -N -m $HOME/Android/Studio/studio-manifest.scm \\
+  -- bash -c 'echo $GUIX_ENVIRONMENT')
+</pre>
+<p>
+Now the environment variable <code>$PROFILE</code> contains something like
+<code>/gnu/store/f994jk1i9g7lmf3zh5dak92hcimgw91r-profile</code> with its
+<code>bin</code>, <code>include</code>, <code>lib</code> and so on
+subdirectories.
+</p>
+<p>
+Then the environment is created in a container (<code>-C</code>) with
+network access (<code>-N</code>):
+</p>
+<pre>
+guix environment -C -N --share=$XAUTHORITY --share=/tmp/.X11-unix \\
+    --share=/dev/shm --expose=/etc/machine-id --expose=$HOME \\
+    --expose=$PROFILE/lib=/lib --expose=$PROFILE/lib=/lib64 \\
+    --expose=$PROFILE/bin/bash=/bin/bash \\
+    --share=/dev/kvm -m $HOME/Android/Studio/studio-manifest.scm
+</pre>
+<p>
+Parts of the surrounding system are passed into the container, as well
+as the <code>lib</code> and <code>lib64</code> subdirectories of the
+profile, which inside the container are accessible as <code>/lib</code>
+and <code>/lib64</code>; this is the magic that makes the hard-coded
+paths in Android Studio work. Additionally to Julien's invocation, I had
+to pass in <code>/bin/bash</code> as well to be able to use the
+<code>ndk-build</code> script.
+</p>
+<p>
+For reasons probably related to containers and that I do not know, it is
+important to carry out the <code>cd $HOME</code> as given above before
+entering the container; otherwise upon starting Android Studio complains
+that the directory
+<code>$HOME/.config/Google/AndroidStudio4.1/</code> is read-only.
+</p>
+<p>
+If everything goes well, the container is entered, which can be seen from
+the prompt being changed to <code>[env]$</code>.
+Julien succeeded in calling <code>env</code> upon entering the container,
+which made it possible to pass environment variables in; for unknown
+reasons this did not work for me. So I recorded the content of the
+environment variables
+<code>$XAUTHORITY</code> (<code>/run/user/1001/gdm/Xauthority</code>)
+and
+<code>$DISPLAY</code> (<code>:1.0</code>)
+<i>outside</i> the container; the first commands in the container set
+these variables to the same values, and also set
+<code>LD_LIBRARY_PATH</code>.
+To avoid that the C compiler from the NDK includes incompatible header
+files from the Guix <code>glibc</code> passed into the environment, we also
+need to forget <code>C_INCLUDE_PATH</code>:
+</p>
+<pre>
+export XAUTHORITY=/run/user/1001/gdm/Xauthority
+export DISPLAY=:1.0
+export LD_LIBRARY_PATH=/lib:/lib/nss:$HOME/Android/Sdk/emulator/lib64/qt/lib:$HOME/Android/Sdk/emulator/lib64
+unset C_INCLUDE_PATH
+</pre>
+<p>
+Finally Android Studio can be started, and from there on it does its
+business of downloading things and setting them up:
+</p>
+<pre>
+$HOME/Android/Studio/bin/studio.sh
+</pre>
+<p>
+After downloading the SDK, Android Studio complained about something
+related to SD cards. It turns out there was a conflict between binaries
+for 32- and 64-bit architectures. So I removed the 32-bit binary
+<code>$HOME/Android/Sdk/tools/mksdcard</code>
+and replaced it by a symbolic link to
+<code>$HOME/Android/Sdk/emulator/mksdcard</code>.
+A similar looking problem still persists: After each start, Android Studio
+complains that <i>file watcher failed to start</i>; but here removing
+<code>$HOME/Android/Studio/bin/fsnotifier</code>
+and replacing it by a symlink to
+<code>$HOME/Android/Studio/bin/fsnotifier64</code>
+did not solve the problem.
+</pre>
+
+
+<h2>Setting up the PariDroid project</h2>
+
+<p>
+Here I cheated and simply copied the manually set up project to
+<code>$HOME/Android/paridroid</code>; then the subdirectory
+<code>$HOME/Android/Project/paridroid/Paridroid</code>
+can be opened as a project in Android Studio.
+Notice that <code>$HOME/Android/Project/paridroid/</code> is a
+git checkout of the project sources (together with a few local files,
+see below), so one may easily change branches or make modifications
+in Android Studio and commit them to the git repository.
+</p>
+<p>
+Calling <code>make</code> (more precisely, <code>make pari</code>) once
+from inside <code>$HOME/Android/paridroid</code> may be necessary to
+compile the <code>gmp</code> and <code>pari</code> libraries for the
+different architectures and to place them into the architecture-specific
+subdirectories of
+<code>$HOME/Android/Project/paridroid/Paridroid/app/src/main/jni</code>.
+</p>
+
 </div>
 
 #include 'bot.wml'
