@@ -1,8 +1,0 @@
-#include 'top.wml'
-<h2>PariDroid Privacy Policy</h2>
-PariDroid manipulates no personal data.
-
-<h2>PariDroid Règles de Confidentialité</h2>
-PariDroid ne manipule aucune donnée personnelle.
-
-#include 'bot.wml'

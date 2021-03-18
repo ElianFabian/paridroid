@@ -16,7 +16,8 @@ either version 3 of the licence, or (at your option) any later version
 (<span typeof="http://purl.org/adms/sw/SoftwarePackage" property="dcterms:license">GPLv3+</span>).
 </p>
 
-<h2>Installing PariDroid</h2>
+
+<h1 class="head">Installing PariDroid</h1>
 <p>
 Ready to use packages in the <code>.apk</code> format can be found
 in the
@@ -27,9 +28,30 @@ and the Google Play stores. The remainder of this page describes how to
 compile the source code for yourself; there is no need to do so if you are
 happy with the provided binaries. </p>
 
-<a href="./privacy.html">Privacy Policy</a>.
 
-<h2 class="head">Installing the Android SDK 24.4.1</h2>
+<h2>Privacy Policy</h2>
+<p>
+PariDroid manipulates no personal data.
+</p>
+
+<h2>Règles de Confidentialité</h2>
+<p>
+PariDroid ne manipule aucune donnée personnelle.
+</p>
+
+
+<h1 class="head">Installing a command line development environment</h1>
+
+<p>
+The following section describes how to set up a reproducible environment
+in which to compile PariDroid from the command line. This is how we
+currently produce the <code>.apk</code> package for distribution on a
+headless server. Instead of using an emulator, we directly test on a
+physical device.
+</p>
+
+
+<h2>Installing the Android SDK 24.4.1</h2>
 
 <p>
 This is the last SDK version that contains the necessary files for building
@@ -112,7 +134,7 @@ rm -f android-19_r04.zip
 </pre>
 
 
-<h2 class="head">Installing the Android NDK</h2>
+<h2>Installing the Android NDK</h2>
 
 <p>
 To later compile and integrate the PARI C library
@@ -143,7 +165,7 @@ to the Android NDK, which is used by our <code>Makefile</code>:
 export NDK=$HOME/local/android-ndk-r13b
 </pre>
 
-<h2 class="head">Setting up the PariDroid project</h2>
+<h2>Setting up the PariDroid project</h2>
 
 <p>
 The following steps need to be executed only once.
@@ -186,7 +208,7 @@ cd ..
 </pre>
 
 
-<h2 class="head">Building PariDroid</h2>
+<h2>Building PariDroid</h2>
 
 <p>
 A call to
@@ -195,7 +217,7 @@ A call to
 make
 </pre>
 <p>
-configures and compiles the PARI library
+configures and compiles the GMP and PARI libraries
 and compiles the PariDroid project into
 the package <code>PariDroid-VERSION.apk</code>,
 signed with a debug key and aligned.
@@ -205,6 +227,17 @@ The unsigned and unaligned package resides in
 <code>PariDroid/bin/PariDroid-release-unsigned.apk</code>,
 the signed and unaligned package in
 <code>PariDroid/bin/PariDroid-release-unaligned.apk</code>.
+</p>
+
+<p>
+Once the libraries have been compiled, it is faster to only call
+</p>
+<pre>
+make apk-fast
+</pre>
+<p>
+to run the NDK and Android builds on a potentially changed PariDroid
+code.
 </p>
 
 <pre class="code">
