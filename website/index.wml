@@ -316,7 +316,7 @@ is <code>$HOME/Android/Studio/bin/studio.sh</code>.
 Then I prepared an environment containing the dependencies (that is,
 essentially, the dynamic libraries to which the Android Studio binaries
 expect to link) in the following file
-<code>$HOME/Android/Studio/studio-manifest.scm</code>:
+<code>$HOME/Android/studio-manifest.scm</code>:
 </p>
 <pre>
 (use-package-modules base bash compression gcc gl glib linux nss pulseaudio
@@ -362,7 +362,7 @@ invocation:
 </p>
 <pre>
 cd $HOME
-export PROFILE=$(guix environment -C -N -m $HOME/Android/Studio/studio-manifest.scm \\
+export PROFILE=$(guix environment -C -N -m $HOME/Android/studio-manifest.scm \\
   -- bash -c 'echo $GUIX_ENVIRONMENT')
 </pre>
 <p>
@@ -380,7 +380,7 @@ guix environment -C -N --share=$XAUTHORITY --share=/tmp/.X11-unix \\
     --share=/dev/shm --expose=/etc/machine-id --expose=$HOME \\
     --expose=$PROFILE/lib=/lib --expose=$PROFILE/lib=/lib64 \\
     --expose=$PROFILE/bin/bash=/bin/bash \\
-    --share=/dev/kvm -m $HOME/Android/Studio/studio-manifest.scm
+    --share=/dev/kvm -m $HOME/Android/studio-manifest.scm
 </pre>
 <p>
 Parts of the surrounding system are passed into the container, as well
