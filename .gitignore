@@ -20,3 +20,9 @@ local.properties
 # compiled srclibs
 pari/
 gmp/
+
+# files from Android Studio
+.gradle/
+.idea/
+.cxx/
+build/
