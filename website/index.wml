@@ -325,7 +325,7 @@ expect to link) in the following file
   (list bash git which dbus
         (list gcc "lib")
         coreutils grep sed findutils xmessage
-        (list openjdk13 "jdk")
+        (list openjdk14 "jdk")
         file glibc
         ;; for running the android virtual devices (AVD):
         e2fsprogs qemu-minimal
@@ -334,8 +334,8 @@ expect to link) in the following file
 </pre>
 <p>
 Compared to Julien's environment, I added the <code>jdk</code> output
-of the <code>openjdk</code> package at version 13 (just because at the
-time of writing, the most recent version 14 did not compile), which
+of the <code>openjdk</code> package at version 14 (the most recent version
+available in Guix at the time of writing), which
 automatically provides the environment with the corresponding
 <code>java</code>, <code>javac</code> and other executables.
 I also added <code>file</code> and <code>glibc</code> for debugging
