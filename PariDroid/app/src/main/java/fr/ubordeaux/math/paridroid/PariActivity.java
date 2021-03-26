@@ -94,7 +94,7 @@ public class PariActivity extends Activity {
             PariUtil.setDefault (key, map.get (key).toString ());
 
       /* Set up the buttons. */
-      final Button enterButton = findViewById(R.id.enterButton);
+      final Button enterButton = (Button) findViewById(R.id.enterButton);
       enterButton.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View v) {
@@ -104,7 +104,7 @@ public class PariActivity extends Activity {
          }
       });
 
-      final Button clearButton = findViewById(R.id.clearButton);
+      final Button clearButton = (Button) findViewById(R.id.clearButton);
       clearButton.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View v) {
@@ -112,7 +112,7 @@ public class PariActivity extends Activity {
          }
       });
 
-      final Button nextButton = findViewById(R.id.nextButton);
+      final Button nextButton = (Button) findViewById(R.id.nextButton);
       nextButton.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View v) {
@@ -123,7 +123,7 @@ public class PariActivity extends Activity {
          }
       });
 
-      final Button prevButton = findViewById(R.id.prevButton);
+      final Button prevButton = (Button) findViewById(R.id.prevButton);
       prevButton.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View v) {
@@ -135,7 +135,7 @@ public class PariActivity extends Activity {
       });
 
       /* Set up the input field. */
-      inputText = findViewById(R.id.inputText);
+      inputText = (MultiAutoCompleteTextView) findViewById(R.id.inputText);
       inputText.setDropDownHeight (ViewGroup.LayoutParams.MATCH_PARENT);
       setupAutoCompleteView();
       inputText.setOnKeyListener(new OnKeyListener() {
@@ -151,7 +151,7 @@ public class PariActivity extends Activity {
       });
 
       /* Set up the list of results. */
-      ListView resultList = findViewById(R.id.resultList);
+      ListView resultList = (ListView) findViewById(R.id.resultList);
       outputArrayAdapter = new ArrayAdapter<>(this,
               R.layout.result_list_item,outputArrayList);
       resultList.setAdapter(outputArrayAdapter);
