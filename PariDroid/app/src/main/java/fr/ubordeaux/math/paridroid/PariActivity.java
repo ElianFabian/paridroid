@@ -1,65 +1,54 @@
-/**
- * Copyright (C) 2012, 2013 Charles Boyd
- * Copyright (C) 2014, 2015, 2018, 2019, 2020, 2021 Andreas Enge <andreas.enge@inria.fr>
- * Copyright (C) 2016, 2017, 2018, 2019, 2020 Laurent Facq <laurent.facq@math.u-bordeaux.fr>
- *
- * This file is part of PariDroid.
- *
- * PariDroid is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * PariDroid is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+/*
+Copyright (C) 2012, 2013 Charles Boyd
+Copyright (C) 2014, 2015, 2018, 2019, 2020, 2021 Andreas Enge <andreas.enge@inria.fr>
+Copyright (C) 2016, 2017, 2018, 2019, 2020 Laurent Facq <laurent.facq@math.u-bordeaux.fr>
+
+This file is part of PariDroid.
+
+PariDroid is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+PariDroid is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 package fr.ubordeaux.math.paridroid;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MenuItem.*;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.MultiAutoCompleteTextView;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.Arrays;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import java.io.*;
 
 public class PariActivity extends Activity {
     
@@ -67,9 +56,9 @@ public class PariActivity extends Activity {
 
    private MultiAutoCompleteTextView inputText;
 
-   private ArrayAdapter outputArrayAdapter;
-   private ArrayList<String> outputArrayList = new ArrayList<String>(255);
-   private ArrayList<String> inputArrayList = new ArrayList<String>(255);
+   private ArrayAdapter<String> outputArrayAdapter;
+   private final ArrayList<String> outputArrayList = new ArrayList<>(255);
+   private final ArrayList<String> inputArrayList = new ArrayList<>(255);
    private int cursor = 0;
 
    public void onCreate(Bundle savedInstanceState) {
@@ -163,7 +152,7 @@ public class PariActivity extends Activity {
 
       /* Set up the list of results. */
       ListView resultList = findViewById(R.id.resultList);
-      outputArrayAdapter = new ArrayAdapter(this,
+      outputArrayAdapter = new ArrayAdapter<>(this,
               R.layout.result_list_item,outputArrayList);
       resultList.setAdapter(outputArrayAdapter);
    }
@@ -175,7 +164,7 @@ public class PariActivity extends Activity {
 	      cursor = inputArrayList.size();
 	      /* This actually points *beyond* the array, which needs to be
 	         taken into account for the next and prev actions. */
-         if (cmd.startsWith ("??", 0)) {
+         if (cmd.startsWith ("??")) {
             Intent show_url = new Intent(Intent.ACTION_VIEW);
             show_url.setData(
                Uri.parse(getString(R.string.doc_url)
@@ -258,7 +247,7 @@ public class PariActivity extends Activity {
          alert.setPositiveButton ("OK", null);
          alert.show ();
          return true;
-       case R.id.read:
+      case R.id.read:
          Intent openFile = new Intent(Intent.ACTION_OPEN_DOCUMENT);
          openFile.setType("*/*");
          openFile.addCategory(Intent.CATEGORY_OPENABLE);
@@ -270,14 +259,11 @@ public class PariActivity extends Activity {
    }
 
    public void setupAutoCompleteView() {
-      
-       Resources res = getResources();
-       
        String[] s = PariNative.getCommands();
-       ArrayList<String> functions = new ArrayList<String>(Arrays.asList(s));
+       ArrayList<String> functions = new ArrayList<>(Arrays.asList(s));
        Collections.sort(functions);
        ArrayAdapter<String> adapter
-         = new ArrayAdapter<String>(this, R.layout.suggestion_list_item,
+         = new ArrayAdapter<>(this, R.layout.suggestion_list_item,
                                     functions);
        inputText.setAdapter(adapter);
 
