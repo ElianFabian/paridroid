@@ -61,38 +61,41 @@ import java.util.Map;
 import java.util.Set;
 import java.io.*;
 
-public class PariActivity extends Activity implements View.OnClickListener {
+public class PariActivity extends Activity {
     
    public static final String MSG_TAG = "PariDroid";
 
    private MultiAutoCompleteTextView inputText;
 
-   private Button enterButton;
-
-   private Button clearButton;
-
-   private Button nextButton;
-
-   private Button prevButton;
-
-   private ListView resultList;
-
    private ArrayAdapter outputArrayAdapter;
-
    private ArrayList<String> outputArrayList = new ArrayList<String>(255);
-
    private ArrayList<String> inputArrayList = new ArrayList<String>(255);
-
    private int cursor = 0;
 
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.main);
 
-      /* Recover parisize and primelimit from the preferences. */
-      SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-      long parisize = Long.valueOf (prefs.getString ("parisize", getString (R.string.parisize_default)));
-      long primelimit = Long.valueOf (prefs.getString ("primelimit", getString (R.string.primelimit_default)));
+      /* Set up all user interface elements. */
+      String version;
+      try {
+         PackageInfo pi = getPackageManager ()
+                 .getPackageInfo (getPackageName (), 0);
+         version = pi.versionName;
+      }
+      catch (NameNotFoundException e) {
+         version = "";
+      }
+      setTitle(getString(R.string.app_name) + " " + version);
+
+      /* Recover parisize and primelimit from the preferences and initialise
+         PARI, which needs to be done early. */
+      SharedPreferences prefs = PreferenceManager
+              .getDefaultSharedPreferences(this);
+      long parisize = Long.parseLong(prefs.getString ("parisize",
+              getString (R.string.parisize_default)));
+      long primelimit = Long.parseLong(prefs.getString ("primelimit",
+              getString (R.string.primelimit_default)));
       PariNative.paridroidInit(parisize, primelimit);
       /* Set all preferences. */
       Map <String, ?> map = prefs.getAll ();
@@ -101,49 +104,15 @@ public class PariActivity extends Activity implements View.OnClickListener {
          if (!key.equals ("parisize") && !key.equals ("primelimit"))
             PariUtil.setDefault (key, map.get (key).toString ());
 
-      initialize();
-   }
-
-   private void initialize() {
-
-      String version;
-      try {
-         PackageInfo pi = getPackageManager ().getPackageInfo (getPackageName (), 0);
-         version = pi.versionName;
-      }
-      catch (NameNotFoundException e)
-      {
-         version = "";
-      }
-      setTitle(getString(R.string.app_name) + " " + version);
-
-      inputText = (MultiAutoCompleteTextView)findViewById(R.id.inputText);
+      /* Set up the input field. */
+      inputText = findViewById(R.id.inputText);
       inputText.setDropDownHeight (ViewGroup.LayoutParams.MATCH_PARENT);
-
-      enterButton = (Button)findViewById(R.id.enterButton);
-      enterButton.setOnClickListener(this);
-
-      clearButton = (Button)findViewById(R.id.clearButton);
-      clearButton.setOnClickListener(this);
-
-      nextButton = (Button)findViewById(R.id.nextButton);
-      nextButton.setOnClickListener(this);
-
-      prevButton = (Button)findViewById(R.id.prevButton);
-      prevButton.setOnClickListener(this);
-
-      resultList = (ListView)findViewById(R.id.resultList);
-      outputArrayAdapter = new ArrayAdapter(this,R.layout.result_list_item,outputArrayList);
-      resultList.setAdapter(outputArrayAdapter);
-
       setupAutoCompleteView();
-
       inputText.setOnKeyListener(new OnKeyListener() {
          public boolean onKey(View v, int keyCode, KeyEvent event) {
             if(   (event.getAction() == KeyEvent.ACTION_DOWN)
                && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-               StringBuilder sb = new StringBuilder(inputText.getText());
-               String input = sb.toString();
+               String input = inputText.getText().toString();
                evaluate(input);
                clear();
                return true;
@@ -151,19 +120,62 @@ public class PariActivity extends Activity implements View.OnClickListener {
             return false;
          }
       });
+
+      /* Set up the buttons. */
+      Button enterButton = findViewById(R.id.enterButton);
+      enterButton.setOnClickListener(new OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            String in = inputText.getText().toString();
+            evaluate(in);
+            clear();
+         }
+      });
+
+      Button clearButton = findViewById(R.id.clearButton);
+      clearButton.setOnClickListener(new OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            clear();
+         }
+      });
+
+      Button nextButton = findViewById(R.id.nextButton);
+      nextButton.setOnClickListener(new OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            cursor++;
+            if (cursor >= inputArrayList.size())
+               cursor = 0; /* cycle through */
+            inputText.setText(getFromHistory(cursor));
+         }
+      });
+
+      Button prevButton = findViewById(R.id.prevButton);
+      prevButton.setOnClickListener(new OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            cursor--;
+            if (cursor < 0)
+               cursor = inputArrayList.size() - 1; /* cycle through */
+            inputText.setText(getFromHistory(cursor));
+         }
+      });
+
+      /* Set up the list of results. */
+      ListView resultList = findViewById(R.id.resultList);
+      outputArrayAdapter = new ArrayAdapter(this,
+              R.layout.result_list_item,outputArrayList);
+      resultList.setAdapter(outputArrayAdapter);
    }
 
    private void evaluate(String cmd) {
-      String executeCmd;
-      String result;
-      String output;
-
-      /* check for empty command */
+      /* Check for empty command. */
       if (cmd.replaceAll ("^[:whitespace:]*$", "").length () != 0) {
          inputArrayList.add(cmd);
-	 cursor = inputArrayList.size();
-	 /* This actually points *beyond* the array, which needs to be
-	    taken into account for the next and prev actions. */
+	      cursor = inputArrayList.size();
+	      /* This actually points *beyond* the array, which needs to be
+	         taken into account for the next and prev actions. */
          if (cmd.startsWith ("??", 0)) {
             Intent show_url = new Intent(Intent.ACTION_VIEW);
             show_url.setData(
@@ -171,21 +183,19 @@ public class PariActivity extends Activity implements View.OnClickListener {
                          + cmd.replaceAll("^\\?*", "")
                               .replaceAll("^ *", "")));
             startActivity(show_url);
-            return;
          }
-         else
-             executeCmd = cmd;
+         else {
+            String result = PariNative.paridroidEval(cmd);
+            /* Remove extraneous line breaks to save screen space. */
+            String output = result.replaceAll("\n\n", "\n")
+                    .replaceAll("\n$", "");
 
-         result = PariNative.paridroidEval(executeCmd);
-
-         /* remove extraneous line breaks to save screen space */
-         output = result.replaceAll("\n\n", "\n").replaceAll("\n$", "");
-
-         if (output.length () != 0)
-            outputArrayList.add(0, "? " + cmd + "\n" + output);
-         else
-            outputArrayList.add(0, "? " + cmd);
-         outputArrayAdapter.notifyDataSetChanged();
+            if (output.length() != 0)
+               outputArrayList.add(0, "? " + cmd + "\n" + output);
+            else
+               outputArrayList.add(0, "? " + cmd);
+            outputArrayAdapter.notifyDataSetChanged();
+         }
       }
    }
 
@@ -193,36 +203,6 @@ public class PariActivity extends Activity implements View.OnClickListener {
       inputText.setText("");
    }
 
-   public void onClick(View v) {
-      String in = inputText.getText().toString();
-
-      switch (v.getId()) {
-      case R.id.enterButton:
-         evaluate(in);
-         clear();
-         break;
-      case R.id.clearButton:
-         clear();
-         break;
-      case R.id.prevButton:
-         clear();
-         cursor--;
-         if (cursor < 0)
-            cursor = inputArrayList.size() - 1; /* cycle through */
-         inputText.setText(getFromHistory(cursor));
-         break;
-      case R.id.nextButton:
-         clear();
-         cursor++;
-         if (cursor >= inputArrayList.size())
-            cursor = 0; /* cycle through */
-         inputText.setText(getFromHistory(cursor));
-         break;
-
-      default:
-         break;
-      }
-   }
 
    public String getFromHistory(int i) {
       int n = inputArrayList.size();
@@ -247,13 +227,14 @@ public class PariActivity extends Activity implements View.OnClickListener {
             Uri uri = data.getData();
             Log.d(MSG_TAG, "open_file " + uri.toString());
             try {
-	       int file = getContentResolver().openFileDescriptor(uri, "r").getFd();
-	       String output = PariNative.read (file);
-	       if (output.length () != 0) {
-	          outputArrayList.add(0, output);
+	            int file = getContentResolver().openFileDescriptor(uri, "r").getFd();
+	            String output = PariNative.read (file);
+	            if (output.length () != 0) {
+	               outputArrayList.add(0, output);
                   outputArrayAdapter.notifyDataSetChanged();
-	       }
-            } catch (FileNotFoundException e) {
+	            }
+            }
+            catch (FileNotFoundException e) {
                e.printStackTrace();
             }
          }
