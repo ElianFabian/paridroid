@@ -104,25 +104,8 @@ public class PariActivity extends Activity {
          if (!key.equals ("parisize") && !key.equals ("primelimit"))
             PariUtil.setDefault (key, map.get (key).toString ());
 
-      /* Set up the input field. */
-      inputText = findViewById(R.id.inputText);
-      inputText.setDropDownHeight (ViewGroup.LayoutParams.MATCH_PARENT);
-      setupAutoCompleteView();
-      inputText.setOnKeyListener(new OnKeyListener() {
-         public boolean onKey(View v, int keyCode, KeyEvent event) {
-            if(   (event.getAction() == KeyEvent.ACTION_DOWN)
-               && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-               String input = inputText.getText().toString();
-               evaluate(input);
-               clear();
-               return true;
-            }
-            return false;
-         }
-      });
-
       /* Set up the buttons. */
-      Button enterButton = findViewById(R.id.enterButton);
+      final Button enterButton = findViewById(R.id.enterButton);
       enterButton.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View v) {
@@ -132,7 +115,7 @@ public class PariActivity extends Activity {
          }
       });
 
-      Button clearButton = findViewById(R.id.clearButton);
+      final Button clearButton = findViewById(R.id.clearButton);
       clearButton.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View v) {
@@ -140,7 +123,7 @@ public class PariActivity extends Activity {
          }
       });
 
-      Button nextButton = findViewById(R.id.nextButton);
+      final Button nextButton = findViewById(R.id.nextButton);
       nextButton.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View v) {
@@ -151,7 +134,7 @@ public class PariActivity extends Activity {
          }
       });
 
-      Button prevButton = findViewById(R.id.prevButton);
+      final Button prevButton = findViewById(R.id.prevButton);
       prevButton.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View v) {
@@ -159,6 +142,22 @@ public class PariActivity extends Activity {
             if (cursor < 0)
                cursor = inputArrayList.size() - 1; /* cycle through */
             inputText.setText(getFromHistory(cursor));
+         }
+      });
+
+      /* Set up the input field. */
+      inputText = findViewById(R.id.inputText);
+      inputText.setDropDownHeight (ViewGroup.LayoutParams.MATCH_PARENT);
+      setupAutoCompleteView();
+      inputText.setOnKeyListener(new OnKeyListener() {
+         public boolean onKey(View v, int keyCode, KeyEvent event) {
+            if(   event.getAction() == KeyEvent.ACTION_DOWN
+               && keyCode == KeyEvent.KEYCODE_ENTER) {
+               enterButton.performClick();
+               return true;
+            }
+            else
+               return false;
          }
       });
 
