@@ -157,20 +157,22 @@ public class PariActivity extends Activity {
               functions);
       inputText.setAdapter(adapter);
 
-      /* Set up the suggestions. */
+      /* Set up the suggestions through a tokeniser; a token is an
+         uninterrupted sequence of letters or digits, or any other single
+         character. */
       MultiAutoCompleteTextView.Tokenizer tokenizer = new MultiAutoCompleteTextView.Tokenizer(){
          public int findTokenStart(CharSequence text, int cursor) {
             int i = cursor;
-            while (i > 0 && Character.isLetter(text.charAt(i - 1)))
+            while (i > 0 && Character.isLetterOrDigit(text.charAt(i - 1)))
                i--;
             return i;
          }
          public int findTokenEnd(CharSequence text, int cursor) {
-            int i = cursor;
             int len = text.length();
-            while (i < len)
-               if (Character.isLetter(text.charAt(i)))
-                  i++;
+            int i = cursor;
+            while (i < len - 1 && Character.isLetterOrDigit(text.charAt(i + 1)))
+               i++;
+            Log.d (MSG_TAG, text.toString() + " " + cursor + " " + i);
             return i;
          }
          public CharSequence terminateToken(CharSequence text) {
