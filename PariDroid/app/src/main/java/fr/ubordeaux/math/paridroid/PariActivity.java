@@ -288,9 +288,4 @@ public class PariActivity extends Activity {
          return super.onOptionsItemSelected(item);
       }
    }
-
-
-   public void onDestroy() {
-      super.onDestroy();
-   }
 }
