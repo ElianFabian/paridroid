@@ -172,7 +172,6 @@ public class PariActivity extends Activity {
             int i = cursor;
             while (i < len - 1 && Character.isLetterOrDigit(text.charAt(i + 1)))
                i++;
-            Log.d (MSG_TAG, text.toString() + " " + cursor + " " + i);
             return i;
          }
          public CharSequence terminateToken(CharSequence text) {
@@ -180,6 +179,11 @@ public class PariActivity extends Activity {
          }
       };
       inputText.setTokenizer(tokenizer);
+
+      /* Enable suggestions only after four letters are typed; this takes
+         into account that many GP functions share a common prefix of three
+         letters. */
+      inputText.setThreshold(4);
 
       /* Set up the list of results. */
       ListView resultList = (ListView) findViewById(R.id.resultList);
