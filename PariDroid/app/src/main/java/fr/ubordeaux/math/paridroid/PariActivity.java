@@ -137,7 +137,6 @@ public class PariActivity extends Activity {
       /* Set up the input field. */
       inputText = (MultiAutoCompleteTextView) findViewById(R.id.inputText);
       inputText.setDropDownHeight (ViewGroup.LayoutParams.MATCH_PARENT);
-      setupAutoCompleteView();
       inputText.setOnKeyListener(new OnKeyListener() {
          public boolean onKey(View v, int keyCode, KeyEvent event) {
             if(   event.getAction() == KeyEvent.ACTION_DOWN
@@ -149,6 +148,36 @@ public class PariActivity extends Activity {
                return false;
          }
       });
+
+      /* Add function suggestions to the input field. */
+      String[] functions = PariNative.getCommands();
+      Arrays.sort(functions);
+      ArrayAdapter<String> adapter
+              = new ArrayAdapter<>(this, R.layout.suggestion_list_item,
+              functions);
+      inputText.setAdapter(adapter);
+
+      /* Set up the suggestions. */
+      MultiAutoCompleteTextView.Tokenizer tokenizer = new MultiAutoCompleteTextView.Tokenizer(){
+         public int findTokenStart(CharSequence text, int cursor) {
+            int i = cursor;
+            while (i > 0 && Character.isLetter(text.charAt(i - 1)))
+               i--;
+            return i;
+         }
+         public int findTokenEnd(CharSequence text, int cursor) {
+            int i = cursor;
+            int len = text.length();
+            while (i < len)
+               if (Character.isLetter(text.charAt(i)))
+                  i++;
+            return i;
+         }
+         public CharSequence terminateToken(CharSequence text) {
+            return text + "(" ;
+         }
+      };
+      inputText.setTokenizer(tokenizer);
 
       /* Set up the list of results. */
       ListView resultList = (ListView) findViewById(R.id.resultList);
@@ -258,46 +287,7 @@ public class PariActivity extends Activity {
       }
    }
 
-   public void setupAutoCompleteView() {
-       String[] s = PariNative.getCommands();
-       ArrayList<String> functions = new ArrayList<>(Arrays.asList(s));
-       Collections.sort(functions);
-       ArrayAdapter<String> adapter
-         = new ArrayAdapter<>(this, R.layout.suggestion_list_item,
-                                    functions);
-       inputText.setAdapter(adapter);
 
-       inputText.setTokenizer(new MultiAutoCompleteTextView.Tokenizer(){
-
-          public int findTokenStart(CharSequence text, int cursor) {
-             // Returns the start of the token that ends at offset cursor
-             // within text.
-             int i = cursor;
-             while (i > 0 && Character.isLetter(text.charAt(i - 1)))
-                i--;
-             return i;
-          }
-
-          public int findTokenEnd(CharSequence text, int cursor) {
-             // Returns the end of the token (minus trailing punctuation)
-             // that begins at offset cursor within text.
-             int i = cursor;
-             int len = text.length();
-             while (i < len)
-                if (Character.isLetter(text.charAt(i)))
-                   i++;
-             return i;
-          }
-
-          public CharSequence terminateToken(CharSequence text) {
-             // Returns text, modified, if necessary, to ensure that it
-             // ends with a token terminator (for example a space or comma).
-            return text + "(" ;
-          }
-
-      });
-   }
-    
    public void onDestroy() {
       super.onDestroy();
    }
