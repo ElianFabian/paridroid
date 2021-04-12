@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2019 Andreas Enge <andreas.enge@inria.fr>
+ * Copyright (C) 2019, 2021 Andreas Enge <andreas.enge@inria.fr>
  *
  * This file is part of PariDroid.
  *
@@ -22,11 +22,11 @@ package fr.ubordeaux.math.paridroid;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
+import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.PreferenceActivity;
 import java.util.Set;
 
-public class PariSettings extends PreferenceActivity {
+public class PariSettingsFragment extends PreferenceFragment {
    /* Call-back class to set the summary of a preference to its value
       when it is changed, and to change the corresponding pari default. */
 
@@ -41,15 +41,15 @@ public class PariSettings extends PreferenceActivity {
    };
 
    public void onCreate (Bundle savedInstanceState) {
-      super.onCreate (savedInstanceState);
-      addPreferencesFromResource (R.xml.settings);
-      Set <String> keys = PreferenceManager
-         .getDefaultSharedPreferences (this).getAll ().keySet ();
+      super.onCreate(savedInstanceState);
+      addPreferencesFromResource(R.xml.settings);
+      Set<String> keys = PreferenceManager
+              .getDefaultSharedPreferences(getActivity().getApplicationContext())
+              .getAll().keySet();
       for (String key : keys) {
-         EditTextPreference pref = (EditTextPreference) findPreference (key);
-         pref.setOnPreferenceChangeListener (change);
-         change.onPreferenceChange (pref, pref.getText ());
+         EditTextPreference pref = (EditTextPreference) findPreference(key);
+         pref.setOnPreferenceChangeListener(change);
+         change.onPreferenceChange(pref, pref.getText());
       }
    }
 }
-

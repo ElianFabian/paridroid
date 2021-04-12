@@ -267,7 +267,7 @@ public class PariActivity extends Activity {
    public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId()) {
       case R.id.settings:
-         Intent settings = new Intent (this, PariSettings.class);
+         Intent settings = new Intent (this, PariSettingsActivity.class);
          startActivity (settings);
          return true;
       case R.id.docs:
