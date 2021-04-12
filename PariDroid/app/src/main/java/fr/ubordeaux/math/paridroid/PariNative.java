@@ -50,7 +50,7 @@ class PariNative {
    /**
    * Declaration of JNI callback to paridroid_init().
    */
-   public static native void paridroidInit(long parisize, long primelimit);
+   public static native void paridroidInit(long parisize);
 
    /**
    * Declaration of JNI callback to paridroid_eval().

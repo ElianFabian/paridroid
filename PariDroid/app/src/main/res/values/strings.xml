@@ -10,5 +10,4 @@
   <!-- Strings giving default values for settings -->
   <string name="parisize_default">8000000</string>
   <string name="parisizemax_default">0</string>
-  <string name="primelimit_default">500000</string>
 </resources>

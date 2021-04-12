@@ -77,20 +77,18 @@ public class PariActivity extends Activity {
       }
       setTitle(getString(R.string.app_name) + " " + version);
 
-      /* Recover parisize and primelimit from the preferences and initialise
-         PARI, which needs to be done early. */
+      /* Recover parisize from the preferences and initialise PARI, which
+         needs to be done early. */
       SharedPreferences prefs = PreferenceManager
               .getDefaultSharedPreferences(this);
       long parisize = Long.parseLong(prefs.getString ("parisize",
               getString (R.string.parisize_default)));
-      long primelimit = Long.parseLong(prefs.getString ("primelimit",
-              getString (R.string.primelimit_default)));
-      PariNative.paridroidInit(parisize, primelimit);
+      PariNative.paridroidInit(parisize);
       /* Set all preferences. */
       Map <String, ?> map = prefs.getAll ();
       Set <String> keys = map.keySet ();
       for (String key : keys)
-         if (!key.equals ("parisize") && !key.equals ("primelimit"))
+         if (!key.equals ("parisize"))
             PariUtil.setDefault (key, map.get (key).toString ());
 
       /* Set up the buttons. */

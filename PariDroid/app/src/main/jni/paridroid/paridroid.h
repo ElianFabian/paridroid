@@ -40,7 +40,7 @@
 
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "libparidroid", __VA_ARGS__)
 
-void paridroid_init(long parisize, long primelimit);
+void paridroid_init(long parisize);
 
 void paridroid_eval(const char *in, char **out);
 

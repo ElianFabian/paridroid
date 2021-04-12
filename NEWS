@@ -1,6 +1,8 @@
 Version 2.13.2.2.0 (???):
   Suggestions for function names do not cover the input field any more,
-     and are displayed only from the fourth letter on.
+    and are displayed only from the fourth letter on.
+  The value of primelimit has been dropped from the internal initialisation
+    of the PARI engine and cannot be modified by the Settings menu any more.
 
 Version 2.13.1.1.9 (March 2021):
   Minimal Android version requirement: 4.4 "KitKat" (API level 19)
@@ -11,7 +13,7 @@ Version 2.11.4.1.8 (August 2020):
   Compilation with version 2.11.4 of Pari/GP.
   Include and use gmp for the multiprecision kernel.
   Updates to the build system, which now calls the configuration step of
-     PARI/GP instead of relying on hand-crafted files.
+    PARI/GP instead of relying on hand-crafted files.
 
 Version 2.11.3.1.7 (April 2020):
   Compilation with version 2.11.3 of Pari/GP.

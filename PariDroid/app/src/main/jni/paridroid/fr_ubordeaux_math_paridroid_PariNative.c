@@ -27,9 +27,9 @@
 #include "fr_ubordeaux_math_paridroid_PariNative.h"
 
 void
-Java_fr_ubordeaux_math_paridroid_PariNative_paridroidInit(JNIEnv *env, jclass cls, jlong parisize, jlong primelimit)
+Java_fr_ubordeaux_math_paridroid_PariNative_paridroidInit(JNIEnv *env, jclass cls, jlong parisize)
 {
-  paridroid_init(parisize, primelimit);
+  paridroid_init(parisize);
 }
 
 jstring

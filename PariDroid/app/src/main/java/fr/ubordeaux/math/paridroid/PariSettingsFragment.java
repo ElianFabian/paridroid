@@ -19,6 +19,7 @@
 
 package fr.ubordeaux.math.paridroid;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
@@ -43,13 +44,22 @@ public class PariSettingsFragment extends PreferenceFragment {
    public void onCreate (Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       addPreferencesFromResource(R.xml.settings);
-      Set<String> keys = PreferenceManager
-              .getDefaultSharedPreferences(getActivity().getApplicationContext())
-              .getAll().keySet();
+      SharedPreferences sp = PreferenceManager
+              .getDefaultSharedPreferences(getActivity().getApplicationContext());
+      Set<String> keys = sp.getAll().keySet();
       for (String key : keys) {
          EditTextPreference pref = (EditTextPreference) findPreference(key);
-         pref.setOnPreferenceChangeListener(change);
-         change.onPreferenceChange(pref, pref.getText());
+         if (pref != null) {
+            /* null occurs when a preference is removed in a new version. */
+            pref.setOnPreferenceChangeListener(change);
+            change.onPreferenceChange(pref, pref.getText());
+         }
+         else {
+            /* Clean up the preference on the device. */
+            SharedPreferences.Editor editor = sp.edit();
+            editor.remove(key);
+            editor.apply();
+         }
       }
    }
 }

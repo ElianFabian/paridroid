@@ -73,14 +73,14 @@ paridroid_quit(long exitcode)
 
 
 void
-paridroid_init(long parisize, long primelimit)
+paridroid_init(long parisize)
 {
   static entree functions_gp[]={
     {"quit",0,(void*)paridroid_quit,11,"vD0,L,","quit({status = 0}): quit, return to the system with exit status 'status'."},
     {NULL,0,NULL,0,NULL,NULL}};
 
   setenv ("GPTMPDIR", "/data/data/fr.ubordeaux.math.paridroid/cache", 1);
-  pari_init(parisize, primelimit);
+  pari_init(parisize, 0);
   pari_add_module(functions_gp);
   cb_pari_err_recover = gp_err_recover;
   pari_stack_init(&s_droidStr,sizeof(*droidStr),(void**)&droidStr);
