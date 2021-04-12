@@ -1,3 +1,7 @@
+Version 2.13.2.2.0 (???):
+  Suggestions for function names do not cover the input field any more,
+     and are displayed only from the fourth letter on.
+
 Version 2.13.1.1.9 (March 2021):
   Minimal Android version requirement: 4.4 "KitKat" (API level 19)
   Compilation with version 2.13.1 of Pari/GP.

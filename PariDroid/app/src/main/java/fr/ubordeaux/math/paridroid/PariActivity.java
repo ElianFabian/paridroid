@@ -136,7 +136,6 @@ public class PariActivity extends Activity {
 
       /* Set up the input field. */
       inputText = (MultiAutoCompleteTextView) findViewById(R.id.inputText);
-      inputText.setDropDownHeight (ViewGroup.LayoutParams.MATCH_PARENT);
       inputText.setOnKeyListener(new OnKeyListener() {
          public boolean onKey(View v, int keyCode, KeyEvent event) {
             if(   event.getAction() == KeyEvent.ACTION_DOWN
