@@ -4,7 +4,6 @@
    android:layout_height="wrap_content"
    android:textColor="#fff"
    android:background="#000"
-   android:textIsSelectable="true"
    android:typeface="monospace">
 </TextView>
 

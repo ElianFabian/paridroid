@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 package fr.ubordeaux.math.paridroid;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -31,10 +32,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
@@ -62,6 +65,7 @@ public class PariActivity extends Activity {
    private final ArrayList<String> inputArrayList = new ArrayList<>(255);
    private int cursor = 0;
 
+   @SuppressLint("ClickableViewAccessibility")
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.main);
@@ -198,6 +202,16 @@ public class PariActivity extends Activity {
       outputArrayAdapter = new ArrayAdapter<>(this,
               R.layout.result_list_item,outputArrayList);
       resultList.setAdapter(outputArrayAdapter);
+
+      /* Add a gesture detector. */
+      final GestureDetector gd
+              = new GestureDetector(this, new ResultListGestureListener(resultList));
+      resultList.setOnTouchListener(new View.OnTouchListener() {
+         @Override
+         public boolean onTouch(View v, MotionEvent event) {
+            return gd.onTouchEvent(event);
+         }
+      });
    }
 
    private void evaluate(String cmd) {
