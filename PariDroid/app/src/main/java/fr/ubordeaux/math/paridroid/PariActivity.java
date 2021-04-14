@@ -60,6 +60,7 @@ public class PariActivity extends Activity {
 
    private MultiAutoCompleteTextView inputText;
 
+   private ListView resultList;
    private ArrayAdapter<String> outputArrayAdapter;
    private final ArrayList<String> outputArrayList = new ArrayList<>(255);
    private final ArrayList<String> inputArrayList = new ArrayList<>(255);
@@ -198,7 +199,7 @@ public class PariActivity extends Activity {
       inputText.setThreshold(4);
 
       /* Set up the list of results. */
-      ListView resultList = (ListView) findViewById(R.id.resultList);
+      resultList = (ListView) findViewById(R.id.resultList);
       outputArrayAdapter = new ArrayAdapter<>(this,
               R.layout.result_list_item,outputArrayList);
       resultList.setAdapter(outputArrayAdapter);
@@ -239,6 +240,7 @@ public class PariActivity extends Activity {
                outputArrayList.add(0, "? " + cmd + "\n" + output);
             else
                outputArrayList.add(0, "? " + cmd);
+            resultList.clearChoices();
             outputArrayAdapter.notifyDataSetChanged();
          }
       }

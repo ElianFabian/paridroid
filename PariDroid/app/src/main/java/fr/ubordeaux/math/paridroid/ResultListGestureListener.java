@@ -52,8 +52,20 @@ public class ResultListGestureListener extends GestureDetector.SimpleOnGestureLi
          int pos2 = getIndex(event2);
          if (pos1 == pos2 && pos1 >= 0) {
             outputArrayAdapter.remove(outputArrayAdapter.getItem(pos1));
+            resultList.clearChoices();
             outputArrayAdapter.notifyDataSetChanged();
          }
+      }
+      return true;
+   }
+
+   @Override
+   public boolean onSingleTapUp(MotionEvent event) {
+      int pos = getIndex(event);
+      if (pos >= 0) {
+         boolean checked = resultList.getCheckedItemPositions().get(pos);
+         resultList.setItemChecked(pos, !checked);
+         outputArrayAdapter.notifyDataSetChanged();
       }
       return true;
    }

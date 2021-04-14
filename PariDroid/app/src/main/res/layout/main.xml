@@ -60,5 +60,6 @@
       android:layout_height="match_parent"
       android:textColor="#fff"
       android:background="#000"
+      android:choiceMode="multipleChoice"
    />
 </LinearLayout>
