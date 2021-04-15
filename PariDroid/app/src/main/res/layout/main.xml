@@ -21,13 +21,6 @@
       android:background="@android:drawable/bottom_bar"
       android:gravity="center_vertical">
       <Button
-         android:id="@+id/enterButton"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_weight="1.0"
-         android:text="Enter"
-      />
-      <Button
          android:id="@+id/clearButton"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
@@ -48,6 +41,13 @@
          android:layout_weight="1.0"
          android:text="Next"
       />
+      <Button
+        android:id="@+id/enterButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:text="Enter"
+        />
    </LinearLayout>
    <ListView
       android:id="@+id/resultList"
