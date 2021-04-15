@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -41,6 +42,7 @@ import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.MultiAutoCompleteTextView;
 import java.io.FileNotFoundException;
@@ -92,7 +94,7 @@ public class PariActivity extends Activity {
             PariUtil.setDefault (key, map.get (key).toString ());
 
       /* Set up the buttons. */
-      final Button enterButton = (Button) findViewById(R.id.enterButton);
+      final ImageButton enterButton = (ImageButton) findViewById(R.id.enterButton);
       enterButton.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View v) {
@@ -102,7 +104,7 @@ public class PariActivity extends Activity {
          }
       });
 
-      final Button clearButton = (Button) findViewById(R.id.clearButton);
+      final ImageButton clearButton = (ImageButton) findViewById(R.id.clearButton);
       clearButton.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View v) {
@@ -110,7 +112,7 @@ public class PariActivity extends Activity {
          }
       });
 
-      final Button nextButton = (Button) findViewById(R.id.nextButton);
+      final ImageButton nextButton = (ImageButton) findViewById(R.id.nextButton);
       nextButton.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View v) {
@@ -121,7 +123,7 @@ public class PariActivity extends Activity {
          }
       });
 
-      final Button prevButton = (Button) findViewById(R.id.prevButton);
+      final ImageButton prevButton = (ImageButton) findViewById(R.id.prevButton);
       prevButton.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View v) {

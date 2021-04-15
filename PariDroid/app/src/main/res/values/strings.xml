@@ -10,4 +10,10 @@
   <!-- Strings giving default values for settings -->
   <string name="parisize_default">8000000</string>
   <string name="parisizemax_default">0</string>
+
+  <!-- Strings giving button descriptions -->
+  <string name="clear">clear</string>
+  <string name="prev">previous</string>
+  <string name="next">next</string>
+  <string name="enter">enter</string>
 </resources>

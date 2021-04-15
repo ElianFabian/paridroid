@@ -28,6 +28,10 @@ languages de-DE, en-US and fr-FR), which are renamed from the files
 summary.txt taken from the F-Droid weblate instance at
    https://hosted.weblate.org/projects/f-droid/fdroiddata/
 
+Icons in the PariDroid/app/src/main/res/drawable-* subdirectories are
+obtained from https://fonts.google.com/icons?selected=Material+Icons
+and licensed under the Apache License 2.0.
+
 PariDroid is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
