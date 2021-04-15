@@ -27,7 +27,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -39,16 +38,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
-import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.TextView;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -145,6 +144,16 @@ public class PariActivity extends Activity {
             }
             else
                return false;
+         }
+      });
+      inputText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+         @Override
+         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+            if(i == EditorInfo.IME_ACTION_DONE) {
+               enterButton.performClick();
+               return true;
+            }
+            return false;
          }
       });
 
