@@ -17,4 +17,5 @@
   <string name="next">next</string>
   <string name="enter">enter</string>
   <string name="shareAll">Share all</string>
+  <string name="shareSelected">Share selected</string>
 </resources>

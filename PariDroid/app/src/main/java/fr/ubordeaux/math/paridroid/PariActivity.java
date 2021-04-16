@@ -33,6 +33,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -48,13 +49,13 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class PariActivity extends Activity {
     
@@ -321,6 +322,23 @@ public class PariActivity extends Activity {
                  TextUtils.join("\n", outputArrayList));
                  /* String.join was added in API level 26 */
          startActivity(shareAll);
+         return true;
+      case R.id.shareSelected:
+         /* Extract all selected items. */
+         String content = new String();
+         SparseBooleanArray sba = resultList.getCheckedItemPositions();
+         for (int i=0; i < resultList.getCount(); i++)
+            if (sba.get(i))
+               content += outputArrayList.get(i) + "\n";
+         if (content.isEmpty())
+            Toast.makeText(this, "Nothing selected; tap to select results",
+                    Toast.LENGTH_LONG).show();
+         else {
+            Intent share = new Intent(Intent.ACTION_SEND);
+            share.setType("text/plain");
+            share.putExtra(Intent.EXTRA_TEXT, content);
+            startActivity(share);
+         }
          return true;
       default:
          return super.onOptionsItemSelected(item);

@@ -7,7 +7,11 @@
    <item
      android:id="@+id/shareAll"
      android:title="@string/shareAll"
-     />
+   />
+   <item
+     android:id="@+id/shareSelected"
+     android:title="@string/shareSelected"
+   />
    <item
       android:id="@+id/settings"
       android:title="@string/settings"
