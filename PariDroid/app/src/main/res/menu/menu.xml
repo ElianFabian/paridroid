@@ -5,6 +5,10 @@
       android:title="@string/read"
    />
    <item
+     android:id="@+id/shareAll"
+     android:title="@string/shareAll"
+     />
+   <item
       android:id="@+id/settings"
       android:title="@string/settings"
    />

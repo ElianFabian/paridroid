@@ -31,6 +31,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
@@ -53,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class PariActivity extends Activity {
     
@@ -311,6 +313,14 @@ public class PariActivity extends Activity {
          openFile.setType("*/*");
          openFile.addCategory(Intent.CATEGORY_OPENABLE);
          startActivityForResult(openFile,OPEN_FILE_REQUEST);
+         return true;
+      case R.id.shareAll:
+         Intent shareAll = new Intent(Intent.ACTION_SEND);
+         shareAll.setType("text/plain");
+         shareAll.putExtra(Intent.EXTRA_TEXT,
+                 TextUtils.join("\n", outputArrayList));
+                 /* String.join was added in API level 26 */
+         startActivity(shareAll);
          return true;
       default:
          return super.onOptionsItemSelected(item);
