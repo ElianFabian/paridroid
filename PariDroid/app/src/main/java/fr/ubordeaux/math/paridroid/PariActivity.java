@@ -261,7 +261,7 @@ public class PariActivity extends Activity {
 
    public boolean onCreateOptionsMenu(Menu menu) {
       MenuInflater inflater = getMenuInflater();
-      inflater.inflate(R.menu.paridroid_menu, menu);
+      inflater.inflate(R.menu.menu, menu);
       return true;
    }
 
