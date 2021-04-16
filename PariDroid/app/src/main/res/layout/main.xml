@@ -9,7 +9,7 @@
       android:id="@+id/inputText"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:paddingHorizontal="5dp"
+      android:paddingStart="5dp"
       android:textColor="#000"
       android:background="#fff"
       android:scrollbars="vertical"
