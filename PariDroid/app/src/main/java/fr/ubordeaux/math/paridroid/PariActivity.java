@@ -280,9 +280,10 @@ public class PariActivity extends Activity {
 	            int file = getContentResolver().openFileDescriptor(uri, "r").getFd();
 	            String output = PariNative.read (file);
 	            if (output.length () != 0) {
+	               resultList.clearChoices();
 	               outputArrayList.add(0, output);
                   outputArrayAdapter.notifyDataSetChanged();
-	            }
+               }
             }
             catch (FileNotFoundException e) {
                e.printStackTrace();
