@@ -1,4 +1,10 @@
-Version 2.13.2.2.0 (???):
+Version 2.13.2.2.0 (August 2021):
+  Clicking on a result adds it to a selection, which can be shared with
+    other applications (such as an editor or email) through the usual
+    Android mechanism by choosing this action from the menu. It is also
+    possible to share all results by selecting the corresponding menu entry.
+  Swiping to the right on a result removes it from the screen.
+  Text on buttons has been replaced by icons.
   Suggestions for function names do not cover the input field any more,
     and are displayed only from the fourth letter on.
   The value of primelimit has been dropped from the internal initialisation
