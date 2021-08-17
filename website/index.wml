@@ -129,6 +129,7 @@ a software archive as follows:
 <pre class="code">
 wget http://dl.google.com/android/repository/android-19_r04.zip
 unzip android-19_r04.zip
+mkdir $SDK/platforms
 mv android-4.4.2 $SDK/platforms/
 rm -f android-19_r04.zip
 </pre>
