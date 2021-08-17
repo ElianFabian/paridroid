@@ -152,28 +152,36 @@ pari-build-arm-sta:
 	STATIC=-static S=-s             KK=android make VERBOSE=1 pari-configure-arm
 
 pari-build-arm:
+ifneq ($(findstring $(ANDROID_TARGET_ARM), $(APP_ABI)),)
 	RUNTEST="echo $(GMP_VERSION)" KK=linux make gmp-build-arm pari-configure-arm pari-make-arm
+endif
 
 pari-build-aarch64-sta:
 	DISABLE_SHARED=--disable-shared KK=linux   make gmp-build-aarch64-sta 
 	STATIC=-static S=-s             KK=android make pari-configure-aarch64
 
 pari-build-aarch64:
+ifneq ($(findstring $(ANDROID_TARGET_AARCH64), $(APP_ABI)),)
 	RUNTEST="echo $(GMP_VERSION)" KK=linux make gmp-build-aarch64 pari-configure-aarch64 pari-make-aarch64
+endif
 
 pari-build-x86-sta:
 	DISABLE_SHARED=--disable-shared KK=linux   make gmp-build-x86 
 	STATIC=-static S=-s             KK=android make pari-configure-x86
 
 pari-build-x86:
+ifneq ($(findstring $(ANDROID_TARGET_X86), $(APP_ABI)),)
 	RUNTEST="echo $(GMP_VERSION)" KK=linux make gmp-build-x86 pari-configure-x86 pari-make-x86
+endif
 
 pari-build-x86-64-sta:
 	DISABLE_SHARED=--disable-shared KK=linux   make gmp-build-x86-64 
 	STATIC=-static S=-s             KK=android make pari-configure-x86-64
 
 pari-build-x86-64:
+ifneq ($(findstring $(ANDROID_TARGET_X86_64), $(APP_ABI)),)
 	RUNTEST="echo $(GMP_VERSION)" KK=linux make gmp-build-x86-64 pari-configure-x86-64 pari-make-x86-64
+endif
 
 pari-configure-arm:
 	# First use the PARI mechanism for configuration, but not executing
