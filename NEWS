@@ -1,4 +1,5 @@
 Version 2.13.2.2.0 (August 2021):
+  Compilation with version 2.13.2 of Pari/GP.
   Clicking on a result adds it to a selection, which can be shared with
     other applications (such as an editor or email) through the usual
     Android mechanism by choosing this action from the menu. It is also
