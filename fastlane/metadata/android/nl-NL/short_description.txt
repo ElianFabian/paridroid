@@ -1,1 +1,1 @@
-PARI / GP is een computer algebra systeem ontworpen voor berekeningen in de getaltheorie
+PARI / GP is een computer algebra systeem voor berekeningen in de getaltheorie
