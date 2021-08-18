@@ -116,7 +116,7 @@ command_postpare (char **out, GEN z, int print, pari_timer T, pari_timer Tw)
 
    if (z != gnil) {
       pari_add_hist(z, time, rtime);
-      if (GP_DATA->chrono && time > 0)
+      if (GP_DATA->chrono && time > 0) {
          if (pari_mt_nbthreads == 1)
             pari_printf ("time = %s.\n",
                gp_format_time (time));
@@ -124,6 +124,7 @@ command_postpare (char **out, GEN z, int print, pari_timer T, pari_timer Tw)
             pari_printf ("cpu time = %s, real time = %s.\n",
                gp_format_time (time),
                gp_format_time (rtime));
+      }
       if (print) {
          char *s = GENtostr (z);
          pari_printf ("%%%lu = ", pari_nb_hist ());

@@ -35,7 +35,7 @@ Java_fr_ubordeaux_math_paridroid_PariNative_paridroidInit(JNIEnv *env, jclass cl
 jstring
 Java_fr_ubordeaux_math_paridroid_PariNative_paridroidEval(JNIEnv *env, jclass cls, jstring input)
 {
-  const jbyte *cmd;
+  const char *cmd;
   char *output;
   jstring res;
 
