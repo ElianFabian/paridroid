@@ -6,6 +6,7 @@
   <string name="license">License</string>
   <string name="doc_url">http://pari.math.u-bordeaux.fr/dochtml/help-stable/</string>
   <string name="read">Read</string>
+  <string name="commandHint">type your command here</string>
 
   <!-- Strings giving default values for settings -->
   <string name="parisize_default">8000000</string>

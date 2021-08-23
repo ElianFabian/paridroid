@@ -1,3 +1,7 @@
+Version 2.13.2.2.1 (???):
+  Give the input field focus and display a hint upon starting the
+    application.
+
 Version 2.13.2.2.0 (August 2021):
   Compilation with version 2.13.2 of Pari/GP.
   Clicking on a result adds it to a selection, which can be shared with

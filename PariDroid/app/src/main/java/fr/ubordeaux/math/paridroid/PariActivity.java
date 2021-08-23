@@ -107,6 +107,8 @@ public class PariActivity extends Activity {
          public void onClick(View v) {
             String in = inputText.getText().toString();
             evaluate(in);
+            /* Remove hint from input field. */
+            inputText.setHint(null);
             clear();
          }
       });
