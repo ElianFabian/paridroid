@@ -15,6 +15,7 @@
       android:scrollbars="vertical"
       android:inputType="text"
       android:imeOptions="actionDone|flagNoExtractUi">
+      <requestFocus />
    </MultiAutoCompleteTextView>
    <LinearLayout
       android:layout_width="match_parent"
