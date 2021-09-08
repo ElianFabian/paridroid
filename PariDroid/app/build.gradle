@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "fr.ubordeaux.math.paridroid"
         minSdkVersion 19
-        targetSdkVersion 29
+        targetSdkVersion 30
 
         ndk {
             moduleName "gmp"

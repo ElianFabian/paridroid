@@ -33,7 +33,7 @@ ANDROID_TARGET_X86_64=x86_64
 
 # Define the target API level, which surprisingly is not taken from
 # build.gradle or AndroidManifest.xml.
-TARGET_API_LEVEL=29
+TARGET_API_LEVEL=30
 
 # Choose what to put into the apk.
 # The emulator can use x86 targets.
