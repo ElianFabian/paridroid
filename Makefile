@@ -84,10 +84,10 @@ gmp-build-generic: $(GMP_SRC)
 	# in Android API level 26 and is thus activated when using later SDK
 	# versions, which creates a .apk not running on older systems.
 	- cd $(GMP_SRC) && sed -i "s! doc!!" Makefile.am && autoreconf -vfi && sed -i "s!nl_langinfo!nl_langinfo_disabled!" configure && make distclean
-	cd $(GMP_SRC) && \
+	( cd $(GMP_SRC) && \
 	CC="$(CC) $(STATIC)" CFLAGS="--sysroot=$(SYSROOT)" CPPFLAGS=--sysroot=$(SYSROOT) LDFLAGS=--sysroot=$(SYSROOT) ./configure $(DISABLE_SHARED) --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET)/gmp --host=$(TARGET) --with-sysroot=$(SYSROOT) && \
 	make VERBOSE=1 -j $(shell getconf _NPROCESSORS_CONF) && \
-	make install
+	make install ) > gmp-log 2>&1 || (cat gmp-log ; exit 1)
 
 gmp-build-arm:
 	make CC=$(CC_ARM) SYSROOT=$(SYSROOT_ARM) ANDROID_TARGET=$(ANDROID_TARGET_ARM) TARGET=$(TARGET_ARM) gmp-build-generic
