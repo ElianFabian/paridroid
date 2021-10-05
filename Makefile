@@ -31,10 +31,6 @@ ANDROID_TARGET_AARCH64=arm64-v8a
 ANDROID_TARGET_X86=x86
 ANDROID_TARGET_X86_64=x86_64
 
-# Define the target API level, which surprisingly is not taken from
-# build.gradle or AndroidManifest.xml.
-TARGET_API_LEVEL=30
-
 # Choose what to put into the apk.
 # The emulator can use x86 targets.
 APP_ABI="$(ANDROID_TARGET_ARM) $(ANDROID_TARGET_AARCH64) $(ANDROID_TARGET_X86) $(ANDROID_TARGET_X86_64)"
@@ -89,7 +85,7 @@ gmp-build-generic: $(GMP_SRC)
 	# versions, which creates a .apk not running on older systems.
 	- cd $(GMP_SRC) && sed -i "s! doc!!" Makefile.am && autoreconf -vfi && sed -i "s!nl_langinfo!nl_langinfo_disabled!" configure && make distclean
 	cd $(GMP_SRC) && \
-	CC="$(CC) $(STATIC)" CFLAGS="-D__ANDROID_API_FUTURE__=$(TARGET_API_LEVEL) --sysroot=$(SYSROOT) --std=c99" CPPFLAGS=--sysroot=$(SYSROOT) LDFLAGS=--sysroot=$(SYSROOT) ./configure $(DISABLE_SHARED) --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET)/gmp --host=$(TARGET) --with-sysroot=$(SYSROOT) && \
+	CC="$(CC) $(STATIC)" CFLAGS="--sysroot=$(SYSROOT)" CPPFLAGS=--sysroot=$(SYSROOT) LDFLAGS=--sysroot=$(SYSROOT) ./configure $(DISABLE_SHARED) --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET)/gmp --host=$(TARGET) --with-sysroot=$(SYSROOT) && \
 	make VERBOSE=1 -j $(shell getconf _NPROCESSORS_CONF) && \
 	make install
 
@@ -161,7 +157,7 @@ pari-configure-arm:
 	# any compiled code in a cross-compilation context.
 	rm -rf $(PARI_SRC)/O$(KK)-$(TARGET_CPU_ARM)
 	cd $(PARI_SRC) && \
-	CC="$(CC_ARM) $(STATIC) -D__ANDROID_API_FUTURE__=$(TARGET_API_LEVEL) --sysroot=$(SYSROOT_ARM) " ./Configure $(S) --static --prefix=$(JNI)/$(ANDROID_TARGET_ARM)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --with-gmp=$(JNI)/$(ANDROID_TARGET_ARM)/gmp --host=$(TARGET_CPU_ARM)-$(KK)
+	CC="$(CC_ARM) $(STATIC) --sysroot=$(SYSROOT_ARM) " ./Configure $(S) --static --prefix=$(JNI)/$(ANDROID_TARGET_ARM)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --with-gmp=$(JNI)/$(ANDROID_TARGET_ARM)/gmp --host=$(TARGET_CPU_ARM)-$(KK)
 	# Correct the resulting pari.cfg.
 	cd $(PARI_SRC)/O$(KK)-$(TARGET_CPU_ARM) && \
 	sed -i -E "s/^doubleformat='(.*)'/doubleformat='1'/" pari.cfg
@@ -173,7 +169,7 @@ pari-configure-arm:
 pari-configure-aarch64:
 	rm -rf $(PARI_SRC)/O$(KK)-$(TARGET_CPU_AARCH64)
 	cd $(PARI_SRC) && \
-	CC="$(CC_AARCH64) $(STATIC) -D__ANDROID_API_FUTURE__=$(TARGET_API_LEVEL) --sysroot=$(SYSROOT_AARCH64) " ./Configure $(S) --prefix=$(JNI)/$(ANDROID_TARGET_AARCH64)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --with-gmp=$(JNI)/$(ANDROID_TARGET_AARCH)/gmp --host=$(TARGET_CPU_AARCH64)-$(KK)
+	CC="$(CC_AARCH64) $(STATIC) --sysroot=$(SYSROOT_AARCH64) " ./Configure $(S) --prefix=$(JNI)/$(ANDROID_TARGET_AARCH64)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --with-gmp=$(JNI)/$(ANDROID_TARGET_AARCH)/gmp --host=$(TARGET_CPU_AARCH64)-$(KK)
 	cd $(PARI_SRC)/O$(KK)-$(TARGET_CPU_AARCH64) && \
 	sed -i "s!^asmarch='none'!asmarch='aarch64'!" pari.cfg && \
 	sed -i "s!^kernlvl0='none'!kernlvl0='aarch64'!" pari.cfg && \
@@ -191,7 +187,7 @@ pari-configure-aarch64:
 pari-configure-x86:
 	rm -rf $(PARI_SRC)/O$(KK)-$(TARGET_CPU_X86)
 	cd $(PARI_SRC) && \
-	CC="$(CC_X86) $(STATIC) -D__ANDROID_API_FUTURE__=$(TARGET_API_LEVEL) --sysroot=$(SYSROOT_X86) " ./Configure  $(S) --prefix=$(JNI)/$(ANDROID_TARGET_X86)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --with-gmp=$(JNI)/$(ANDROID_TARGET_X86)/gmp --host=$(TARGET_CPU_X86)-$(KK)
+	CC="$(CC_X86) $(STATIC) --sysroot=$(SYSROOT_X86) " ./Configure  $(S) --prefix=$(JNI)/$(ANDROID_TARGET_X86)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --with-gmp=$(JNI)/$(ANDROID_TARGET_X86)/gmp --host=$(TARGET_CPU_X86)-$(KK)
 	cd $(PARI_SRC)/O$(KK)-$(TARGET_CPU_X86) && \
 	sed -i "s!^asmarch='none'!asmarch='ix86'!" pari.cfg && \
 	sed -i "s!^kernlvl0='none'!kernlvl0='ix86'!" pari.cfg && \
@@ -203,7 +199,7 @@ pari-configure-x86:
 pari-configure-x86-64:
 	rm -rf $(PARI_SRC)/O$(KK)-$(TARGET_CPU_X86_64)
 	cd $(PARI_SRC) && \
-	CC="$(CC_X86_64) $(STATIC) -D__ANDROID_API_FUTURE__=$(TARGET_API_LEVEL) --sysroot=$(SYSROOT_X86_64) " ./Configure $(S) --prefix=$(JNI)/$(ANDROID_TARGET_X86_64)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --with-gmp=$(JNI)/$(ANDROID_TARGET_X86_64)/gmp --host=$(TARGET_CPU_X86_64)-$(KK)
+	CC="$(CC_X86_64) $(STATIC) --sysroot=$(SYSROOT_X86_64) " ./Configure $(S) --prefix=$(JNI)/$(ANDROID_TARGET_X86_64)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --with-gmp=$(JNI)/$(ANDROID_TARGET_X86_64)/gmp --host=$(TARGET_CPU_X86_64)-$(KK)
 	cd $(PARI_SRC)/O$(KK)-$(TARGET_CPU_X86_64) && \
 	sed -i "s!^asmarch='ix86'!asmarch='x86_64'!" pari.cfg && \
 	sed -i "s!^kernlvl0='ix86'!kernlvl0='x86_64'!" pari.cfg && \
