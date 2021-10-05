@@ -4,7 +4,7 @@
 # https://www.gnu.org/savannah-checkouts/gnu/autoconf/manual/autoconf-2.69/html_node/System-Type.html#System-Type
 TARGET_CPU_ARM=arm
 TARGET_CPU_AARCH64=aarch64
-TARGET_CPU_X86=x86
+TARGET_CPU_X86=i686
 TARGET_CPU_X86_64=x86_64
 TARGET_KERNEL=linux
 TARGET_OS=android
@@ -185,6 +185,7 @@ pari-configure-aarch64:
 	./Configure -l O$(KK)-$(TARGET_CPU_AARCH64)/pari.cfg
 
 pari-configure-x86:
+	KK=android
 	rm -rf $(PARI_SRC)/O$(KK)-$(TARGET_CPU_X86)
 	cd $(PARI_SRC) && \
 	CC="$(CC_X86) $(STATIC) --sysroot=$(SYSROOT_X86) " ./Configure  $(S) --prefix=$(JNI)/$(ANDROID_TARGET_X86)/pari --datadir=/data/data/fr.ubordeaux.math.paridroid --with-gmp=$(JNI)/$(ANDROID_TARGET_X86)/gmp --host=$(TARGET_CPU_X86)-$(KK)
