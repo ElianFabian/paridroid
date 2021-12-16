@@ -1,4 +1,5 @@
-Version 2.13.2.2.1 (???):
+Version 2.13.3.2.1 (December 2021):
+  Compilation with version 2.13.3 of Pari/GP.
   Give the input field focus and display a hint upon starting the
     application.
 
