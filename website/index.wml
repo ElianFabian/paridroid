@@ -115,11 +115,12 @@ The previous steps have populated
 <code>$SDK/platform-tools</code>
 and
 <code>$SDK/build-tools</code>.
-Link <code>adb</code> and <code>zipalign</code>:
+Link <code>adb</code>, <code>apksigner</code> and <code>zipalign</code>:
 </p>
 <pre class="code">
 ln -s $SDK/platform-tools/adb bin/
 ln -s $SDK/build-tools/android-10/zipalign bin/
+ln -s $SDK/build-tools/android-10/apksigner bin/
 </pre>
 
 <p>

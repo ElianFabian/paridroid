@@ -75,6 +75,7 @@ PARIDROID_SRC=$(TOP)/PariDroid/app/src/main
 PARI_SRC=$(TOP)/../srclib/pari
 GMP_SRC=$(TOP)/../srclib/gmp
 JNI=$(PARIDROID_SRC)/jni
+TMPDIR=/tmp/PariDroid-tmp
 
 all: apk
 
@@ -94,9 +95,13 @@ ndk: $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
 
 apk-fast: ndk
 	cd $(PARIDROID_SRC) && ant release
-	cp $(PARIDROID_SRC)/bin/PariDroid-release-unsigned.apk $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk
-	jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $(HOME)/.android/debug.keystore -storepass android $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk androiddebugkey
-	zipalign -f 4 $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk PariDroid-$(PARIDROID_VERSION).apk
+	# For API>=30, one of the files in the .apk needs to be
+	# uncompressed. So we unzip and rezip the .apk.
+	rm -rf $(TMPDIR) && mkdir -p $(TMPDIR)
+	cd $(TMPDIR) && unzip $(PARIDROID_SRC)/bin/PariDroid-release-unsigned.apk
+	cd $(TMPDIR) && zip -r -n resources.arsc $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk .
+	zipalign -f 4 $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk $(PARIDROID_SRC)/bin/PariDroid-release-aligned.apk
+	apksigner sign --ks $(HOME)/.android/debug.keystore --ks-pass pass:android --out PariDroid-$(PARIDROID_VERSION).apk $(PARIDROID_SRC)/bin/PariDroid-release-aligned.apk
 
 gmp-build-generic: $(GMP_SRC)
         # Prevent the texinfo documentation from being built by removing

@@ -1,6 +1,7 @@
 Version 2.13.3.2.2 (???):
   Use an NDK version that makes the app compatible again with
-  Android 4.4 (API 19).
+    Android 4.4 (API 19), and correct the signing process to be
+    compatible with Android 11 (API 30).
 
 Version 2.13.3.2.1 (December 2021):
   Compilation with version 2.13.3 of Pari/GP.
