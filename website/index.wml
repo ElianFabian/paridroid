@@ -142,16 +142,20 @@ To later compile and integrate the PARI C library
 into the project, download the
 <a href="https://developer.android.com/tools/sdk/ndk/index.html">Android
 NDK</a>; for instance,
-<a href="https://dl.google.com/android/repository/android-ndk-r22b-linux-x86_64.zip">Linux
-64bit r22b</a>, the currently latest release.
+<a href="https://dl.google.com/android/repository/android-ndk-r13b-linux-x86_64.zip">Linux
+64bit r13b</a>.
+(This is the last version where the include files are still contained in
+the <code>platforms/</code> subdirectory, instead of in <code>sysroot/</code>.
+Version r17c is the last version that ships the GCC cross compiler.
+Version r18b contains a compiler named gcc, but which in reality is clang.)
 Unpack it and move it, for instance, to
-<code>$HOME/local/android-ndk-r22b</code>:
+<code>$HOME/local/android-ndk-r13b</code>:
 </p>
 <pre class="code">
 cd $HOME/local
-wget https://dl.google.com/android/repository/android-ndk-r22b-linux-x86_64.zip
-unzip android-ndk-r22b-linux-x86_64.zip
-rm -f android-ndk-r22b-linux-x86_64.zip
+wget https://dl.google.com/android/repository/android-ndk-r13b-linux-x86_64.zip
+unzip android-ndk-r13b-linux-x86_64.zip
+rm -f android-ndk-r13b-linux-x86_64.zip
 </pre>
 
 <p>
@@ -159,7 +163,7 @@ Set the environment variable <code>NDK</code> to contain the path
 to the Android NDK, which is used by our <code>Makefile</code>:
 </p>
 <pre class="code">
-export NDK=$HOME/local/android-ndk-r22b
+export NDK=$HOME/local/android-ndk-r13b
 </pre>
 
 <h2>Setting up the PariDroid project</h2>
