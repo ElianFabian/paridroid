@@ -1,4 +1,6 @@
 Version 2.13.3.2.2 (???):
+  Use an NDK version that makes the app compatible again with
+  Android 4.4 (API 19).
 
 Version 2.13.3.2.1 (December 2021):
   Compilation with version 2.13.3 of Pari/GP.

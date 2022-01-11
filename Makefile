@@ -15,10 +15,10 @@ TARGET_X86=$(TARGET_CPU_X86)-$(TARGET_SYSTEM)
 TARGET_X86_64=$(TARGET_CPU_X86_64)-$(TARGET_SYSTEM)
 
 # Settings for the cross compiler.
-NDK?=/usr/local/android-ndk-r12b
-# The following lines are valid when NDK23 is defined; then we use
-# llvm/clang of NDK version 23.
-ifdef NDK23
+NDK?=/usr/local/android-ndk-r13b
+# The following lines are valid when NDK22 is defined; then we use
+# llvm/clang of NDK version 22.
+ifdef NDK22
 SYSROOT_ARM=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/sysroot/
 SYSROOT_AARCH64=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/sysroot/
 SYSROOT_X86=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/sysroot/
@@ -28,8 +28,7 @@ CC_AARCH64=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-androi
 CC_X86=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android31-clang
 CC_X86_64=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android31-clang
 else
-# The following lines are valid when the NDK version is 12b, as for Fdroid,
-# or 13b.
+# The following lines are valid when the NDK version is 13b.
 # Compile the arm and aarch64 targets with different versions of
 # NDK_PLATFORM: aarch64 appears in android-21; to be able to run on older
 # Android versions, we compile the arm target with earlier tools.
@@ -108,7 +107,7 @@ gmp-build-generic: $(GMP_SRC)
 	# versions, which creates a .apk not running on older systems.
 	- cd $(GMP_SRC) && sed -i "s! doc!!" Makefile.am && autoreconf -vfi && sed -i "s!nl_langinfo!nl_langinfo_disabled!" configure && make distclean
 	( cd $(GMP_SRC) && \
-	CC="$(CC) $(STATIC)" CFLAGS="--sysroot=$(SYSROOT)" CPPFLAGS=--sysroot=$(SYSROOT) LDFLAGS=--sysroot=$(SYSROOT) ./configure $(DISABLE_SHARED) --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET)/gmp --host=$(TARGET) --with-sysroot=$(SYSROOT) && \
+	CC="$(CC) $(STATIC)" CFLAGS="--std=c99 --sysroot=$(SYSROOT)" CPPFLAGS=--sysroot=$(SYSROOT) LDFLAGS=--sysroot=$(SYSROOT) ./configure $(DISABLE_SHARED) --enable-maintainer-mode --prefix=$(JNI)/$(ANDROID_TARGET)/gmp --host=$(TARGET) --with-sysroot=$(SYSROOT) && \
 	make VERBOSE=1 -j $(shell getconf _NPROCESSORS_CONF) && \
 	make install ) > gmp-log 2>&1 || (cat gmp-log ; exit 1)
 

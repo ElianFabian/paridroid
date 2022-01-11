@@ -28,5 +28,5 @@ android {
 	    }
     }
 
-    ndkVersion '23.0.7123448 rc1'
+    ndkVersion '22.1.7171670'
 }
