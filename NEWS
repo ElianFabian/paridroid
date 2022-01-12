@@ -1,4 +1,4 @@
-Version 2.13.3.2.2 (???):
+Version 2.13.3.2.2 (January 2022):
   Use an NDK version that makes the app compatible again with
     Android 4.4 (API 19), and correct the signing process to be
     compatible with Android 11 (API 30).
