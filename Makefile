@@ -75,7 +75,7 @@ PARIDROID_SRC=$(TOP)/PariDroid/app/src/main
 PARI_SRC=$(TOP)/../srclib/pari
 GMP_SRC=$(TOP)/../srclib/gmp
 JNI=$(PARIDROID_SRC)/jni
-TMPDIR=/tmp/PariDroid-tmp
+TMPDIR:=$(shell mktemp -d --tmpdir PariDroid-XXXXXXXX)
 
 all: apk
 
@@ -97,9 +97,9 @@ apk-fast: ndk
 	cd $(PARIDROID_SRC) && ant release
 	# For API>=30, one of the files in the .apk needs to be
 	# uncompressed. So we unzip and rezip the .apk.
-	rm -rf $(TMPDIR) && mkdir -p $(TMPDIR)
 	cd $(TMPDIR) && unzip $(PARIDROID_SRC)/bin/PariDroid-release-unsigned.apk
 	cd $(TMPDIR) && zip -r -n resources.arsc $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk .
+	rm -rf $(TMPDIR)
 	zipalign -f 4 $(PARIDROID_SRC)/bin/PariDroid-release-unaligned.apk $(PARIDROID_SRC)/bin/PariDroid-release-aligned.apk
 	apksigner sign --ks $(HOME)/.android/debug.keystore --ks-pass pass:android --out PariDroid-$(PARIDROID_VERSION).apk $(PARIDROID_SRC)/bin/PariDroid-release-aligned.apk
 
