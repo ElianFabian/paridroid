@@ -9,7 +9,7 @@
   <string name="commandHint">type your command here</string>
 
   <!-- Strings giving default values for settings -->
-  <string name="parisize_default">8000000</string>
+  <string name="parisize_default">100000000</string>
   <string name="parisizemax_default">0</string>
 
   <!-- Strings giving button descriptions -->
