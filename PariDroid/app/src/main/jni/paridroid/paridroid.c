@@ -163,40 +163,6 @@ paridroid_eval(const char *in, char **out)
 }
 
 
-/* Work around the behaviour of gp_read_stream for PARI<=2.14.0, which does
-   not distinguish between a failed read (because there is only whitespace
-   left at the end of the file) and an expression returning gnil (because
-   it ends with ";", for instance), but always returns gnil. */
-#if PARI_VERSION_CODE < 134656
-static int
-gp_read_stream_buf(FILE *fi, Buffer *b)
-{
-  input_method IM;
-  filtre_t F;
-
-  init_filtre(&F, b);
-
-  IM.file = (void*)fi;
-  IM.myfgets = (fgets_t)&fgets;
-  IM.getline = &file_input;
-  IM.free = 0;
-  return input_loop(&F,&IM);
-}
-
-static GEN
-gp_read_stream_null(FILE *fi)
-{
-   Buffer *b = new_buffer ();
-   GEN x = NULL;
-   while (gp_read_stream_buf(fi, b))
-   {
-     if (*(b->buf)) { x = readseq(b->buf); break; }
-   }
-   delete_buffer (b);
-   return x;
-}
-#endif
-
 void
 paridroid_read (const int file, char **out)
 {
@@ -210,11 +176,7 @@ paridroid_read (const int file, char **out)
 
    do {
       z = z_next;
-#if PARI_VERSION_CODE < 134656
-      z_next = gp_read_stream_null (f);
-#else
       z_next = gp_read_stream (f);
-#endif
    } while (z_next != NULL);
 
    fclose (f);
