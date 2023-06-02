@@ -4,7 +4,7 @@
  *-----------------------------------------------
  *
  * Copyright (C) 2011 Charles Boyd
- *               2014, 2015, 2019, 2020, 2021 Andreas Enge <andreas.enge@inria.fr>
+ *               2014, 2015, 2019, 2020, 2021, 2023 Andreas Enge <andreas.enge@inria.fr>
  *               2015 Bill Allombert <bill.allombert@math.u-bordeaux.fr>
  *
  * This file is part of PariDroid.
@@ -204,7 +204,7 @@ paridroid_read (const int file, char **out)
    volatile GEN z_next = gnil, z;
    pari_timer T, Tw;
 
-   f = fdopen (file, "r");
+   f = fdopen (dup (file), "r");
 
    command_prepare (&T, &Tw);
 
