@@ -4,7 +4,7 @@
  *-----------------------------------------------
  *
  * Copyright (C) 2011 Charles Boyd
- *               2014, 2015, 2019, 2020, 2021, 2023 Andreas Enge <andreas.enge@inria.fr>
+ *               2014, 2015, 2019, 2020, 2021, 2023, 2024 Andreas Enge <andreas.enge@inria.fr>
  *               2015 Bill Allombert <bill.allombert@math.u-bordeaux.fr>
  *
  * This file is part of PariDroid.
@@ -114,26 +114,24 @@ command_postpare (char **out, GEN z, int print, pari_timer T, pari_timer Tw)
    time = timer_delay (&T);
    rtime = walltimer_delay (&Tw);
 
-   if (z != gnil) {
-      pari_add_hist(z, time, rtime);
-      if (GP_DATA->chrono && time > 0) {
-         if (pari_mt_nbthreads == 1)
-            pari_printf ("time = %s.\n",
-               gp_format_time (time));
-         else
-            pari_printf ("cpu time = %s, real time = %s.\n",
-               gp_format_time (time),
-               gp_format_time (rtime));
-      }
-      if (print) {
-         char *s = GENtostr (z);
-         pari_printf ("%%%lu = ", pari_nb_hist ());
-         if (GP_DATA->lim_lines)
-           lim_lines_output(s, 0, GP_DATA->lim_lines);
-         else
-           pari_puts(s);
-         pari_free(s);
-      }
+   pari_add_hist(z, time, rtime);
+   if (GP_DATA->chrono && time > 0) {
+      if (pari_mt_nbthreads == 1)
+         pari_printf ("time = %s.\n",
+            gp_format_time (time));
+      else
+         pari_printf ("cpu time = %s, real time = %s.\n",
+            gp_format_time (time),
+            gp_format_time (rtime));
+   }
+   if (z != gnil && print) {
+      char *s = GENtostr (z);
+      pari_printf ("%%%lu = ", pari_nb_hist ());
+      if (GP_DATA->lim_lines)
+        lim_lines_output(s, 0, GP_DATA->lim_lines);
+      else
+        pari_puts(s);
+      pari_free(s);
    }
 
    droidOutC(0);
