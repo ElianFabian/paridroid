@@ -1,3 +1,7 @@
+Version 2.15.5.2.4 (September 2024):
+   Compilation with version 2.15.5 of Pari/GP.
+   Handle time information for procedures that do not return a result.
+
 Version 2.15.4.2.3 (March 2024):
    Compilation with version 2.15.4 of Pari/GP.
 
