@@ -68,7 +68,7 @@ ifeq "$(PARI_VERSION)" "2.16.0"
 else
    PARI_GIT=pari-$(PARI_VERSION)
 endif
-GMP_VERSION=6.2.0
+GMP_VERSION=18415:bc0ec1699e58
 
 TOP=$(CURDIR)
 PARIDROID_SRC=$(TOP)/PariDroid/app/src/main
@@ -308,8 +308,8 @@ $(PARI_SRC):
 
 $(GMP_SRC):
 	mkdir -p $(GMP_SRC)
-	hg clone https://gmplib.org/repo/gmp-6.2/ $(GMP_SRC)
-	cd $(GMP_SRC) && ./.bootstrap
+	hg clone https://gmplib.org/repo/gmp $(GMP_SRC)
+	cd $(GMP_SRC) && hg update $(GMP_VERSION) && ./.bootstrap
 
 # Create a C header file from the java class interfacing with the pari
 # library; this gives the prototypes of functions to be written by hand in
