@@ -129,6 +129,7 @@ public class PariActivity extends Activity {
             if (cursor >= inputArrayList.size())
                cursor = 0; /* cycle through */
             inputText.setText(getFromHistory(cursor));
+            inputText.setSelection (inputText.getText ().length ());
          }
       });
 
@@ -140,6 +141,7 @@ public class PariActivity extends Activity {
             if (cursor < 0)
                cursor = inputArrayList.size() - 1; /* cycle through */
             inputText.setText(getFromHistory(cursor));
+            inputText.setSelection (inputText.getText ().length ());
          }
       });
 
