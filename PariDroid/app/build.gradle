@@ -1,13 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
+    namespace "fr.ubordeaux.math.paridroid"
+
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "fr.ubordeaux.math.paridroid"
         minSdkVersion 19
-        targetSdkVersion 31
+        targetSdkVersion 35
 
         ndk {
             moduleName "gmp"
