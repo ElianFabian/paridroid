@@ -1,3 +1,7 @@
+Version 2.17.3.2.5 (January 2025):
+   Compilation with version 2.17.3 of Pari/GP.
+   Put cursor at end of input after clicking the back and forth buttons.
+
 Version 2.15.5.2.4 (September 2024):
    Compilation with version 2.15.5 of Pari/GP.
    Handle time information for procedures that do not return a result.

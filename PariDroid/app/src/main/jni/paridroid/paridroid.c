@@ -124,15 +124,8 @@ command_postpare (char **out, GEN z, int print, pari_timer T, pari_timer Tw)
             gp_format_time (time),
             gp_format_time (rtime));
    }
-   if (z != gnil && print) {
-      char *s = GENtostr (z);
-      pari_printf ("%%%lu = ", pari_nb_hist ());
-      if (GP_DATA->lim_lines)
-        lim_lines_output(s, 0, GP_DATA->lim_lines);
-      else
-        pari_puts(s);
-      pari_free(s);
-   }
+   if (z != gnil && print)
+      gp_display_hist(pari_nb_hist());
 
    droidOutC(0);
    *out = droidStr;
