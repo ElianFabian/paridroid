@@ -11,11 +11,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.core.content.edit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PariSettingsScreen(
-    onBack: () -> Unit
+	onBack: () -> Unit,
 ) {
     val context = LocalContext.current
     val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)
@@ -50,9 +51,9 @@ fun PariSettingsScreen(
                 value = parisize,
                 onValueChange = { newValue ->
                     parisize = newValue
-                    prefs.edit().putString("parisize", newValue).apply()
+                    prefs.edit { putString("parisize", newValue) }
                     if (newValue.toLongOrNull() != null) {
-                        PariUtil.setDefault("parisize", newValue)
+                        ParidroidGP.default.pariSize = newValue.toLong()
                     }
                 },
                 label = { Text("parisize") },
@@ -64,9 +65,9 @@ fun PariSettingsScreen(
                 value = parisizemax,
                 onValueChange = { newValue ->
                     parisizemax = newValue
-                    prefs.edit().putString("parisizemax", newValue).apply()
+                    prefs.edit { putString("parisizemax", newValue) }
                     if (newValue.toLongOrNull() != null) {
-                        PariUtil.setDefault("parisizemax", newValue)
+                        ParidroidGP.default.pariSizeMax = newValue.toLong()
                     }
                 },
                 label = { Text("parisizemax") },

@@ -35,6 +35,9 @@ android {
             path("src/main/jni/Android.mk")
         }
     }
+    kotlin {
+        explicitApi()
+    }
 }
 
 tasks.register("prepareNativeHeaders") {

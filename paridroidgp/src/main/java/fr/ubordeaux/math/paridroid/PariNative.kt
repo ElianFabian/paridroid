@@ -2,7 +2,7 @@ package fr.ubordeaux.math.paridroid
 
 import android.util.Log
 
-object PariNative {
+internal object PariNative {
 
     const val MSG_TAG: String = "PariDroid::PariNative"
 
@@ -29,17 +29,12 @@ object PariNative {
         }
     }
 
-    /* JNI CALLBACK DECLARATIONS */
 
-    @JvmStatic
     external fun paridroidInit(parisize: Long)
 
-    @JvmStatic
     external fun paridroidEval(cmd: String): String?
 
-    @JvmStatic
     external fun getCommands(): Array<String>?
 
-    @JvmStatic
     external fun read(file: Int): String?
 }
