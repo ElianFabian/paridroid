@@ -15,15 +15,28 @@ TARGET_X86=$(TARGET_CPU_X86)-$(TARGET_SYSTEM)
 TARGET_X86_64=$(TARGET_CPU_X86_64)-$(TARGET_SYSTEM)
 
 # Settings for the cross compiler.
-NDK?=/usr/local/android-ndk-r22b
-SYSROOT_ARM=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/sysroot/
-SYSROOT_AARCH64=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/sysroot/
-SYSROOT_X86=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/sysroot/
-SYSROOT_X86_64=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/sysroot/
-CC_ARM=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi30-clang
-CC_AARCH64=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android30-clang
-CC_X86=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android30-clang
-CC_X86_64=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android30-clang
+NDK?=/mnt/host/c/Users/PC/AppData/Local/Android/Sdk/ndk/27.0.12077973
+# Detect host OS for NDK prebuilt directory
+ifeq ($(OS),Windows_NT)
+    NDK_HOST=windows-x86_64
+else
+    UNAME_S := $(shell uname -s)
+    ifeq ($(UNAME_S),Linux)
+        NDK_HOST=linux-x86_64
+    endif
+    ifeq ($(UNAME_S),Darwin)
+        NDK_HOST=darwin-x86_64
+    endif
+endif
+
+SYSROOT_ARM=$(NDK)/toolchains/llvm/prebuilt/$(NDK_HOST)/sysroot/
+SYSROOT_AARCH64=$(NDK)/toolchains/llvm/prebuilt/$(NDK_HOST)/sysroot/
+SYSROOT_X86=$(NDK)/toolchains/llvm/prebuilt/$(NDK_HOST)/sysroot/
+SYSROOT_X86_64=$(NDK)/toolchains/llvm/prebuilt/$(NDK_HOST)/sysroot/
+CC_ARM=$(NDK)/toolchains/llvm/prebuilt/$(NDK_HOST)/bin/armv7a-linux-androideabi30-clang
+CC_AARCH64=$(NDK)/toolchains/llvm/prebuilt/$(NDK_HOST)/bin/aarch64-linux-android30-clang
+CC_X86=$(NDK)/toolchains/llvm/prebuilt/$(NDK_HOST)/bin/i686-linux-android30-clang
+CC_X86_64=$(NDK)/toolchains/llvm/prebuilt/$(NDK_HOST)/bin/x86_64-linux-android30-clang
 
 # Settings for the GMP, PARI and Android target CPUs
 ANDROID_TARGET_ARM=armeabi-v7a
@@ -39,9 +52,12 @@ APP_ABI="$(ANDROID_TARGET_ARM) $(ANDROID_TARGET_AARCH64) $(ANDROID_TARGET_X86) $
 # For the release, ARM architectures are enough.
 #APP_ABI="$(ANDROID_TARGET_ARM) $(ANDROID_TARGET_AARCH64)"
 
-PARIDROID_VERSION=$(shell grep versionName PariDroid/app/src/main/AndroidManifest.xml | grep -o '".*"' | tr -d '"')
-PARI_VERSION=$(shell echo $(PARIDROID_VERSION) | cut -d. -f1-3)
-ifeq "$(PARI_VERSION)" "2.18.0"
+PARIDROID_VERSION=$(shell grep versionName app/src/main/AndroidManifest.xml | grep -o '".*"' | tr -d '"')
+PARI_VERSION?=$(shell grep pariVersion gradle.properties 2>/dev/null | cut -d= -f2 | tr -d ' \r\n')
+ifeq "$(PARI_VERSION)" ""
+   PARI_VERSION=$(shell echo $(PARIDROID_VERSION) | cut -d. -f1-3)
+endif
+ifeq ($(filter $(PARI_VERSION),latest master 2.18.0),$(PARI_VERSION))
    PARI_GIT=origin/master
 else
    PARI_GIT=pari-$(PARI_VERSION)
@@ -49,7 +65,7 @@ endif
 GMP_VERSION=18415:bc0ec1699e58
 
 TOP=$(CURDIR)
-PARIDROID_SRC=$(TOP)/PariDroid/app/src/main
+PARIDROID_SRC=$(TOP)/app/src/main
 PARI_SRC=$(TOP)/../srclib/pari
 GMP_SRC=$(TOP)/../srclib/gmp
 JNI=$(PARIDROID_SRC)/jni
@@ -68,8 +84,8 @@ version:
 
 apk: pari apk-fast
 
-ndk: $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
-	cd $(PARIDROID_SRC) && $(NDK)/ndk-build V=1 NDK_TOOLCHAIN_VERSION=4.9 APP_ABI=$(APP_ABI)
+ndk:
+	cd $(PARIDROID_SRC) && $(NDK)/build/ndk-build V=1 APP_ABI="$(APP_ABI)"
 
 apk-fast: ndk
 	cd $(PARIDROID_SRC) && ant release
@@ -282,20 +298,16 @@ pari-check-x86-emu:
 # These are supposed to be executed only once to set up the repositories.
 $(PARI_SRC):
 	mkdir -p $(PARI_SRC)
-	git clone http://pari.math.u-bordeaux.fr/git/pari.git $(PARI_SRC)
+	git clone https://pari.math.u-bordeaux.fr/git/pari.git $(PARI_SRC)
 
 $(GMP_SRC):
 	mkdir -p $(GMP_SRC)
-	hg clone https://gmplib.org/repo/gmp $(GMP_SRC)
-	cd $(GMP_SRC) && hg update $(GMP_VERSION) && ./.bootstrap
+	curl -L https://gmplib.org/download/gmp/gmp-6.3.0.tar.xz -o gmp.tar.xz
+	tar -xf gmp.tar.xz --strip-components=1 -C $(GMP_SRC)
+	rm gmp.tar.xz
 
-# Create a C header file from the java class interfacing with the pari
-# library; this gives the prototypes of functions to be written by hand in
-# the corresponding C source file. The result is under version control.
-$(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h: $(PARIDROID_SRC)/java/fr/ubordeaux/math/paridroid/PariNative.java
-	cd $(PARIDROID_SRC) && ant debug
-	cd $(PARIDROID_SRC)/bin/classes && javah -jni fr.ubordeaux.math.paridroid.PariNative
-	mv $(PARIDROID_SRC)/bin/classes/fr_ubordeaux_math_paridroid_PariNative.h $(JNI)/paridroid/fr_ubordeaux_math_paridroid_PariNative.h
+# Native build via ndk-build
+
 
 
 check: pari pari-check
@@ -322,4 +334,3 @@ distclean: clean
 	rm -f $(PARI_SRC)/config-$(TARGET_CPU_AARCH64)-android*
 	rm -f $(PARI_SRC)/config-$(TARGET_CPU_X86)-android*
 	rm -f $(PARI_SRC)/config-$(TARGET_CPU_X86_64)-android*
-
