@@ -41,6 +41,8 @@ kotlin {
 
 dependencies {
     implementation(project(":paridroidgp"))
+
+    implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.preference.ktx)
