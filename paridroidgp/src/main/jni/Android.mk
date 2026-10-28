@@ -40,7 +40,7 @@ LOCAL_LDLIBS := -llog
 
 LOCAL_CFLAGS := -g -std=gnu99 -Wno-undefined-internal -DINLINE="static __inline__"
 
-LOCAL_LDFLAGS := -Wl,-z,max-page-size=16384
+LOCAL_LDFLAGS := -Wl,--no-warn-mismatch -Wl,--allow-shlib-undefined
 
 LOCAL_SRC_FILES := \
 	paridroid/paridroid.c \

@@ -5,9 +5,13 @@ plugins {
 android {
     namespace = "fr.ubordeaux.math.paridroidgp"
     compileSdk = 35
+    ndkVersion = "28.2.13676358"
 
     defaultConfig {
         minSdk = 21
+        ndk {
+            abiFilters.addAll(listOf("arm64-v8a", "x86_64"))
+        }
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -35,7 +39,7 @@ android {
 
 tasks.register("prepareNativeHeaders") {
     doLast {
-        val abis = listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+        val abis = listOf("arm64-v8a", "x86_64")
         val rootJni = file("src/main/jni")
         val pariHeaders = file("../srclib/pari/src/headers")
         val miniGmp = file("../srclib/gmp/mini-gmp/mini-gmp.h")
