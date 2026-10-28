@@ -26,3 +26,6 @@ gmp/
 .idea/
 .cxx/
 build/
+
+
+/gmp-log
