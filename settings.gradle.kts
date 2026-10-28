@@ -11,3 +11,4 @@ plugins {
 
 rootProject.name = "paridroid-2026"
 include(":app")
+include(":paridroidgp")
