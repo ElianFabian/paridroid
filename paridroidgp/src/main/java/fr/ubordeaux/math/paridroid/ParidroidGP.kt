@@ -63,6 +63,11 @@ public object ParidroidGP {
 		return PariNative.read(intFd) ?: error("Read returned null or empty output from file descriptor")
 	}
 
+	// TODO: we have to test this
+	public fun close() {
+		PariNative.paridroidClose()
+	}
+
 	private fun loadLibrarySafe(name: String) {
 		try {
 			Log.i(TAG, "Loading lib$name.so")

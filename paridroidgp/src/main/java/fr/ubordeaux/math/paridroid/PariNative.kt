@@ -37,4 +37,6 @@ internal object PariNative {
     external fun getCommands(): Array<String>?
 
     external fun read(file: Int): String?
+
+    external fun paridroidClose()
 }

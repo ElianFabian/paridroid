@@ -32,6 +32,13 @@ Java_fr_ubordeaux_math_paridroid_PariNative_paridroidInit(JNIEnv *env, jclass cl
   paridroid_init(parisize);
 }
 
+void
+Java_fr_ubordeaux_math_paridroid_PariNative_paridroidClose(JNIEnv *env, jclass cls)
+{
+    paridroid_close()
+}
+
+
 jstring
 Java_fr_ubordeaux_math_paridroid_PariNative_paridroidEval(JNIEnv *env, jclass cls, jstring input)
 {
@@ -47,7 +54,7 @@ Java_fr_ubordeaux_math_paridroid_PariNative_paridroidEval(JNIEnv *env, jclass cl
     LOGW("Returning NULL from Native:paridroidEval");
     return NULL;
   }
-  
+
   // Evaluate the command; returnsgnil is 1 or 0 depending on whether or not
   // the return value of the command was gnil.
   paridroid_eval(cmd, &output);
