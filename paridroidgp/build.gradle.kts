@@ -14,7 +14,6 @@ android {
         }
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -66,6 +65,11 @@ tasks.register("prepareNativeHeaders") {
             }
 
             // Create paricfg.h
+            val cfgExtra = if (abi == "arm64-v8a") {
+                "#define PARIDROID_USE_HASH_MASK 1"
+            } else {
+                "#define PARIDROID_USE_TBLSZ 1"
+            }
             File(pariInc, "paricfg.h").writeText("""
                 #ifndef __PARICFG_H__
                 #define __PARICFG_H__
@@ -83,6 +87,7 @@ tasks.register("prepareNativeHeaders") {
                 #define PARI_DOUBLE_FORMAT 1
                 #define GCC_VERSION "12.0.0"
                 #define __HAS_NO_ASM__
+                $cfgExtra
                 #endif
             """.trimIndent())
 

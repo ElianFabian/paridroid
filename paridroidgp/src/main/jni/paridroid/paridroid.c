@@ -27,6 +27,12 @@
 #include <stdlib.h>
 #include <pari/pari.h>
 #include <pari/paripriv.h>
+#ifdef PARIDROID_USE_HASH_MASK
+const long functions_hash_MASK = 4095;
+#define functions_tblsz functions_hash_MASK
+#else
+const long functions_tblsz = 4095;
+#endif
 #include <setjmp.h>
 #include <strings.h>
 
@@ -184,7 +190,7 @@ paridroid_getcommands (const char *** commands, int size, int *len)
    entree *ep;
 
    *len = 0;
-   for (i = 0; i <= functions_hash_MASK; i++)
+   for (i = 0; i <= functions_tblsz; i++)
       for (ep = functions_hash[i]; ep; ep = ep->next)
       {
          switch (EpVALENCE(ep))
