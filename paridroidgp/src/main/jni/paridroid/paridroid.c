@@ -27,6 +27,14 @@
 #include <stdlib.h>
 #include <pari/pari.h>
 #include <pari/paripriv.h>
+
+#if PARI_VERSION_CODE < PARI_VERSION(2, 11, 0)
+#define walltimer_start(t) timer_start(t)
+#define walltimer_delay(t) timer_delay(t)
+#define PARIDROID_ADD_HIST(z, t, r) pari_add_hist(z, t)
+#else
+#define PARIDROID_ADD_HIST(z, t, r) pari_add_hist(z, t, r)
+#endif
 #ifdef PARIDROID_USE_HASH_MASK
 const long functions_hash_MASK = 4095;
 #define functions_tblsz functions_hash_MASK
@@ -120,7 +128,7 @@ command_postpare (char **out, GEN z, int print, pari_timer T, pari_timer Tw)
    time = timer_delay (&T);
    rtime = walltimer_delay (&Tw);
 
-   pari_add_hist(z, time, rtime);
+   PARIDROID_ADD_HIST(z, time, rtime);
    if (GP_DATA->chrono && time > 0) {
       if (pari_mt_nbthreads == 1)
          pari_printf ("time = %s.\n",
@@ -130,8 +138,16 @@ command_postpare (char **out, GEN z, int print, pari_timer T, pari_timer Tw)
             gp_format_time (time),
             gp_format_time (rtime));
    }
-   if (z != gnil && print)
+   if (z != gnil && print) {
+#if PARI_VERSION_CODE >= PARI_VERSION(2,17,0)
       gp_display_hist(pari_nb_hist());
+#else
+      unsigned long n = pari_nb_hist();
+      pari_printf("%%%lu = ", n);
+      output(pari_get_hist((long)n));
+      pari_printf("\n");
+#endif
+   }
 
    droidOutC(0);
    *out = droidStr;
@@ -147,7 +163,7 @@ paridroid_eval(const char *in, char **out)
 
    if(setjmp(env) != 0) {
       LOGE("setjmp different from zero");
-      pari_add_hist(gnil, 0, 0);
+      PARIDROID_ADD_HIST(gnil, 0, 0);
       command_postpare (out, gnil, 0, T, Tw);
    }
    else {

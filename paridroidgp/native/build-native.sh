@@ -11,6 +11,7 @@ NDK=""
 WORK_DIR="${PARIDROID_WORK_DIR:-$HOME/.cache/paridroid-native}"
 DATADIR=/data/data/fr.ubordeaux.math.paridroid
 FORCE=0
+VERBOSE=0
 GMP_VERSION=6.3.0
 NDK_REV=r28c   # only used when --ndk is not given (Linux/WSL/Docker); keep in sync with ndkVersion
 
@@ -33,10 +34,15 @@ while [ $# -gt 0 ]; do
     --work)         WORK_DIR=$2; shift 2;;
     --datadir)      DATADIR=$2; shift 2;;
     --force)        FORCE=1; shift;;
+    --verbose|-v)   VERBOSE=1; shift;;
     *) die "unknown option $1";;
   esac
 done
 [ -n "$OUT_DIR" ] || die "--out is required"
+
+if [ "$VERBOSE" = 1 ]; then
+  set -x
+fi
 
 case "$(uname -s)" in
   Linux)  NDK_HOST=linux-x86_64;;
@@ -93,8 +99,29 @@ fi
 case "$PARI_VERSION" in master|latest) PARI_REF=master;; *) PARI_REF="pari-$PARI_VERSION";; esac
 if [ ! -d "$PARI_SRC/.git" ]; then
   log "cloning PARI $PARI_REF"
-  git clone --depth 1 --branch "$PARI_REF" https://pari.math.u-bordeaux.fr/git/pari.git "$PARI_SRC" \
-    || { rm -rf "$PARI_SRC"; die "cannot clone PARI ref '$PARI_REF' (is the version a valid tag?)"; }
+  mkdir -p "$PARI_SRC"
+  git -C "$PARI_SRC" init -q
+  git -C "$PARI_SRC" remote add origin https://pari.math.u-bordeaux.fr/git/pari.git
+
+  if [ "$PARI_REF" = "master" ]; then
+    git -C "$PARI_SRC" fetch --depth 1 origin master || die "cannot fetch master branch"
+    git -C "$PARI_SRC" checkout -q FETCH_HEAD
+  else
+    if ! git -C "$PARI_SRC" fetch --depth 1 origin "refs/tags/$PARI_REF:refs/tags/$PARI_REF" 2>/dev/null && \
+       ! git -C "$PARI_SRC" fetch --depth 1 origin "$PARI_REF" 2>/dev/null; then
+
+       echo "error: PARI version '$PARI_VERSION' (tag '$PARI_REF') not found." >&2
+       echo "Available versions:" >&2
+       git ls-remote --tags https://pari.math.u-bordeaux.fr/git/pari.git | \
+         awk -F'/' '{print $3}' | sed 's/\^{}//' | grep '^pari-' | sed 's/^pari-//' | sort -V | uniq >&2
+       rm -rf "$PARI_SRC"
+       exit 1
+    fi
+    git -C "$PARI_SRC" checkout -q "$PARI_REF" || {
+       rm -rf "$PARI_SRC"
+       die "cannot checkout ref '$PARI_REF'"
+    }
+  fi
 elif [ "$PARI_REF" = master ] && [ "$FORCE" = 1 ]; then
   git -C "$PARI_SRC" fetch --depth 1 origin master && git -C "$PARI_SRC" reset --hard FETCH_HEAD
 fi
@@ -104,7 +131,15 @@ JOBS=$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo 4)
 # Run a command in a subshell, log its output, show the tail on failure.
 step() {
   local logf=$1; shift
-  if ! ( "$@" ) >"$logf" 2>&1; then tail -n 40 "$logf" >&2; die "step failed, full log: $logf"; fi
+  if [ "$VERBOSE" = 1 ]; then
+    if ! ( "$@" ) 2>&1 | tee "$logf"; then
+      die "step failed, full log: $logf"
+    fi
+  else
+    if ! ( "$@" ) >"$logf" 2>&1; then
+      tail -n 40 "$logf" >&2; die "step failed, full log: $logf"
+    fi
+  fi
 }
 
 # Adjust pari.cfg, since Configure cannot run test programs when cross-compiling.
