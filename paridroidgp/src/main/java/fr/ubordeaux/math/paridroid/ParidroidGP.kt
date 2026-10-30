@@ -1,8 +1,6 @@
 package fr.ubordeaux.math.paridroid
 
-import android.os.ParcelFileDescriptor
 import android.util.Log
-import java.util.Locale.ROOT
 
 /**
  * Idiomatic Kotlin wrapper for the PariDroid native engine.
@@ -51,25 +49,29 @@ public object ParidroidGP {
 	 */
 	public fun getSupportedCommands(): List<String> {
 		if (!_initialized) {
-			return emptyList()
+			error("Engine not initialized")
 		}
 
 		return PariNative.getCommands().orEmpty().toList()
 	}
 
 	/**
-	 * Reads from a ParcelFileDescriptor safely without any reflection.
-	 * Note: detachFd() transfers ownership of the file descriptor to native code.
+	 * Closes the global PARI/GP mathematical engine stack.
 	 */
-	public fun read(pfd: ParcelFileDescriptor): String {
-		val intFd = pfd.detachFd()
-
-		return PariNative.read(intFd) ?: error("Read returned null or empty output from file descriptor")
-	}
-
-	// TODO: we have to test this
 	public fun close() {
 		PariNative.paridroidClose()
+		_initialized = false
+	}
+
+	public fun getVersionCode(): Int = PariNative.pariVersionCode()
+
+	public fun getVersionName(): String {
+		val code = getVersionCode()
+		val major = (code ushr 16) and 0xFF
+		val minor = (code ushr 8) and 0xFF
+		val patch = code and 0xFF
+
+		return "${major}.${minor}.${patch}"
 	}
 
 	private fun loadLibrarySafe(name: String) {

@@ -28,12 +28,14 @@ class PariActivity : AppCompatActivity() {
             }
         }
 
-        val version = try {
+        val appVersion = try {
             val pi = packageManager.getPackageInfo(packageName, 0)
             pi.versionName ?: ""
         } catch (e: Exception) {
             ""
         }
+        val pariVersion = ParidroidGP.getVersionName()
+        val version = if (pariVersion.isNotEmpty()) "$appVersion (PARI $pariVersion)" else appVersion
 
         setContent {
             MaterialTheme {

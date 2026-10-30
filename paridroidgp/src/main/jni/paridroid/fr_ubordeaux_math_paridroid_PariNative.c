@@ -23,8 +23,17 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <pari/paricfg.h>
 #include "paridroid.h"
 #include "fr_ubordeaux_math_paridroid_PariNative.h"
+
+jint
+Java_fr_ubordeaux_math_paridroid_PariNative_pariVersionCode(JNIEnv *env, jclass cls)
+{
+   (void) env;
+   (void) cls;
+   return (jint) PARI_VERSION_CODE;
+}
 
 void
 Java_fr_ubordeaux_math_paridroid_PariNative_paridroidInit(JNIEnv *env, jclass cls, jlong parisize)
@@ -92,17 +101,17 @@ Java_fr_ubordeaux_math_paridroid_PariNative_getCommands(JNIEnv *env, jclass cls)
    return res;
 }
 
-jstring
-Java_fr_ubordeaux_math_paridroid_PariNative_read (JNIEnv *env, jclass cls, jint file)
-{
-   int fd;
-   char *line;
-
-   fd = (int) file;
-
-   paridroid_read (fd, &line);
-
-   jstring s = (*env)->NewStringUTF (env, line);
-
-   return s;
-}
+//jstring
+//Java_fr_ubordeaux_math_paridroid_PariNative_read (JNIEnv *env, jclass cls, jint file)
+//{
+//   int fd;
+//   char *line;
+//
+//   fd = (int) file;
+//
+//   paridroid_read (fd, &line);
+//
+//   jstring s = (*env)->NewStringUTF (env, line);
+//
+//   return s;
+//}

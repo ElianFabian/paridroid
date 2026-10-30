@@ -34,9 +34,10 @@ internal object PariNative {
 
     external fun paridroidEval(cmd: String): String?
 
+    // Depending on the PARI version some commands may not be return, like 'version' in PARI 2.9.0
     external fun getCommands(): Array<String>?
 
-    external fun read(file: Int): String?
-
     external fun paridroidClose()
+
+    external fun pariVersionCode(): Int
 }

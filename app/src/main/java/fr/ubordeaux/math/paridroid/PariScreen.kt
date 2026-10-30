@@ -105,6 +105,15 @@ fun PariScreen(
                         onDismissRequest = { menuExpanded = false }
                     ) {
                         DropdownMenuItem(
+                            text = { Text("Close & Re-init Engine") },
+                            leadingIcon = { Icon(Icons.Default.Refresh, contentDescription = null) },
+                            onClick = {
+                                menuExpanded = false
+                                viewModel.closeAndReinit()
+                                Toast.makeText(context, "PARI closed and re-initialized", Toast.LENGTH_SHORT).show()
+                            }
+                        )
+                        DropdownMenuItem(
                             text = { Text(stringResource(R.string.read)) },
                             leadingIcon = { Icon(Icons.Default.FolderOpen, contentDescription = null) },
                             onClick = {

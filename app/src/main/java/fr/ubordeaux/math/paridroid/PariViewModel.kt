@@ -69,7 +69,11 @@ class PariViewModel(application: Application) : AndroidViewModel(application) {
 		}
 
 		val lowerToken = currentToken.lowercase()
-		return@combine availableCommands.filter { it.lowercase().startsWith(lowerToken) }
+		val matched = availableCommands.filter { it.lowercase().startsWith(lowerToken) }
+		if (matched.size == 1 && matched[0].lowercase() == lowerToken) {
+			return@combine emptyList<String>()
+		}
+		return@combine matched
 	}.stateIn(
 		scope = viewModelScope,
 		started = SharingStarted.WhileSubscribed(5000),
@@ -223,6 +227,13 @@ class PariViewModel(application: Application) : AndroidViewModel(application) {
 		}
 		catch (e: Exception) {
 			e.printStackTrace()
+		}
+	}
+
+	fun closeAndReinit() {
+		runCatching {
+			ParidroidGP.close()
+			ParidroidGP.init(100000000L)
 		}
 	}
 }
