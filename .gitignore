@@ -27,5 +27,6 @@ gmp/
 .cxx/
 build/
 
+.native/
 
 /gmp-log
