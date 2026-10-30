@@ -2,27 +2,49 @@ plugins {
     id("com.android.library")
 }
 
+// Switch versions in gradle.properties (pariVersion=2.17.1) or with -PpariVersion=...
+// Any tag "pari-<version>" of the PARI git repo works, or "master".
+val pariVersion = providers.gradleProperty("pariVersion").getOrElse("2.17.1")
+val nativeAbis = listOf("arm64-v8a", "x86_64")
+val minApi = 21
+
+val customNativeDir = layout.projectDirectory.dir(".native/pari-$pariVersion").asFile
+val prebuiltNativeDir = layout.projectDirectory.dir("src/main/jni").asFile
+
+fun hasValidNativeLibs(dir: File): Boolean {
+    return nativeAbis.all { abi ->
+        File(dir, "$abi/gmp/lib/libgmp.so").exists() &&
+        File(dir, "$abi/pari/lib/libpari.so").exists()
+    }
+}
+
+// Use .native/pari-$pariVersion if available, otherwise bundled prebuilts in src/main/jni
+val nativeDepsDir = when {
+    hasValidNativeLibs(customNativeDir) -> customNativeDir
+    hasValidNativeLibs(prebuiltNativeDir) -> prebuiltNativeDir
+    else -> customNativeDir // Triggers buildPariNative on-demand if prebuilts are missing
+}
+
 android {
     namespace = "fr.ubordeaux.math.paridroidgp"
     compileSdk = 35
     ndkVersion = "28.2.13676358"
 
     defaultConfig {
-        minSdk = 21
-        ndk {
-            abiFilters.addAll(listOf("arm64-v8a", "x86_64"))
+        minSdk = minApi
+        ndk { abiFilters.addAll(nativeAbis) }
+        externalNativeBuild {
+            ndkBuild {
+                arguments("NATIVE_DEPS_DIR=" + nativeDepsDir.absolutePath.replace('\\', '/'))
+            }
         }
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
     compileOptions {
@@ -30,81 +52,91 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     externalNativeBuild {
-        ndkBuild {
-            path("src/main/jni/Android.mk")
-        }
+        ndkBuild { path("src/main/jni/Android.mk") }
     }
-    kotlin {
-        explicitApi()
+    kotlin { explicitApi() }
+}
+
+val buildPariNative = tasks.register<Exec>("buildPariNative") {
+    group = "native"
+    description = "Builds GMP + PARI $pariVersion for Android (skipped when up to date)"
+
+    val script = layout.projectDirectory.file("native/build-native.sh").asFile
+    val force = providers.gradleProperty("nativeForce").isPresent
+
+    inputs.file(script)
+    inputs.property("pariVersion", pariVersion)
+    inputs.property("abis", nativeAbis)
+    inputs.property("api", minApi)
+    outputs.dir(nativeDepsDir)
+    if (force) outputs.upToDateWhen { false }
+
+    doFirst {
+        nativeDepsDir.mkdirs()
+        val isWindows = System.getProperty("os.name").lowercase().contains("win")
+        val runner = providers.gradleProperty("nativeRunner").getOrElse(if (isWindows) "docker" else "local")
+
+        // Pass each ABI with its own --abis flag to prevent word splitting
+        val common = listOf(
+            "--pari-version", pariVersion,
+            "--api", minApi.toString()
+        ) + nativeAbis.flatMap { listOf("--abis", it) } + if (force) listOf("--force") else emptyList()
+
+        // Helper to convert Windows paths (C:\...) to WSL paths (/mnt/c/...)
+        val toWslPath: (File) -> String = { file ->
+            val absPath = file.absolutePath
+            val drive = absPath.substring(0, 1).lowercase()
+            "/mnt/$drive" + absPath.substring(2).replace('\\', '/')
+        }
+
+        commandLine(
+            when (runner) {
+                // Linux / macOS: use the NDK that Gradle resolved.
+                "local" -> listOf(
+                    "bash", script.path,
+                    "--ndk", androidComponents.sdkComponents.ndkDirectory.get().asFile.path,
+                    "--out", nativeDepsDir.path
+                ) + common
+
+                // Windows: run inside the default WSL distro using converted /mnt/... paths.
+                "wsl" -> listOf(
+                    "wsl", "bash", toWslPath(script),
+                    "--out", toWslPath(nativeDepsDir)
+                ) + common
+
+                // Anywhere with Docker (the Linux NDK is x86_64, hence --platform).
+                "docker" -> listOf(
+                    "docker", "run", "--rm", "--platform", "linux/amd64",
+                    "-v", "${nativeDepsDir.path}:/out",
+                    "-v", "${script.parentFile.path}:/native:ro",
+                    "-v", "paridroid-native-cache:/cache",
+                    "ubuntu:24.04", "bash", "-c",
+                    "apt-get update -qq && apt-get install -y -qq build-essential m4 git curl xz-utils unzip ca-certificates bison flex patchelf >/dev/null && exec bash /native/build-native.sh \"\$@\"",
+                    "_", "--out", "/out", "--work", "/cache"
+                ) + common
+
+                else -> throw GradleException("Unknown nativeRunner '$runner' (use local, wsl or docker)")
+            }
+        )
     }
 }
 
-tasks.register("prepareNativeHeaders") {
-    doLast {
-        val abis = listOf("arm64-v8a", "x86_64")
-        val rootJni = file("src/main/jni")
-        val pariHeaders = file("../srclib/pari/src/headers")
-        val miniGmp = file("../srclib/gmp/mini-gmp/mini-gmp.h")
+// Only trigger source build if valid prebuilt libs are missing or if nativeForce is explicitly requested.
+val nativeForce = providers.gradleProperty("nativeForce").isPresent
+val needsSourceBuild = !hasValidNativeLibs(nativeDepsDir) || nativeForce
 
-        abis.forEach { abi ->
-            val pariInc = file("$rootJni/$abi/pari/include/pari")
-            val gmpInc = file("$rootJni/$abi/gmp/include")
-            pariInc.mkdirs()
-            gmpInc.mkdirs()
-
-            if (pariHeaders.exists()) {
-                pariHeaders.listFiles()?.forEach { f ->
-                    if (f.isFile) {
-                        f.copyTo(File(pariInc, f.name), overwrite = true)
-                    }
-                }
-            }
-
-            if (miniGmp.exists()) {
-                miniGmp.copyTo(File(gmpInc, "gmp.h"), overwrite = true)
-            }
-
-            // Create paricfg.h
-            val cfgExtra = if (abi == "arm64-v8a") {
-                "#define PARIDROID_USE_HASH_MASK 1"
-            } else {
-                "#define PARIDROID_USE_TBLSZ 1"
-            }
-            File(pariInc, "paricfg.h").writeText("""
-                #ifndef __PARICFG_H__
-                #define __PARICFG_H__
-                #define UNIX
-                #define GPHELP ""
-                #define GPDATADIR ""
-                #define SHELL_Q '\''
-                #define PARIVERSION "GP/PARI CALCULATOR Version 2.15.0"
-                #define PARIINFO ""
-                #define PARI_VERSION_CODE 136448
-                #define PARI_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))
-                #define PARI_VERSION_SHIFT 8
-                #define PARI_VCSVERSION ""
-                #define PARI_MT_ENGINE "single"
-                #define PARI_DOUBLE_FORMAT 1
-                #define GCC_VERSION "12.0.0"
-                #define __HAS_NO_ASM__
-                $cfgExtra
-                #endif
-            """.trimIndent())
-
-            // Create parimt.h
-            File(pariInc, "parimt.h").writeText("""
-                #define MT_SIGINT_BLOCK(block)
-                #define MT_SIGINT_UNBLOCK(block)
-            """.trimIndent())
-
-            // Create mpinl.h
-            File(pariInc, "mpinl.h").writeText("/* mpinl.h stub */")
-        }
+if (needsSourceBuild) {
+    tasks.configureEach {
+        if (name.startsWith("configureNdkBuild") ||
+            name.startsWith("buildNdkBuild") ||
+            name.startsWith("generateJsonModel")
+        ) dependsOn(buildPariNative)
     }
 }
 
-tasks.matching { it.name.contains("ExternalNativeBuild") || it.name.contains("NdkBuild") }.configureEach {
-    dependsOn("prepareNativeHeaders")
+tasks.register<Delete>("cleanNative") {
+    group = "native"
+    delete(layout.projectDirectory.dir(".native"))
 }
 
 dependencies {

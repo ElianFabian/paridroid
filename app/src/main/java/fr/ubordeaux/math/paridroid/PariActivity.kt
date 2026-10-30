@@ -19,10 +19,12 @@ class PariActivity : AppCompatActivity() {
         val parisizeStr = prefs.getString("parisize", getString(R.string.parisize_default))
         val parisize = parisizeStr?.toLongOrNull() ?: 100000000L
 
+        ParidroidGP.init(parisize)
+
         val map = prefs.all
         for ((key, value) in map) {
             if (key != "parisize" && value != null) {
-                ParidroidGP.default.setDefault(key, value.toString())
+                runCatching { ParidroidGP.default.setDefault(key, value.toString()) }
             }
         }
 
@@ -32,8 +34,6 @@ class PariActivity : AppCompatActivity() {
         } catch (e: Exception) {
             ""
         }
-
-        ParidroidGP.init(parisize)
 
         setContent {
             MaterialTheme {

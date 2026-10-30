@@ -35,7 +35,7 @@ Java_fr_ubordeaux_math_paridroid_PariNative_paridroidInit(JNIEnv *env, jclass cl
 void
 Java_fr_ubordeaux_math_paridroid_PariNative_paridroidClose(JNIEnv *env, jclass cls)
 {
-    paridroid_close()
+    paridroid_close();
 }
 
 

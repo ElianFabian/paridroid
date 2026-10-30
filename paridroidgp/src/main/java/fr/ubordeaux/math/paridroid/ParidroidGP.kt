@@ -27,7 +27,7 @@ public object ParidroidGP {
 	 */
 	public fun init(pariSize: Long = 4_000_000L) {
 		if (_initialized) {
-			error("Engine already initialized")
+			return
 		}
 
 		PariNative.paridroidInit(pariSize)
@@ -50,6 +50,10 @@ public object ParidroidGP {
 	 * Returns the list of supported GP commands as an idiomatic Kotlin List.
 	 */
 	public fun getSupportedCommands(): List<String> {
+		if (!_initialized) {
+			return emptyList()
+		}
+
 		return PariNative.getCommands().orEmpty().toList()
 	}
 

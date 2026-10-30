@@ -44,7 +44,7 @@ jmp_buf env;
 
 void gp_err_recover(long numerr) 
 {
-  longjmp(env, numerr); 
+  longjmp(env, numerr);
 }
 
 static char *droidStr;
@@ -190,6 +190,13 @@ paridroid_getcommands (const char *** commands, int size, int *len)
    entree *ep;
 
    *len = 0;
+   if (!functions_hash) return;
+
+   if (setjmp(env) != 0) {
+      LOGE("Error caught in paridroid_getcommands");
+      return;
+   }
+
    for (i = 0; i <= functions_tblsz; i++)
       for (ep = functions_hash[i]; ep; ep = ep->next)
       {
